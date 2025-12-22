@@ -1,0 +1,25 @@
+﻿@page
+@model IndexModel
+
+<form method="post">
+    <div>
+        年齢: <input asp-for="Age" />
+    </div>
+    <div>
+        身長(cm): <input asp-for="Height" />
+    </div>
+    <div>
+        体重(kg): <input asp-for="Weight" />
+    </div>
+    <div>
+        <input type="radio" asp-for="Sex" value="Male" /> 男
+        <input type="radio" asp-for="Sex" value="Female" /> 女
+    </div>
+
+    <button type="submit">BMR計算</button>
+</form>
+
+@if (Model.Bmr > 0)
+{
+    <p><strong>BMR = @Model.Bmr</strong></p>
+}
