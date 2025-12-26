@@ -1,4 +1,4 @@
-﻿namespace TNTCalculatorRazor.Domain;
+﻿namespace TNTCalculatorRazor.Domain.Enums;
 
 public enum BmrFormulaType
 {
