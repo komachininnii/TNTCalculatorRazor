@@ -6,18 +6,18 @@ public static class ProteinCorrectionSelector
 {
     public static ProteinCorrectionType GetDefault(
         int age,
-        ProteinCondition proteinCondition )
+        DiseaseType disease)
     {
         // 小児は自動補正なし
         if (age < 18)
             return ProteinCorrectionType.None;
 
-        return proteinCondition switch
+        return disease switch
         {
-            ProteinCondition.RenalFailure =>
+            DiseaseType.RenalFailure =>
                 ProteinCorrectionType.CKD3bTo5,
 
-            ProteinCondition.LiverCirrhosis =>
+            DiseaseType.LiverCirrhosis =>
                 ProteinCorrectionType.LiverCirrhosisPoor,
 
             _ => ProteinCorrectionType.None

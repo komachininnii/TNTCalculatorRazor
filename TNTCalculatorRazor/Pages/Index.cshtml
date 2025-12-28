@@ -1,177 +1,137 @@
 ﻿@page
-@using TNTCalculatorRazor.Domain
-@using TNTCalculatorRazor.Domain.Enums
 @model IndexModel
+@using TNTCalculatorRazor.Domain.Enums
+
+<h2>栄養計算（UI確認用）</h2>
 
 <form method="post">
 
-    <h3>基本情報</h3>
+    <!-- hidden は form 冒頭にまとめる -->
+    <input type="hidden" asp-for="Action" id="Action" />
+    <input type="hidden" asp-for="HasUserSelectedPackage" />
 
+    <!-- 以下、通常のUI -->
+    
+    <!-- ========================= -->
+    <!-- 疾患選択 -->
+    <!-- ========================= -->
     <div>
-        年齢: <input asp-for="Age" />
-    </div>
-    <div>
-        身長(cm): <input asp-for="Height" />
-    </div>
-    <div>
-        体重(kg): <input asp-for="Weight" />
-    </div>
-    <div>
-        <label>
-            <input type="radio" asp-for="Sex" value="Male" /> 男
-        </label>
-        <label>
-            <input type="radio" asp-for="Sex" value="Female" /> 女
-        </label>
-    </div>
-
-    <hr />
-
-    <h3>活動・ストレス条件</h3>
-
-    <div class="mb-3">
-        <label class="form-label">活動係数</label>
-        <select asp-for="ActivityFactor"
-                class="form-select"
-                asp-items="Html.GetEnumSelectList<ActivityFactorType>()">
-        </select>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">基礎ストレス係数</label>
-        <select asp-for="StressFactor"
-                class="form-select"
-                asp-items="Html.GetEnumSelectList<StressFactorType>()">
-        </select>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">体温</label>
-        <select asp-for="SelectedBodyTemperature"
-                class="form-select"
-                asp-items="Html.GetEnumSelectList<BodyTemperatureLevel>()">
+        <label>疾患</label><br />
+        <select asp-for="SelectedDisease"
+                asp-items="Html.GetEnumSelectList<DiseaseType>()"
+                onchange="document.getElementById('Action').value='disease'; this.form.submit()" >
         </select>
     </div>
 
     <hr />
 
-    <h3>蛋白・水分条件</h3>
-
+    <!-- ========================= -->
+    <!-- カロリー算出方法 -->
+    <!-- ========================= -->
     <div>
-        <label>
-            <input type="radio"
-                   asp-for="SelectedProteinCorrection"
-                   value="None" />
-            補正なし
-        </label>
-        <label>
-            <input type="radio"
-                   asp-for="SelectedProteinCorrection"
-                   value="CKD3bTo5" />
-            CKD3b–5（0.7）
-        </label>
-        <label>
-            <input type="radio"
-                   asp-for="SelectedProteinCorrection"
-                   value="LiverCirrhosisPoor" />
-            肝硬変蛋白不耐（0.5）
-        </label>
+        <label>カロリー算出方法</label><br />
+        <select asp-for="SelectedEnergyOrder"
+                asp-items="Html.GetEnumSelectList<EnergyOrderType>()"
+                onchange="document.getElementById('Action').value='order'; this.form.submit()">
+        </select>
     </div>
 
+    <!-- ========================= -->
+    <!-- 投与カロリー -->
+    <!-- ========================= -->
     <div>
-        <label>
-            <input type="checkbox" asp-for="IsHemodialysis" />
-            血液透析（HD）
-        </label>
+        <label>投与カロリー</label><br />
+        <input asp-for="EnergyOrderValue"
+               onchange="document.getElementById('Action').value='energy'; this.form.submit()" /> kcal
     </div>
 
+    <!-- 手入力モード -->
+    @if (Model.SelectedEnergyOrder == EnergyOrderType.Manual)
+    {
+        <div>
+            <label>手入力カロリー</label><br />
+            <input asp-for="ManualEnergyValue" /> kcal
+        </div>
+    }
+
+    <hr />
+
+    <!-- ========================= -->
+    <!-- 経腸栄養剤 -->
+    <!-- ========================= -->
     <div>
-        <label>
-            <input type="checkbox" asp-for="IsPregnant" />
-            妊娠
-        </label>
+        <label>経腸栄養剤</label><br />
+        <select asp-for="SelectedEnteralFormula"
+                asp-items="Html.GetEnumSelectList<EnteralFormulaType>()"
+                onchange="document.getElementById('Action').value='formula'; this.form.submit()">
+        </select>
     </div>
 
-    <br />
-    <button type="submit">計算</button>
+    <!-- ========================= -->
+    <!-- 規格 -->
+    <!-- ========================= -->
+    <div>
+        <label>規格（mL）</label><br />
+        <select asp-for="SelectedPackageVolume"
+                asp-items="Model.PackageVolumeOptions"
+                onchange="document.getElementById('Action').value='package'; this.form.submit()">
+        </select>
+    </div>
+
+    <hr />
+     
+
+    @if (Model.EnteralVolume.HasValue)
+    {
+        <h4>投与量</h4>
+        <p>
+            <strong>@Model.EnteralVolume.Value.ToString("F0")</strong> mL / day
+        </p>
+
+        @* ここを追加 *@
+        @if (Model.EnteralPackagePlans != null && Model.EnteralPackagePlans.Any())
+        {
+            <h4>割付候補（規格×本数 + 端数）</h4>
+            <ol>
+                @foreach (var plan in Model.EnteralPackagePlans)
+                {
+                    <li>@IndexModel.FormatPlan(plan)</li>
+                }
+            </ol>
+        }
+
+        <h4>成分</h4>
+        <ul>
+            <li>蛋白質：@Model.EnteralProtein.Value.ToString("F1") g</li>
+            <li>脂質：@Model.EnteralFat.Value.ToString("F1") g</li>
+            <li>糖質：@Model.EnteralCarb.Value.ToString("F1") g</li>
+            <li>食塩：@Model.EnteralSalt.Value.ToString("F2") g</li>
+            <li>ビタミンK：@Model.EnteralVitaminK.Value.ToString("F1") µg</li>
+            <li>水分量：@Model.EnteralWater.Value.ToString("F0") mL</li>
+        </ul>
+    }
+
+
+    <!-- ========================= -->
+    <!-- デバッグ表示 -->
+    <!-- ========================= -->
+    <h3>現在の Model 状態（確認用）</h3>
+    <pre>
+Disease               : @Model.SelectedDisease
+EnergyOrderType       : @Model.SelectedEnergyOrder
+EnergyOrderValue      : @Model.EnergyOrderValue
+ManualEnergyValue     : @Model.ManualEnergyValue
+Formula               : @Model.SelectedFormula
+IsEnergyManualEdited  : @Model.IsEnergyManuallyEdited
+EnteralEnergy         : @Model.EnteralEnergy
+SelectedFormula       : @Model.SelectedEnteralFormula
+HasUserSelectedPackage: @Model.HasUserSelectedPackage
+Action                : @Model.Action
+SelectedPackageVolume : @Model.SelectedPackageVolume
+EnergyOrderValue(in)   : @Model.EnergyOrderValue
+EnteralVolume          : @Model.EnteralVolume
+Target Plans Count     : @(Model.EnteralPackagePlans?.Count ?? 0)
+First Plan             : @(Model.EnteralPackagePlans?.FirstOrDefault())
+</pre>
+
 </form>
-
-<hr />
-
-@if (Model.BmrResult != null)
-{
-    <p><strong>BMR</strong>：@Model.BmrResult.DisplayValue kcal/day</p>
-    <p>使用式：@Model.BmrResult.Formula.ToDisplayName()</p>
-}
-
-@if (Model.BodyIndex != null)
-{
-    <p><strong>BMI</strong>：@Model.BodyIndex.Bmi.ToString("F1")</p>
-    <p><strong>標準体重</strong>：@Model.BodyIndex.StandardWeight.ToString("F1") kg</p>
-
-    @if (Model.BodyIndex.ObesityDegree != null)
-    {
-        <p>肥満度：@Model.BodyIndex.ObesityDegree.Value.ToString("F1") %</p>
-    }
-    else
-    {
-        <p>肥満度：算出対象外（0歳）</p>
-    }
-}
-
-<p>
-    <strong>体表面積</strong>：
-    @Model.BodySurfaceArea.ToString("F3") m²
-</p>
-
-<p>
-    <strong>推定必要カロリー</strong>：
-    @Model.EnergyDisplay kcal/day
-</p>
-
-@if (Model.ProteinDisplayText != null)
-{
-    <p>
-        <strong>必要蛋白質量</strong>：
-        @Model.ProteinDisplayText g/day
-    </p>
-}
-
-<p>
-    <strong>必要水分量</strong>：
-    @Model.WaterDisplay mL/day
-</p>
-@if (Model.WaterFeverCorrected)
-{
-    <p class="text-muted">
-        ※ 発熱（@Model.SelectedBodyTemperature.ToDisplayName()）による水分補正を含みます
-    </p>
-}
-<hr />
-
-<h4>デバッグ表示</h4>
-
-<pre>
-BMR Raw = @Model.BmrResult?.RawValue
-Activity(enum) = @Model.ActivityFactor
-Activity(value) = @Model.ActivityFactorValue
-Stress(enum) = @Model.StressFactor
-Stress(base) = @Model.StressBase
-Stress(temp) = @Model.StressTemperature
-Stress(total) = @Model.StressTotal
-Energy Raw = @Model.EnergyRaw
-</pre>
-
-<pre>
-実測体重 = @Model.Weight
-標準体重 = @Model.BodyIndex?.StandardWeight
-補正体重 = @Model.AdjustedWeight
-体重比 = @(Model.Weight == 0 ? "N/A" : (Model.AdjustedWeight / Model.Weight).ToString("F3"))
-</pre>
-
-<pre>
-ProteinCondition = @Model.SelectedProteinCondition
-ProteinCorrection = @Model.SelectedProteinCorrection
-ProteinCorrect = @Model.ProteinCorrect
-ProteinRaw = @Model.ProteinRaw
-</pre>
