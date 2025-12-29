@@ -12,15 +12,15 @@ public static class StandardWeightCalculator
     public static double Calculate(
         int age,
         double heightCm,
-        Sex sex )
+        GenderType gender )
     {
         if (age < 6)
         {
-            return CalculateInfant(heightCm, sex);
+            return CalculateInfant(heightCm, gender);
         }
         else if (age < 18)
         {
-            return CalculateChild(heightCm, sex);
+            return CalculateChild(heightCm, gender);
         }
         else
         {
@@ -29,18 +29,18 @@ public static class StandardWeightCalculator
         }
     }
 
-    private static double CalculateInfant( double height, Sex sex )
+    private static double CalculateInfant(double height, GenderType gender)
     {
-        return sex == Sex.Male
+        return gender == GenderType.Male
             ? 0.00206 * Math.Pow(height, 2) - 0.1166 * height + 6.5273
             : 0.00249 * Math.Pow(height, 2) - 0.1858 * height + 9.036;
     }
 
-    private static double CalculateChild( double height, Sex sex )
+    private static double CalculateChild( double height, GenderType gender )
     {
         if (height < 140)
         {
-            return sex == Sex.Male
+            return gender == GenderType.Male
                 ? 0.0000303882 * Math.Pow(height, 3)
                   - 0.00571495 * Math.Pow(height, 2)
                   + 0.508124 * height
@@ -52,7 +52,7 @@ public static class StandardWeightCalculator
         }
         else if (height < 149)
         {
-            return sex == Sex.Male
+            return gender == GenderType.Male
                 ? -8.5013E-05 * Math.Pow(height, 3)
                   + 0.0370692 * Math.Pow(height, 2)
                   - 4.6558 * height
@@ -64,7 +64,7 @@ public static class StandardWeightCalculator
         }
         else
         {
-            return sex == Sex.Male
+            return gender == GenderType.Male
                 ? -0.000310205 * Math.Pow(height, 3)
                   + 0.151159 * Math.Pow(height, 2)
                   - 23.6303 * height

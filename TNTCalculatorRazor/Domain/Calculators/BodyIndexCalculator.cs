@@ -12,14 +12,14 @@ public static class BodyIndexCalculator
      int age,
      double heightCm,
      double weightKg,
-     Sex sex )
+     GenderType gender )
     {
         double heightM = heightCm / 100.0;
 
         double bmi = weightKg / (heightM * heightM);
 
         double standardWeight =
-            StandardWeightCalculator.Calculate(age, heightCm, sex);
+            StandardWeightCalculator.Calculate(age, heightCm, gender);
 
         double? obesityDegree = null;
 

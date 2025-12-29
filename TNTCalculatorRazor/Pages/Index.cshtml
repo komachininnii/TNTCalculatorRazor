@@ -2,144 +2,191 @@
 @model IndexModel
 @using TNTCalculatorRazor.Domain.Enums
 
-<h2>栄養計算（UI確認用）</h2>
+<h2>栄養計算</h2>
 
 <form method="post">
+    <input type="hidden" id="Action" name="Action" value="" />
 
-    <!-- hidden は form 冒頭にまとめる -->
-    <input type="hidden" asp-for="Action" id="Action" />
-    <input type="hidden" asp-for="HasUserSelectedPackage" />
+    <!-- ========================= -->
+    <!-- 基本入力（必須） -->
+    <!-- ========================= -->
+    <h3>基本入力</h3>
 
-    <!-- 以下、通常のUI -->
-    
+    <div>
+        <label>年齢</label><br />
+        <input asp-for="Age" type="number" step="1" inputmode="numeric"
+               onkeydown="submitOnEnter(event,'anthro')" /> 歳
+    </div>
+
+    <div>
+        <label>身長</label><br />
+        <input asp-for="Height" type="number" step="0.1" inputmode="decimal"
+               onkeydown="submitOnEnter(event,'anthro')" /> cm
+    </div>
+
+    <div>
+        <label>体重</label><br />
+        <input asp-for="Weight" type="number" step="0.1" inputmode="decimal"
+               onkeydown="submitOnEnter(event,'anthro')" /> kg
+    </div>
+
+    <div>
+        <label>性別</label><br />
+        <select asp-for="Gender"
+                asp-items="Html.GetEnumSelectList<GenderType>()"
+                onchange="document.getElementById('Action').value='anthro'; this.form.submit();">
+        </select>
+    </div>
+
+    <hr />
+
     <!-- ========================= -->
-    <!-- 疾患選択 -->
+    <!-- 基本計算 -->
     <!-- ========================= -->
+    <h3>基本計算</h3>
+
+    <ul>
+        <li>
+            BMI：@(Model.BodyIndex != null
+                        ? Model.BodyIndex.Bmi.ToString("F1")
+                        : "-")
+        </li>
+        <li>標準体重：@(Model.BodyIndex?.StandardWeight.ToString("F1") ?? "-") kg</li>
+        <li>肥満度：@(Model.BodyIndex?.ObesityDegree?.ToString("F0") ?? "-") %</li>
+        <li>体表面積：@(Model.BodySurfaceArea?.ToString("F3") ?? "-") m²</li>
+    </ul>
+
+    <hr />
+
+    <!-- ========================= -->
+    <!-- 疾患 -->
+    <!-- ========================= -->
+    <h3>疾患</h3>
     <div>
         <label>疾患</label><br />
         <select asp-for="SelectedDisease"
                 asp-items="Html.GetEnumSelectList<DiseaseType>()"
-                onchange="document.getElementById('Action').value='disease'; this.form.submit()" >
+                onchange="document.getElementById('Action').value='disease'; this.form.submit();">
         </select>
     </div>
 
     <hr />
 
     <!-- ========================= -->
-    <!-- カロリー算出方法 -->
+    <!-- エネルギー候補表示 -->
     <!-- ========================= -->
+    <h3>エネルギー候補（参考）</h3>
+    <ul>
+        <li>BMR：@(Model.BmrKcal?.ToString() ?? "-") kcal</li>
+        <li>25 kcal/kg：@(Model.Kcal25?.ToString() ?? "-") kcal</li>
+        <li>30 kcal/kg：@(Model.Kcal30?.ToString() ?? "-") kcal</li>
+        <li>35 kcal/kg：@(Model.Kcal35?.ToString() ?? "-") kcal</li>
+    </ul>
+
+    <!-- ========================= -->
+    <!-- カロリー算出方法（疾患でデフォルト切替） -->
+    <!-- ========================= -->
+    <h3>投与カロリー</h3>
+
     <div>
-        <label>カロリー算出方法</label><br />
+        <label>算出方法</label><br />
         <select asp-for="SelectedEnergyOrder"
                 asp-items="Html.GetEnumSelectList<EnergyOrderType>()"
-                onchange="document.getElementById('Action').value='order'; this.form.submit()">
+                onchange="document.getElementById('Action').value='order'; this.form.submit();">
         </select>
     </div>
 
-    <!-- ========================= -->
-    <!-- 投与カロリー -->
-    <!-- ========================= -->
     <div>
-        <label>投与カロリー</label><br />
+        <label>投与カロリー（kcal/day）</label><br />
         <input asp-for="EnergyOrderValue"
-               onchange="document.getElementById('Action').value='energy'; this.form.submit()" /> kcal
+               type="number" step="1" inputmode="numeric"
+               onchange="document.getElementById('Action').value='energy'; this.form.submit();" />
+        kcal/day
     </div>
-
-    <!-- 手入力モード -->
-    @if (Model.SelectedEnergyOrder == EnergyOrderType.Manual)
-    {
-        <div>
-            <label>手入力カロリー</label><br />
-            <input asp-for="ManualEnergyValue" /> kcal
-        </div>
-    }
 
     <hr />
 
     <!-- ========================= -->
-    <!-- 経腸栄養剤 -->
+    <!-- 経腸栄養 -->
     <!-- ========================= -->
+    <h3>経腸栄養</h3>
+
     <div>
         <label>経腸栄養剤</label><br />
         <select asp-for="SelectedEnteralFormula"
                 asp-items="Html.GetEnumSelectList<EnteralFormulaType>()"
-                onchange="document.getElementById('Action').value='formula'; this.form.submit()">
+                onchange="document.getElementById('Action').value='formula'; this.form.submit();">
+            <option value="">-- 選択してください --</option>
         </select>
     </div>
 
-    <!-- ========================= -->
-    <!-- 規格 -->
-    <!-- ========================= -->
     <div>
-        <label>規格（mL）</label><br />
-        <select asp-for="SelectedPackageVolume"
-                asp-items="Model.PackageVolumeOptions"
-                onchange="document.getElementById('Action').value='package'; this.form.submit()">
-        </select>
+        <label>投与量（mL/day：手入力可）</label><br />
+        <input asp-for="EnteralVolumeInput"
+               type="number" step="1" inputmode="numeric"
+               onchange="document.getElementById('Action').value='volume'; this.form.submit();" />
+        mL/day
     </div>
-
-    <hr />
-     
 
     @if (Model.EnteralVolume.HasValue)
     {
-        <h4>投与量</h4>
+        <h4>計算結果</h4>
         <p>
-            <strong>@Model.EnteralVolume.Value.ToString("F0")</strong> mL / day
+            投与量：<strong>@Model.EnteralVolume.Value.ToString("F0")</strong> mL/day<br />
+            投与カロリー：<strong>@(Model.EnteralEnergy?.ToString("F0") ?? "-")</strong> kcal/day
         </p>
 
-        @* ここを追加 *@
-        @if (Model.EnteralPackagePlans != null && Model.EnteralPackagePlans.Any())
-        {
-            <h4>割付候補（規格×本数 + 端数）</h4>
-            <ol>
-                @foreach (var plan in Model.EnteralPackagePlans)
-                {
-                    <li>@IndexModel.FormatPlan(plan)</li>
-                }
-            </ol>
-        }
-
-        <div>
-            <label>投与量（mL/day 手入力・端数調整用）</label><br />
-            <input asp-for="EnteralVolumeInput"
-                   onchange="document.getElementById('Action').value='volume'; this.form.submit();" />
-            mL/day
-        </div>
-
+        <h4>割付候補（目安：上位）</h4>
+        <ul>
+            @foreach (var plan in Model.EnteralPackagePlans)
+            {
+                <li>@IndexModel.FormatPlan(plan)</li>
+            }
+        </ul>
 
         <h4>成分</h4>
         <ul>
-            <li>蛋白質：@Model.EnteralProtein.Value.ToString("F1") g</li>
-            <li>脂質：@Model.EnteralFat.Value.ToString("F1") g</li>
-            <li>糖質：@Model.EnteralCarb.Value.ToString("F1") g</li>
-            <li>食塩：@Model.EnteralSalt.Value.ToString("F2") g</li>
-            <li>ビタミンK：@Model.EnteralVitaminK.Value.ToString("F1") µg</li>
-            <li>水分量：@Model.EnteralWater.Value.ToString("F0") mL</li>
+            <li>蛋白質：@(Model.EnteralProtein?.ToString("F1") ?? "-") g</li>
+            <li>脂質：@(Model.EnteralFat?.ToString("F1") ?? "-") g</li>
+            <li>糖質：@(Model.EnteralCarb?.ToString("F1") ?? "-") g</li>
+            <li>食塩：@(Model.EnteralSalt?.ToString("F2") ?? "-") g</li>
+            <li>ビタミンK：@(Model.EnteralVitaminK?.ToString("F1") ?? "-") µg</li>
+            <li>水分量：@(Model.EnteralWater?.ToString("F0") ?? "-") mL</li>
         </ul>
     }
 
+    <hr />
 
     <!-- ========================= -->
-    <!-- デバッグ表示 -->
+    <!-- EnterでSubmit             -->
     <!-- ========================= -->
-    <h3>現在の Model 状態（確認用）</h3>
-    <pre>
+    <script>
+        function submitOnEnter(e, action) {
+          if (e.key === "Enter") {
+            e.preventDefault(); // 変な改行や二重送信を防ぐ
+            document.getElementById("Action").value = action;
+            e.target.form.submit();
+          }
+        }
+    </script>
+
+    <!-- ========================= -->
+    <!-- デバッグ表示（開発中だけ残す） -->
+    <!-- ========================= -->
+    <details>
+        <summary>デバッグ（開発中）</summary>
+        <pre>
+Action               : @Model.Action
+Age/Height/Weight     : @Model.Age / @Model.Height / @Model.Weight
+Gender                : @Model.Gender
 Disease               : @Model.SelectedDisease
 EnergyOrderType       : @Model.SelectedEnergyOrder
 EnergyOrderValue      : @Model.EnergyOrderValue
-ManualEnergyValue     : @Model.ManualEnergyValue
-Formula               : @Model.SelectedFormula
-IsEnergyManualEdited  : @Model.IsEnergyManuallyEdited
+IsEnergyUserEdited    : @Model.IsEnergyUserEdited
+Formula               : @Model.SelectedEnteralFormula
+EnteralVolumeInput    : @Model.EnteralVolumeInput
+EnteralVolume         : @Model.EnteralVolume
 EnteralEnergy         : @Model.EnteralEnergy
-SelectedFormula       : @Model.SelectedEnteralFormula
-HasUserSelectedPackage: @Model.HasUserSelectedPackage
-Action                : @Model.Action
-SelectedPackageVolume : @Model.SelectedPackageVolume
-EnergyOrderValue(in)   : @Model.EnergyOrderValue
-EnteralVolume          : @Model.EnteralVolume
-Target Plans Count     : @(Model.EnteralPackagePlans?.Count ?? 0)
-First Plan             : @(Model.EnteralPackagePlans?.FirstOrDefault())
-</pre>
-
+        </pre>
+    </details>
 </form>

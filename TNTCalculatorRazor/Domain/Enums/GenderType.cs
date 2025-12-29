@@ -1,6 +1,6 @@
 ﻿namespace TNTCalculatorRazor.Domain.Enums;
 
-public enum Sex
+public enum GenderType
 {
     Male,
     Female
