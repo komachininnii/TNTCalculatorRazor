@@ -100,6 +100,14 @@
             </ol>
         }
 
+        <div>
+            <label>投与量（mL/day 手入力・端数調整用）</label><br />
+            <input asp-for="EnteralVolumeInput"
+                   onchange="document.getElementById('Action').value='volume'; this.form.submit();" />
+            mL/day
+        </div>
+
+
         <h4>成分</h4>
         <ul>
             <li>蛋白質：@Model.EnteralProtein.Value.ToString("F1") g</li>

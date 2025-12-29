@@ -149,6 +149,11 @@ public class IndexModel : PageModel
             : body;
     }
 
+    [BindProperty]
+    public int? EnteralVolumeInput { get; set; }  // mL/day 手入力（端数調整用）
+
+
+
     public void OnPost( string action )
     {
         //--------------------------
@@ -280,6 +285,87 @@ public class IndexModel : PageModel
         // ==============================
         // 経腸栄養（必要量ベース + 割付候補）
         // ==============================
+        var act = (Action ?? "").ToLowerInvariant();
+
+        EnteralPackagePlans = Array.Empty<EnteralPackagePlan>();
+
+        if (SelectedEnteralFormula.HasValue)
+        {
+            var formula = SelectedEnteralFormula.Value;
+            var comp = EnteralFormulaTable.Get(formula);
+            var packageVolumes = EnteralPackageTable.Get(formula);
+
+            // 割付候補は多くても上位2件で十分（1規格なら1件）
+            var maxToShow = packageVolumes.Count <= 1 ? 1 : 2;
+
+            // --- ① 投与量手入力（mL/day）を優先するルート ---
+            if (act == "volume" && EnteralVolumeInput.HasValue && EnteralVolumeInput.Value > 0)
+            {
+                EnteralVolume = EnteralVolumeInput.Value;
+
+                // mL -> kcal（表示値を更新）
+                EnteralEnergy = EnteralEnergyCalculator.CalculateEnergyFromVolume(EnteralVolume.Value, comp);
+
+                // ユーザーが調整した結果を基準にするので kcal入力も同期
+                EnergyOrderValue = EnteralEnergy;
+
+                // 割付候補（目安）
+                EnteralPackagePlans =
+                    EnteralPackageAllocator.BuildPlans(
+                        (int)Math.Round(EnteralVolume.Value, MidpointRounding.AwayFromZero),
+                        packageVolumes.ToList(),
+                        maxPlans: maxToShow);
+            }
+            // --- ② 通常ルート（kcal/day から必要mL/day を作る） ---
+            else if (EnergyOrderValue.HasValue && EnergyOrderValue.Value > 0)
+            {
+                var targetKcal = EnergyOrderValue.Value;
+
+                var rawVolume = targetKcal * comp.VolumePerKcal;
+                var targetVolumeMl = (int)Math.Round(rawVolume, MidpointRounding.AwayFromZero);
+
+                EnteralVolume = targetVolumeMl;
+
+                // mL入力欄にも反映（ユーザーが見て調整しやすい）
+                EnteralVolumeInput = targetVolumeMl;
+
+                EnteralEnergy = EnteralEnergyCalculator.CalculateEnergyFromVolume(EnteralVolume.Value, comp);
+
+                EnteralPackagePlans =
+                    EnteralPackageAllocator.BuildPlans(
+                        targetVolumeMl,
+                        packageVolumes.ToList(),
+                        maxPlans: maxToShow);
+            }
+            else
+            {
+                // kcal も mL も無い
+                EnteralVolume = null;
+                EnteralEnergy = null;
+                EnteralVolumeInput = null;
+            }
+
+            // --- ③ 成分計算（常に「表示されている投与量」から） ---
+            if (EnteralEnergy.HasValue)
+            {
+                EnteralProtein = EnteralEnergy.Value * comp.ProteinPerKcal;
+                EnteralFat = EnteralEnergy.Value * comp.FatPerKcal;
+                EnteralCarb = EnteralEnergy.Value * comp.CarbPerKcal;
+                EnteralSalt = EnteralEnergy.Value * comp.SaltPerKcal;
+                EnteralVitaminK = EnteralEnergy.Value * comp.VitaminKPerKcal;
+                EnteralWater = EnteralEnergy.Value * comp.WaterPerKcal;
+            }
+            else
+            {
+                EnteralProtein = EnteralFat = EnteralCarb = null;
+                EnteralSalt = null;
+                EnteralVitaminK = null;
+                EnteralWater = null;
+            }
+        }
+    }
+}
+        /*
         EnteralPackagePlans = Array.Empty<EnteralPackagePlan>();
 
         if (SelectedEnteralFormula.HasValue && EnergyOrderValue.HasValue)
