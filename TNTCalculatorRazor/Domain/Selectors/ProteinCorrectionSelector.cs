@@ -17,8 +17,10 @@ public static class ProteinCorrectionSelector
             DiseaseType.RenalFailure =>
                 ProteinCorrectionType.CKD3bTo5,
 
+            // 肝硬変のデフォルトは 1.0（蛋白不耐はUIチェックで0.5に倒す）
             DiseaseType.LiverCirrhosis =>
-                ProteinCorrectionType.LiverCirrhosisPoor,
+                ProteinCorrectionType.None,
+
 
             _ => ProteinCorrectionType.None
         };

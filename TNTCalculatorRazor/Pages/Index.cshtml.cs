@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+ï»¿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using TNTCalculatorRazor.Domain.Calculators;
@@ -11,12 +11,12 @@ using TNTCalculatorRazor.Domain.Tables;
 public class IndexModel : PageModel
 {
     //==============================
-    // “ü—ÍiBindj
+    // å…¥åŠ›ï¼ˆBindï¼‰
     //==============================
-    // Šî–{“ü—Íi‹ó—“ƒXƒ^[ƒgj
-    [BindProperty] public int? Age { get; set; }                 // ”N—îi”Nj null=–¢“ü—Í, 0=“û™
-    [BindProperty] public double? Height { get; set; }           // g’·icmj null=–¢“ü—Í
-    [BindProperty] public double? Weight { get; set; }           // ‘Ìdikgj null=–¢“ü—Í
+    // åŸºæœ¬å…¥åŠ›ï¼ˆç©ºæ¬„ã‚¹ã‚¿ãƒ¼ãƒˆï¼‰
+    [BindProperty] public int? Age { get; set; }                 // å¹´é½¢ï¼ˆå¹´ï¼‰ null=æœªå…¥åŠ›, 0=ä¹³å…
+    [BindProperty] public double? Height { get; set; }           // èº«é•·ï¼ˆcmï¼‰ null=æœªå…¥åŠ›
+    [BindProperty] public double? Weight { get; set; }           // ä½“é‡ï¼ˆkgï¼‰ null=æœªå…¥åŠ›
     [BindProperty] public GenderType Gender { get; set; } = GenderType.Male;
 
     [BindProperty] public ActivityFactorType ActivityFactor { get; set; } = ActivityFactorType.BedriddenComa;
@@ -26,27 +26,27 @@ public class IndexModel : PageModel
     [BindProperty] public DiseaseType SelectedDisease { get; set; } = DiseaseType.None;
     [BindProperty] public ProteinCorrectionType SelectedProteinCorrection { get; set; } = ProteinCorrectionType.None;
 
-    // ƒGƒlƒ‹ƒM[Zo•û–@i¾Š³‚ÅƒfƒtƒHƒ‹ƒgØ‘Öj
+    // ã‚¨ãƒãƒ«ã‚®ãƒ¼ç®—å‡ºæ–¹æ³•ï¼ˆç–¾æ‚£ã§ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆåˆ‡æ›¿ï¼‰
     [BindProperty] public EnergyOrderType SelectedEnergyOrder { get; set; } = EnergyOrderType.BmrEstimated;
     [BindProperty] public int? ManualEnergyValue { get; set; }
 
-    // Œo’°‰h—{‘¤‚Ì•ÒW‰Â”\‚Èu“Š—^ƒJƒƒŠ[v
+    // çµŒè…¸æ „é¤Šå´ã®ç·¨é›†å¯èƒ½ãªã€ŒæŠ•ä¸ã‚«ãƒ­ãƒªãƒ¼ã€
     [BindProperty] public int? EnergyOrderValue { get; set; }
 
-    // ƒ†[ƒU[‚ª“Š—^ƒJƒƒŠ[/“Š—^—Ê‚ğè‚ÅG‚Á‚½‚©i¾Š³ƒfƒtƒHƒ‹ƒgã‘‚«–h~j
+    // ãƒ¦ãƒ¼ã‚¶ãƒ¼ãŒæŠ•ä¸ã‚«ãƒ­ãƒªãƒ¼/æŠ•ä¸é‡ã‚’æ‰‹ã§è§¦ã£ãŸã‹ï¼ˆç–¾æ‚£ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆä¸Šæ›¸ãé˜²æ­¢ï¼‰
     [BindProperty] public bool IsEnergyUserEdited { get; set; } = false;
 
     [BindProperty] public bool IsHemodialysis { get; set; }
     [BindProperty] public bool IsPregnant { get; set; }
 
-    // Œo’°‰h—{
+    // çµŒè…¸æ „é¤Š
     [BindProperty] public EnteralFormulaType? SelectedEnteralFormula { get; set; }
-    [BindProperty] public int? EnteralVolumeInput { get; set; }  // mL/day è“ü—Íi’[”’²®—pj
+    [BindProperty] public int? EnteralVolumeInput { get; set; }  // mL/day æ‰‹å…¥åŠ›ï¼ˆç«¯æ•°èª¿æ•´ç”¨ï¼‰
     [BindProperty] public string? Action { get; set; }           // hidden
     [BindProperty] public bool HasUserSelectedPackage { get; set; }
 
     //==============================
-    // ŒvZŒ‹‰Êi•\¦—pj
+    // è¨ˆç®—çµæœï¼ˆè¡¨ç¤ºç”¨ï¼‰
     //==============================
     public BmrResult? BmrResult { get; private set; }
     public BodyIndexResult? BodyIndex { get; private set; }
@@ -54,29 +54,29 @@ public class IndexModel : PageModel
     public double? AdjustedWeight { get; private set; }
     public double? BodySurfaceArea { get; private set; }
 
-    // ƒXƒgƒŒƒX“à–ó
+    // ã‚¹ãƒˆãƒ¬ã‚¹å†…è¨³
     public double StressBase { get; private set; }
     public double StressTemperature { get; private set; }
     public double StressTotal { get; private set; }
 
-    // ƒGƒlƒ‹ƒM[Œó•âi•\¦—pj
+    // ã‚¨ãƒãƒ«ã‚®ãƒ¼å€™è£œï¼ˆè¡¨ç¤ºç”¨ï¼‰
     public int? BmrKcal { get; private set; }
     public int? Kcal25 { get; private set; }
     public int? Kcal30 { get; private set; }
     public int? Kcal35 { get; private set; }
 
-    // ŒvZ‚µ‚½ÅI’liQl•\¦—pj
-    public int? EnergyFinal { get; private set; }                // SelectedEnergyOrder + Manual ‚ÌŒ‹‰Ê
+    // è¨ˆç®—ã—ãŸæœ€çµ‚å€¤ï¼ˆå‚è€ƒè¡¨ç¤ºç”¨ï¼‰
+    public int? EnergyFinal { get; private set; }                // SelectedEnergyOrder + Manual ã®çµæœ
     public double? ProteinRaw { get; private set; }
     public string ProteinDisplayText { get; private set; } = "";
     public int? WaterDisplay { get; private set; }
     public bool WaterFeverCorrected { get; private set; }
 
     //==============================
-    // Œo’°‰h—{i•\¦j
+    // çµŒè…¸æ „é¤Šï¼ˆè¡¨ç¤ºï¼‰
     //==============================
-    public double? EnteralEnergy { get; private set; }           // kcal/dayi•\¦“Š—^—Êƒx[ƒXj
-    public double? EnteralVolume { get; private set; }           // mL/dayi•\¦“Š—^—Êj
+    public double? EnteralEnergy { get; private set; }           // kcal/dayï¼ˆè¡¨ç¤ºæŠ•ä¸é‡ãƒ™ãƒ¼ã‚¹ï¼‰
+    public double? EnteralVolume { get; private set; }           // mL/dayï¼ˆè¡¨ç¤ºæŠ•ä¸é‡ï¼‰
 
     public double? EnteralProtein { get; private set; }
     public double? EnteralFat { get; private set; }
@@ -94,72 +94,177 @@ public class IndexModel : PageModel
     {
         var parts = plan.CountsByVolume
             .OrderByDescending(kv => kv.Key)
-            .Select(kv => $"{kv.Key}mL~{kv.Value}");
+            .Select(kv => $"{kv.Key}mLÃ—{kv.Value}");
 
         var body = string.Join(" + ", parts);
         return plan.RemainderMl > 0 ? $"{body} + {plan.RemainderMl}mL" : body;
     }
 
-    //==============================
+
+    // =====================================
+    // Action åˆ¤å®šãƒ»ModelState ãƒ˜ãƒ«ãƒ‘ï¼ˆè¿½åŠ ï¼‰
+    // =====================================
+
+    private string Act => (Action ?? "").Trim().ToLowerInvariant();
+
+    // kcal or mL ã‚’ãƒ¦ãƒ¼ã‚¶ãƒ¼ãŒè§¦ã£ãŸã¨ã¿ãªã™ Action
+    private static readonly HashSet<string> EnergyEditActions =
+        new(StringComparer.OrdinalIgnoreCase) { "energy", "volume" };
+
+    // å¿…è¦é‡â†’æŠ•ä¸ã‚«ãƒ­ãƒªãƒ¼ã¸åŒæœŸã™ã‚‹å¯¾è±¡ Action
+    private static readonly HashSet<string> ShouldSyncActions =
+        new(StringComparer.OrdinalIgnoreCase) { "anthro", "disease", "order", "factors", "protein" };
+
+    private bool IsEnergyEditAction( string act ) => EnergyEditActions.Contains(act);
+    private bool ShouldSyncEnergyOrder( string act ) => ShouldSyncActions.Contains(act);
+
+    private void ClearModelState( params string[] keys )
+    {
+        foreach (var key in keys)
+            ModelState.Remove(key);
+    }
+
+    // è›‹ç™½è£œæ­£ã‚’ãƒ¦ãƒ¼ã‚¶ãƒ¼ãŒæ‰‹å‹•ã§å¤‰æ›´ã—ãŸã‹ï¼ˆç–¾æ‚£å¤‰æ›´æ™‚ã®è‡ªå‹•è¿½å¾“ã‚’åˆ¶å¾¡ï¼‰
+    [BindProperty]
+    public bool IsProteinCorrectionUserEdited { get; set; }
+
+    // è‚æ€§è„³ç—‡ï¼ˆè‚ç¡¬å¤‰ã®ã¨ãã ã‘UIè¡¨ç¤ºï¼‰
+    [BindProperty]
+    public bool IsHepaticEncephalopathy { get; set; }
+
+
+
+
+    // ==============================
     // POST
-    //==============================
+    // ==============================
     public void OnPost()
     {
-        var act = (Action ?? "").ToLowerInvariant();
+        var act = Act;
 
-        // uƒ†[ƒU[‚ª•ÒW‚µ‚½v”»’èi“Š—^ƒJƒƒŠ[ or “Š—^—Êj
-        if (act == "energy" || act == "volume")
+        // 0) ãƒ¦ãƒ¼ã‚¶ãƒ¼ç·¨é›†ãƒ•ãƒ©ã‚°ï¼ˆkcal or mL ã‚’è§¦ã£ãŸã‚‰ä»¥å¾Œè‡ªå‹•åŒæœŸã—ãªã„ï¼‰
+        if (IsEnergyEditAction(act))
             IsEnergyUserEdited = true;
 
-        // 1) Šî–{ŒvZi“ü—Í‚ª‘µ‚Á‚Ä‚¢‚Ä”ÍˆÍ“à‚È‚çj
+        // è›‹ç™½è£œæ­£ã‚’æ‰‹ã§è§¦ã£ãŸã‚‰ä»¥å¾Œã¯ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆä¸Šæ›¸ãã‚’ã—ãªã„
+        // ï¼ˆè‚æ€§è„³ç—‡ãƒã‚§ãƒƒã‚¯ã¯ â€œçŠ¶æ…‹å…¥åŠ›â€ æ‰±ã„ãªã®ã§ã“ã“ã§ã¯ true ã«ã—ãªã„ï¼‰
+        if (act == "protein")
+            IsProteinCorrectionUserEdited = true;
+
+        // 1) åŸºæœ¬è¨ˆç®—ï¼ˆå…¥åŠ›ãŒæƒã£ã¦ã„ã¦ç¯„å›²å†…ãªã‚‰ BMR/æ¨™æº–ä½“é‡ãªã©ãŒåŸ‹ã¾ã‚‹ï¼‰
         RecalcBase();
 
-        // 2) ¾Š³‚É‚æ‚éƒfƒtƒHƒ‹ƒgZo–@‚ÌØ‘Öi‚½‚¾‚µƒ†[ƒU[•ÒWŒã‚Í‘¸dj
-        if (act == "disease")
+        // å°å…ã¯ã€Œä¾‹å¤–ç–¾æ‚£ã®å¯¾è±¡å¤–ã€ï¼šç–¾æ‚£ã¯ None ã«å›ºå®šï¼ˆUIã‚‚disabledåŒ–ã™ã‚‹æƒ³å®šï¼‰
+        if (Age.HasValue && Age.Value < 18)
+        {
+            if (SelectedDisease != DiseaseType.None)
+            {
+                SelectedDisease = DiseaseType.None;
+                ClearModelState(nameof(SelectedDisease));
+            }
+            
+            if (IsHepaticEncephalopathy)
+            {
+                IsHepaticEncephalopathy = false;
+                ClearModelState(nameof(IsHepaticEncephalopathy));
+            }
+        }
+
+        // â˜… ç–¾æ‚£ã‹ã‚‰é€æãƒ•ãƒ©ã‚°ã‚’åŒæœŸï¼ˆUIã«ãƒã‚§ãƒƒã‚¯ãŒç„¡ãã¦ã‚‚ä¸€è‡´ã•ã›ã‚‹ï¼‰
+        IsHemodialysis = (SelectedDisease == DiseaseType.Hemodialysis);
+
+        // 2) ç–¾æ‚£ â†’ ç®—å‡ºæ–¹æ³•ï¼ˆãƒ‡ãƒ•ã‚©ãƒ«ãƒˆï¼‰ã¸åˆ‡æ›¿ï¼ˆãŸã ã—æ‰‹å‹•ç·¨é›†å¾Œã¯å°Šé‡ï¼‰
+        if (act == "disease" && !IsEnergyUserEdited)
         {
             SelectedEnergyOrder = EnergyOrderDefaultSelector.GetDefault(SelectedDisease);
+            ClearModelState(nameof(SelectedEnergyOrder)); // UIã®selectã«åæ˜ ï¼ˆModelStateå„ªå…ˆå¯¾ç­–ï¼‰
         }
-
-        // 3) EnergyOrderValueiŒo’°‰h—{‘¤‚Ì“Š—^ƒJƒƒŠ[j‚ğŒó•â‚©‚ç©“®“ü—Í
-        //    - ¾Š³•ÏX / Zo–@•ÏXFƒ†[ƒU[‚ª‚Ü‚¾ã‘‚«‚µ‚Ä‚¢‚È‚¢ê‡‚Ì‚İ
-        if ((act == "disease" || act == "order") && !IsEnergyUserEdited)
+                
+        // è‚ç¡¬å¤‰ä»¥å¤–ã‚’é¸ã‚“ã ã‚‰è‚æ€§è„³ç—‡ãƒã‚§ãƒƒã‚¯ã¯è§£é™¤
+        if (act == "disease" && SelectedDisease != DiseaseType.LiverCirrhosis && IsHepaticEncephalopathy)
         {
-            EnergyOrderValue = SelectedEnergyOrder switch
+            IsHepaticEncephalopathy = false;
+            ClearModelState(nameof(IsHepaticEncephalopathy));
+        }
+        
+        // 3) è›‹ç™½è£œæ­£ã®ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆï¼ˆå¹´é½¢ãŒå…¥ã£ã¦ã„ã‚‹ã¨ãã ã‘ï¼‰
+        //    - ç–¾æ‚£/èº«ä½“å…¥åŠ›ãŒå¤‰ã‚ã£ãŸæ™‚ã¯ã€æ‰‹å‹•ç·¨é›†ã—ã¦ã„ãªã„é™ã‚Šãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã¸è¿½å¾“
+        //    - è‚ç¡¬å¤‰ï¼‹è‚æ€§è„³ç—‡ãƒã‚§ãƒƒã‚¯ONã¯ 0.5 ã‚’å¼·åˆ¶ï¼ˆå®‰å…¨å´ï¼‰
+        if (Age.HasValue)
+        {
+            // è‚ç¡¬å¤‰ï¼‹è‚æ€§è„³ç—‡ï¼š0.5è£œæ­£ï¼ˆãƒ¦ãƒ¼ã‚¶ãƒ¼æ‰‹å‹•ã‚ˆã‚Šå„ªå…ˆï¼‰
+            if (SelectedDisease == DiseaseType.LiverCirrhosis && IsHepaticEncephalopathy)
             {
-                EnergyOrderType.BmrEstimated => BmrKcal,
-                EnergyOrderType.Kcal25 => Kcal25,
-                EnergyOrderType.Kcal30 => Kcal30,
-                EnergyOrderType.Kcal35 => Kcal35,
-                _ => EnergyOrderValue
-            };
-
-            ModelState.Remove(nameof(EnergyOrderValue));
+                if (SelectedProteinCorrection != ProteinCorrectionType.LiverCirrhosisPoor)
+                {
+                    SelectedProteinCorrection = ProteinCorrectionType.LiverCirrhosisPoor;
+                    ClearModelState(nameof(SelectedProteinCorrection));
+                }
+            }
+            else
+            {
+                // é€šå¸¸ï¼šæ‰‹å‹•ç·¨é›†ã—ã¦ã„ãªã„å ´åˆã®ã¿ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆè¿½å¾“
+                if (!IsProteinCorrectionUserEdited && (act == "disease" || act == "anthro" || act == "hepatic"))
+                {
+                    SelectedProteinCorrection =
+                        ProteinCorrectionSelector.GetDefault(Age.Value, SelectedDisease);
+                    ClearModelState(nameof(SelectedProteinCorrection));
+                }
+            }
         }
 
-        // 4) ’`”’•â³‚ÌƒfƒtƒHƒ‹ƒgi”N—î‚ª“ü‚Á‚Ä‚¢‚é‚Æ‚«‚¾‚¯j
-        if (SelectedProteinCorrection == ProteinCorrectionType.None && Age.HasValue)
-        {
-            SelectedProteinCorrection =
-                ProteinCorrectionSelector.GetDefault(Age.Value, SelectedDisease);
-        }
-
-        // 5) Ql‚Æ‚µ‚Ä EnergyFinal / Protein / Water ‚àXVi“ü—Í‚ª‘µ‚Á‚Ä‚¢‚é‚Æ‚«‚¾‚¯j
+        // 4) ä¿‚æ•°ãƒ»è£œæ­£è¾¼ã¿ã®å¿…è¦é‡ã‚’è¨ˆç®—ï¼ˆEnergyFinal / Protein / Water ãªã©ï¼‰
         RecalcEnergyProteinWater();
 
-        // 6) Œo’°‰h—{ikcal?mL˜A“®A•K—v—Êƒx[ƒX + Š„•tŒó•âj
+        // 5) å¿…è¦é‡ï¼ˆEnergyFinalï¼‰â†’ çµŒè…¸ã®æŠ•ä¸ã‚«ãƒ­ãƒªãƒ¼ã¸åŒæœŸ
+        //    â€» ãƒ¦ãƒ¼ã‚¶ãƒ¼ãŒç·¨é›†ã—ã¦ã„ãªã„ã¨ãã®ã¿
+        if (ShouldSyncEnergyOrder(act) && !IsEnergyUserEdited)
+        {
+            SyncEnergyOrderValueFromNeedOrFallback();
+        }
+
+        // 6) çµŒè…¸æ „é¤Šï¼ˆkcalâ†”mL åŒæœŸã€æˆåˆ†ã€å‰²ä»˜å€™è£œï¼‰
         RecalcEnteral();
     }
 
-    //==============================
-    // Šî–{ŒvZ
-    //==============================
+
+    // ==============================
+    // 5) åŒæœŸå‡¦ç†ã‚’ãƒ¡ã‚½ãƒƒãƒ‰åŒ–ï¼ˆè¿½åŠ ï¼‰
+    // ==============================
+    private void SyncEnergyOrderValueFromNeedOrFallback()
+    {
+        // (A) åŸå‰‡ï¼šEnergyFinal ãŒã‚ã‚Œã°æœ€å„ªå…ˆã§æ¡ç”¨
+        if (EnergyFinal.HasValue)
+        {
+            EnergyOrderValue = EnergyFinal.Value;
+            ClearModelState(nameof(EnergyOrderValue), nameof(EnteralVolumeInput)); // mLæ¬„ã‚‚è¿½å¾“ã•ã›ãŸã„å ´åˆ
+            return;
+        }
+
+        // (B) ãƒ•ã‚©ãƒ¼ãƒ«ãƒãƒƒã‚¯ï¼šEnergyFinalãŒä½œã‚Œãªã„æ™‚ã ã‘ã€å€™è£œï¼ˆBMR/25/30/35ï¼‰ã‹ã‚‰å…¥ã‚Œã‚‹
+        EnergyOrderValue = SelectedEnergyOrder switch
+        {
+            EnergyOrderType.BmrEstimated => BmrKcal,
+            EnergyOrderType.Kcal25 => Kcal25,
+            EnergyOrderType.Kcal30 => Kcal30,
+            EnergyOrderType.Kcal35 => Kcal35,
+            _ => EnergyOrderValue
+        };
+
+        ClearModelState(nameof(EnergyOrderValue));
+    }
+
+
+    // ==============================
+    // åŸºæœ¬è¨ˆç®—
+    // ==============================
     private bool CanCalcBase()
     {
-        // •K{F”N—îEg’·E‘Ìd
+        // å¿…é ˆï¼šå¹´é½¢ãƒ»èº«é•·ãƒ»ä½“é‡
         if (!Age.HasValue || !Height.HasValue || !Weight.HasValue)
             return false;
 
-        // ”ÍˆÍiu‚ ‚è“¾‚È‚¢’lv‚ğ’e‚­j
+        // ç¯„å›²ï¼ˆã€Œã‚ã‚Šå¾—ãªã„å€¤ã€ã‚’å¼¾ãï¼‰
         if (Age.Value < 0 || Age.Value >= 130) return false;
         if (Height.Value < 30 || Height.Value >= 250) return false;
         if (Weight.Value < 0.5 || Weight.Value >= 300) return false;
@@ -169,7 +274,7 @@ public class IndexModel : PageModel
 
     private void RecalcBase()
     {
-        // ‰Šú‰»
+        // åˆæœŸåŒ–
         BmrResult = null;
         BodyIndex = null;
         BodySurfaceArea = null;
@@ -180,7 +285,7 @@ public class IndexModel : PageModel
         if (!CanCalcBase())
             return;
 
-        // BMR / ‘ÌŠi / BSA
+        // BMR / ä½“æ ¼ / BSA
         BmrResult = BmrCalculator.Calculate(Age!.Value, Weight!.Value, Height!.Value, Gender);
         BodyIndex = BodyIndexCalculator.Calculate(Age.Value, Height.Value, Weight.Value, Gender);
         BodySurfaceArea = BodySurfaceAreaCalculator.Calculate(Height.Value, Weight.Value);
@@ -191,19 +296,20 @@ public class IndexModel : PageModel
             BodyIndex.StandardWeight,
             BodyIndex.ObesityDegree ?? 0);
 
-        // •\¦—pƒGƒlƒ‹ƒM[Œó•âi®”j
+        // è¡¨ç¤ºç”¨ã‚¨ãƒãƒ«ã‚®ãƒ¼å€™è£œï¼ˆæ•´æ•°ï¼‰
         BmrKcal = (int)Math.Round(BmrResult.RawValue, MidpointRounding.AwayFromZero);
 
-        // 25/30/35 ‚Í•W€‘Ìdƒx[ƒXi”N—î‚ÉŠÖŒW‚È‚­•\¦‚·‚é•ûj‚ÉŠñ‚¹‚éj
-        // ¦ StandardWeight ‚ªŒvZ‚Å‚«‚Ä‚¢‚é‘O’ñ
+        // 25/30/35 ã¯æ¨™æº–ä½“é‡ãƒ™ãƒ¼ã‚¹ï¼ˆå¹´é½¢ã«é–¢ä¿‚ãªãè¡¨ç¤ºã™ã‚‹æ–¹é‡ã«å¯„ã›ã‚‹ï¼‰
+        // â€» StandardWeight ãŒè¨ˆç®—ã§ãã¦ã„ã‚‹å‰æ
         Kcal25 = (int)Math.Round(BodyIndex.StandardWeight * 25.0, MidpointRounding.AwayFromZero);
         Kcal30 = (int)Math.Round(BodyIndex.StandardWeight * 30.0, MidpointRounding.AwayFromZero);
         Kcal35 = (int)Math.Round(BodyIndex.StandardWeight * 35.0, MidpointRounding.AwayFromZero);
     }
 
-    //==============================
-    // ƒGƒlƒ‹ƒM[/’`”’/…•ªiQl•\¦j
-    //==============================
+
+    // ==============================
+    // ã‚¨ãƒãƒ«ã‚®ãƒ¼/è›‹ç™½/æ°´åˆ†ï¼ˆå‚è€ƒè¡¨ç¤ºï¼‰
+    // ==============================
     private void RecalcEnergyProteinWater()
     {
         EnergyFinal = null;
@@ -212,7 +318,7 @@ public class IndexModel : PageModel
         WaterDisplay = null;
         WaterFeverCorrected = false;
 
-        // ƒXƒgƒŒƒX‚Í“ü—Í‚ª‘µ‚í‚È‚­‚Ä‚àŒvZ‰Â”\
+        // ã‚¹ãƒˆãƒ¬ã‚¹ã¯å…¥åŠ›ãŒæƒã‚ãªãã¦ã‚‚è¨ˆç®—å¯èƒ½
         StressBase = StressFactorTable.Get(StressFactor);
         StressTemperature = TemperatureStressTable.GetAddition(SelectedBodyTemperature);
         StressTotal = StressBase + StressTemperature;
@@ -220,7 +326,7 @@ public class IndexModel : PageModel
         if (!CanCalcBase() || BodyIndex is null || AdjustedWeight is null || BmrResult is null)
             return;
 
-        // BMR„’èƒGƒlƒ‹ƒM[
+        // BMRæ¨å®šã‚¨ãƒãƒ«ã‚®ãƒ¼
         var bmrForEnergy = BmrCalculator.Calculate(Age!.Value, AdjustedWeight.Value, Height!.Value, Gender);
 
         var energyByBmr =
@@ -230,7 +336,7 @@ public class IndexModel : PageModel
                     * ActivityFactorTable.Get(ActivityFactor)
                     * StressTotal;
 
-        // kcal/kgi•W€‘Ìdj
+        // kcal/kgï¼ˆæ¨™æº–ä½“é‡ï¼‰
         var e25 = 25 * BodyIndex.StandardWeight;
         var e30 = 30 * BodyIndex.StandardWeight;
         var e35 = 35 * BodyIndex.StandardWeight;
@@ -247,7 +353,7 @@ public class IndexModel : PageModel
 
         EnergyFinal = (int)Math.Round(selected, MidpointRounding.AwayFromZero);
 
-        // ’`”’•â³ŒW”
+        // è›‹ç™½è£œæ­£ä¿‚æ•°
         double proteinCorrect =
             SelectedProteinCorrection switch
             {
@@ -256,7 +362,7 @@ public class IndexModel : PageModel
                 _ => 1.0
             };
 
-        // ’`”’iŠù‘¶ƒƒWƒbƒN“¥Pj
+        // è›‹ç™½
         double weightForProtein =
             WeightForCalculationSelector.Select(
                 WeightUsage.Protein,
@@ -271,12 +377,13 @@ public class IndexModel : PageModel
                 Age.Value,
                 weightForProtein,
                 StressTotal,
-                proteinCorrect);
+                proteinCorrect,
+                SelectedDisease);
 
         ProteinDisplayText =
             Math.Round(ProteinRaw.Value, 1, MidpointRounding.AwayFromZero).ToString("F1");
 
-        // …•ªiŠù‘¶ƒƒWƒbƒN“¥Pj
+        // æ°´åˆ†ï¼ˆæ—¢å­˜ãƒ­ã‚¸ãƒƒã‚¯è¸è¥²ï¼‰
         double water =
             WaterCalculator.CalculateTotal(
                 Age.Value,
@@ -294,12 +401,13 @@ public class IndexModel : PageModel
             SelectedBodyTemperature != BodyTemperatureLevel.Normal;
     }
 
-    //==============================
-    // Œo’°‰h—{i•K—v—Êƒx[ƒX + Š„•tŒó•âj
-    //==============================
+
+    // ==============================
+    // çµŒè…¸æ „é¤Šï¼ˆå¿…è¦é‡ãƒ™ãƒ¼ã‚¹ + å‰²ä»˜å€™è£œï¼‰
+    // ==============================
     private void RecalcEnteral()
     {
-        // ‰Šú‰»
+        // åˆæœŸåŒ–
         EnteralPackagePlans = Array.Empty<EnteralPackagePlan>();
         PackageVolumeOptions = new List<SelectListItem>();
 
@@ -313,12 +421,12 @@ public class IndexModel : PageModel
         EnteralVitaminK = null;
         EnteralWater = null;
 
-        var act = (Action ?? "").ToLowerInvariant();
+        var act = Act;
 
         if (!SelectedEnteralFormula.HasValue)
         {
             EnteralVolumeInput = null;
-            ModelState.Remove(nameof(EnteralVolumeInput));
+            ClearModelState(nameof(EnteralVolumeInput));
             return;
         }
 
@@ -332,22 +440,22 @@ public class IndexModel : PageModel
 
         var maxToShow = packageVolumes.Count <= 1 ? 1 : 2;
 
-        // volume ‚Ì‚Æ‚«‚¾‚¯ mL ‚ğ—DæB‚»‚Ì‘¼‚Í kcal¨mL ‚ğÄŒvZ‚µ‚Ä“ü—Í—“‚à“¯ŠúB
+        // volume ã®ã¨ãã ã‘ mL ã‚’å„ªå…ˆã€‚ãã®ä»–ã¯ kcalâ†’mL ã‚’å†è¨ˆç®—ã—ã¦å…¥åŠ›æ¬„ã‚‚åŒæœŸã€‚
         if (act == "volume" && EnteralVolumeInput.HasValue && EnteralVolumeInput.Value > 0)
         {
             EnteralVolume = EnteralVolumeInput.Value;
 
-            // mL ¨ kcal
+            // mL â†’ kcal
             var kcal = EnteralEnergyCalculator.CalculateEnergyFromVolume(EnteralVolume.Value, comp);
             var kcalRounded = (int)Math.Round(kcal, MidpointRounding.AwayFromZero);
 
             EnteralEnergy = kcalRounded;
 
-            // kcal“ü—Í—“‚à“¯Šú
+            // kcalå…¥åŠ›æ¬„ã‚‚åŒæœŸ
             EnergyOrderValue = kcalRounded;
-            ModelState.Remove(nameof(EnergyOrderValue));
+            ClearModelState(nameof(EnergyOrderValue));
 
-            // Š„•tŒó•âi–ÚˆÀj
+            // å‰²ä»˜å€™è£œï¼ˆç›®å®‰ï¼‰
             EnteralPackagePlans =
                 EnteralPackageAllocator.BuildPlans(
                     (int)Math.Round(EnteralVolume.Value, MidpointRounding.AwayFromZero),
@@ -358,20 +466,20 @@ public class IndexModel : PageModel
         {
             var targetKcal = EnergyOrderValue.Value;
 
-            // kcal ¨ •K—vmLi’[”ŠÜ‚Şj
+            // kcal â†’ å¿…è¦mLï¼ˆç«¯æ•°å«ã‚€ï¼‰
             var rawVolume = targetKcal * comp.VolumePerKcal;
             var targetVolumeMl = (int)Math.Round(rawVolume, MidpointRounding.AwayFromZero);
 
             EnteralVolume = targetVolumeMl;
 
-            // “ü—Í—“‚à“¯Šú
+            // å…¥åŠ›æ¬„ã‚‚åŒæœŸ
             EnteralVolumeInput = targetVolumeMl;
-            ModelState.Remove(nameof(EnteralVolumeInput));
+            ClearModelState(nameof(EnteralVolumeInput));
 
-            // •\¦“Š—^—Êƒx[ƒX‚Ì kcaliŒµ–§‚É‚Í targetKcal ‚Æ‚Ù‚Úˆê’v‚·‚é‘z’èj
+            // è¡¨ç¤ºæŠ•ä¸é‡ãƒ™ãƒ¼ã‚¹ã® kcalï¼ˆå³å¯†ã«ã¯ targetKcal ã¨ã»ã¼ä¸€è‡´ã™ã‚‹æƒ³å®šï¼‰
             EnteralEnergy = EnteralEnergyCalculator.CalculateEnergyFromVolume(EnteralVolume.Value, comp);
 
-            // Š„•tŒó•âi–ÚˆÀj
+            // å‰²ä»˜å€™è£œï¼ˆç›®å®‰ï¼‰
             EnteralPackagePlans =
                 EnteralPackageAllocator.BuildPlans(
                     targetVolumeMl,
@@ -380,13 +488,13 @@ public class IndexModel : PageModel
         }
         else
         {
-            // kcal ‚à mL ‚à–³‚¢
+            // kcal ã‚‚ mL ã‚‚ç„¡ã„
             EnteralVolumeInput = null;
-            ModelState.Remove(nameof(EnteralVolumeInput));
+            ClearModelState(nameof(EnteralVolumeInput));
             return;
         }
 
-        // ¬•ªŒvZií‚Éu•\¦‚³‚ê‚Ä‚¢‚é“Š—^—Êv‚©‚çj
+        // æˆåˆ†è¨ˆç®—ï¼ˆå¸¸ã«ã€Œè¡¨ç¤ºã•ã‚Œã¦ã„ã‚‹æŠ•ä¸é‡ã€ã‹ã‚‰ï¼‰
         if (EnteralEnergy.HasValue)
         {
             EnteralProtein = EnteralEnergy.Value * comp.ProteinPerKcal;
@@ -402,1310 +510,327 @@ public class IndexModel : PageModel
 
 
 /*
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using TNTCalculatorRazor.Domain.Calculators;
-using TNTCalculatorRazor.Domain.Enums;
-using TNTCalculatorRazor.Domain.Models;
-using TNTCalculatorRazor.Domain.Results;
-using TNTCalculatorRazor.Domain.Selectors;
-using TNTCalculatorRazor.Domain.Tables;
-using TNTCalculatorRazor.Domain.Services;
 
-public class IndexModel : PageModel
+//==============================
+// POST
+//==============================
+public void OnPost()
 {
-    //==============================
-    // “ü—ÍiBindj
-    //==============================
-    // ===== ‘ÌŠi“ü—ÍiUIj =====
-    [BindProperty] public int? Age { get; set; }            // ”N—îi”Nj
-    [BindProperty] public int? Height { get; set; }         // g’·icmj
-    [BindProperty] public double? Weight { get; set; }      // ‘Ìdikgj
-    [BindProperty] public GenderType Gender { get; set; } = GenderType.Male; // «•Ê
+   var act = (Action ?? "").ToLowerInvariant();
 
-    // ===== •\¦—pi©“®ŒvZj =====
-    public int? BmrKcal { get; private set; }
-    public int? Kcal25 { get; private set; }
-    public int? Kcal30 { get; private set; }
-    public int? Kcal35 { get; private set; }
+    // 0) ãƒ¦ãƒ¼ã‚¶ãƒ¼ç·¨é›†ãƒ•ãƒ©ã‚°ï¼ˆkcal or mL ã‚’è§¦ã£ãŸã‚‰ä»¥å¾Œè‡ªå‹•åŒæœŸã—ãªã„ï¼‰
+    if (act == "energy" || act == "volume")
+        IsEnergyUserEdited = true;
 
-    // ===== ƒ†[ƒU[‚ª“Š—^ƒJƒƒŠ[‚ğè‚Å‚¢‚¶‚Á‚½‚© =====
-    [BindProperty] public bool IsEnergyUserEdited { get; set; } = false;
-   
-    [BindProperty] public ActivityFactorType ActivityFactor { get; set; } = ActivityFactorType.BedriddenComa;
-    [BindProperty] public StressFactorType StressFactor { get; set; } = StressFactorType.Normal;
-    [BindProperty] public BodyTemperatureLevel SelectedBodyTemperature { get; set; } = BodyTemperatureLevel.Normal;
+    // 1) åŸºæœ¬è¨ˆç®—ï¼ˆå…¥åŠ›ãŒæƒã£ã¦ã„ã¦ç¯„å›²å†…ãªã‚‰ BMR/æ¨™æº–ä½“é‡ãªã©ãŒåŸ‹ã¾ã‚‹ï¼‰
+    RecalcBase();
 
-    [BindProperty] public DiseaseType SelectedDisease { get; set; } = DiseaseType.None;
+    // â˜… ç–¾æ‚£ã‹ã‚‰é€æãƒ•ãƒ©ã‚°ã‚’åŒæœŸï¼ˆUIã«ãƒã‚§ãƒƒã‚¯ãŒç„¡ãã¦ã‚‚ä¸€è‡´ã•ã›ã‚‹ï¼‰
+    IsHemodialysis = (SelectedDisease == DiseaseType.Hemodialysis);
 
-    [BindProperty] public ProteinCorrectionType SelectedProteinCorrection { get; set; } = ProteinCorrectionType.None;
-
-    [BindProperty] public EnergyOrderType SelectedEnergyOrder { get; set; } = EnergyOrderType.BmrEstimated;
-    [BindProperty] public int? ManualEnergyValue { get; set; }
-
-    [BindProperty] public bool IsHemodialysis { get; set; }
-    [BindProperty] public bool IsPregnant { get; set; }
-
-    //==============================
-    // ŒvZŒ‹‰Êi•\¦—pj
-    //==============================
-    public BmrResult? BmrResult { get; private set; }
-    public BodyIndexResult? BodyIndex { get; private set; }
-
-    public double AdjustedWeight { get; private set; }
-    public double BodySurfaceArea { get; private set; }
-
-    // ƒGƒlƒ‹ƒM[
-    public double EnergyByBmr { get; private set; }
-    public double Energy25 { get; private set; }
-    public double Energy30 { get; private set; }
-    public double Energy35 { get; private set; }
-    public int EnergyFinal { get; private set; }
-
-    // ’`”’
-    public double ProteinRaw { get; private set; }
-    public string ProteinDisplayText { get; private set; } = "";
-
-    // …•ª
-    public int WaterDisplay { get; private set; }
-    public bool WaterFeverCorrected { get; private set; }
-
-    // ƒXƒgƒŒƒX“à–ó
-    public double StressBase { get; private set; }
-    public double StressTemperature { get; private set; }
-    public double StressTotal { get; private set; }
-
-    // Œo’°‰h—{
-    [BindProperty]
-    public EnteralFormulaType? SelectedEnteralFormula { get; set; }
-
-    [BindProperty]
-    public double TargetEnergyKcal { get; set; }   // “Š—^ƒJƒƒŠ[i•ÒW‰Âj
-
-    [BindProperty]
-    public double EnteralVolumeMl { get; set; }    // “Š—^—Êi•ÒW‰Âj
-
-    public EnteralFeedingResult? EnteralResult { get; private set; }
-
-    // ‹KŠi—ÊimLj
-    [BindProperty]
-    public int SelectedPackageVolume { get; set; }
-
-    // Select —p
-    public List<SelectListItem> PackageVolumeOptions { get; private set; }
-        = new();
-
-    [BindProperty]
-    public DiseaseType Disease { get; set; }
-
-
-    // =========================
-    // ƒJƒƒŠ[‘I‘ğ
-    // =========================
-    [BindProperty]
-    public int? EnergyOrderValue { get; set; }
-
-    [BindProperty]
-    public bool IsEnergyManuallyEdited { get; set; }
-
-    // =========================
-    // Œo’°‰h—{
-    // =========================
-    //[BindProperty]
-    //public EnteralPackageSize SelectedPackage { get; set; }
-    public double EnergyRaw { get; private set; }
-
-    //==============================
-    // Œo’°‰h—{iPhase Aj
-    //==============================
-    [BindProperty]
-    public EnteralFormulaType? SelectedFormula { get; set; }
-
-    // “Š—^ƒJƒƒŠ[iEnergyOrder ‚©‚ç—ˆ‚éj
-    public double? EnteralEnergy { get; private set; }
-
-    // ©“®Zo‚³‚ê‚é“Š—^—ÊimLj
-    //public double? EnteralVolume { get; private set; }
-
-    // ¬•ª•\¦
-    public double? EnteralProtein { get; private set; }
-    public double? EnteralFat { get; private set; }
-    public double? EnteralCarb { get; private set; }
-    public double? EnteralSalt { get; private set; }
-    public double? EnteralVitaminK { get; private set; }
-    public double? EnteralWater { get; private set; }
-
-    // Enteral
-
-    [BindProperty]
-    public double? EnteralVolume { get; set; }
-
-    [BindProperty] public string? Action { get; set; }
-
-    [BindProperty] public bool HasUserSelectedPackage { get; set; }
-
-    public IReadOnlyList<EnteralPackagePlan> EnteralPackagePlans { get; private set; }
-    = Array.Empty<EnteralPackagePlan>();
-
-    public static string FormatPlan( EnteralPackagePlan plan )
+    // 2) ç–¾æ‚£ â†’ ç®—å‡ºæ–¹æ³•ï¼ˆãƒ‡ãƒ•ã‚©ãƒ«ãƒˆï¼‰ã¸åˆ‡æ›¿ï¼ˆãŸã ã—æ‰‹å‹•ç·¨é›†å¾Œã¯å°Šé‡ï¼‰
+    if (act == "disease" && !IsEnergyUserEdited)
     {
-        // —á: 400mL~4 + 300mL~2 + 22mL
-        var parts = plan.CountsByVolume
-            .OrderByDescending(kv => kv.Key)
-            .Select(kv => $"{kv.Key}mL~{kv.Value}");
-
-        var body = string.Join(" + ", parts);
-
-        return plan.RemainderMl > 0
-            ? $"{body} + {plan.RemainderMl}mL"
-            : body;
+        SelectedEnergyOrder = EnergyOrderDefaultSelector.GetDefault(SelectedDisease);
+        ModelState.Remove(nameof(SelectedEnergyOrder)); // UIã®selectã«åæ˜ 
     }
 
-    [BindProperty]
-    public int? EnteralVolumeInput { get; set; }  // mL/day è“ü—Íi’[”’²®—pj
-
-
-
-    public void OnPost( string action )
+    // 3) è›‹ç™½è£œæ­£ã®ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆï¼ˆå¹´é½¢ãŒå…¥ã£ã¦ã„ã‚‹ã¨ãã ã‘ï¼‰
+    //    - ãƒ¦ãƒ¼ã‚¶ãƒ¼ãŒæ‰‹å‹•é¸æŠã—ã¦ã„ãªã„ï¼ˆNoneã®ã¾ã¾ï¼‰å ´åˆã®ã¿è‡ªå‹•æ±ºå®š
+    if (SelectedProteinCorrection == ProteinCorrectionType.None && Age.HasValue)
     {
-        //--------------------------
-        // 0. ©“®’`”’•â³
-        //--------------------------
-        if (SelectedProteinCorrection == ProteinCorrectionType.None)
+        SelectedProteinCorrection =
+            ProteinCorrectionSelector.GetDefault(Age.Value, SelectedDisease);
+
+        // selectã«åæ˜ ï¼ˆModelStateå„ªå…ˆå¯¾ç­–ï¼‰
+        ModelState.Remove(nameof(SelectedProteinCorrection));
+    }
+
+    // 4) ä¿‚æ•°ãƒ»è£œæ­£è¾¼ã¿ã®å¿…è¦é‡ã‚’è¨ˆç®—ï¼ˆEnergyFinal / Protein / Water ãªã©ï¼‰
+    RecalcEnergyProteinWater();
+
+    // 5) å¿…è¦é‡ï¼ˆEnergyFinalï¼‰â†’ çµŒè…¸ã®æŠ•ä¸ã‚«ãƒ­ãƒªãƒ¼ã¸åŒæœŸ
+    //    â€» ãƒ¦ãƒ¼ã‚¶ãƒ¼ãŒç·¨é›†ã—ã¦ã„ãªã„ã¨ãã®ã¿
+    var shouldSync =
+        act == "anthro" || act == "disease" || act == "order" || act == "factors" || act == "protein";
+
+    if (shouldSync && !IsEnergyUserEdited)
+    {
+        // (A) åŸå‰‡ï¼šEnergyFinal ãŒã‚ã‚Œã°æœ€å„ªå…ˆã§æ¡ç”¨
+        if (EnergyFinal.HasValue)
         {
-            SelectedProteinCorrection =
-                ProteinCorrectionSelector.GetDefault(Age, SelectedDisease);
-        }
-
-        double proteinCorrect =
-            SelectedProteinCorrection switch
-            {
-                ProteinCorrectionType.CKD3bTo5 => 0.7,
-                ProteinCorrectionType.LiverCirrhosisPoor => 0.5,
-                _ => 1.0
-            };
-
-        //--------------------------
-        // 1. BMRi•\¦—pj
-        //--------------------------
-        BmrResult = BmrCalculator.Calculate(Age, Weight, Height, Gender);
-
-        //--------------------------
-        // 2. ‘ÌŠi
-        //--------------------------
-        BodyIndex = BodyIndexCalculator.Calculate(Age, Height, Weight, Gender);
-
-        BodySurfaceArea =
-            BodySurfaceAreaCalculator.Calculate(Height, Weight);
-
-        AdjustedWeight =
-            AdjustedWeightCalculator.Calculate(
-                Age,
-                Weight,
-                BodyIndex.StandardWeight,
-                BodyIndex.ObesityDegree ?? 0);
-
-        //--------------------------
-        // 3. ƒXƒgƒŒƒXŒW”
-        //--------------------------
-        StressBase = StressFactorTable.Get(StressFactor);
-        StressTemperature = TemperatureStressTable.GetAddition(SelectedBodyTemperature);
-        StressTotal = StressBase + StressTemperature;
-
-        //--------------------------
-        // 4. BMR „’èƒGƒlƒ‹ƒM[
-        //--------------------------
-        var bmrForEnergy =
-            BmrCalculator.Calculate(Age, AdjustedWeight, Height, Gender);
-
-        EnergyByBmr =
-            Age == 0
-                ? ((BmrResult!.RawValue * StressTotal) + (40 * Weight)) * 1.1
-                : bmrForEnergy.RawValue
-                    * ActivityFactorTable.Get(ActivityFactor)
-                    * StressTotal;
-
-        //--------------------------
-        // 5. kcal/kgi¬lj
-        //--------------------------
-        if (Age >= 18)
-        {
-            Energy25 = 25 * BodyIndex.StandardWeight;
-            Energy30 = 30 * BodyIndex.StandardWeight;
-            Energy35 = 35 * BodyIndex.StandardWeight;
-        }
-
-        //--------------------------
-        // 6. ÅIƒGƒlƒ‹ƒM[
-        //--------------------------
-        double selected =
-            SelectedEnergyOrder switch
-            {
-                EnergyOrderType.Kcal25 => Energy25,
-                EnergyOrderType.Kcal30 => Energy30,
-                EnergyOrderType.Kcal35 => Energy35,
-                EnergyOrderType.Manual => ManualEnergyValue ?? EnergyByBmr,
-                _ => EnergyByBmr
-            };
-
-        EnergyFinal =
-            (int)Math.Round(selected, MidpointRounding.AwayFromZero);
-
-        //--------------------------
-        // 7. ’`”’
-        //--------------------------
-        double weightForProtein =
-            WeightForCalculationSelector.Select(
-                WeightUsage.Protein,
-                Age,
-                Weight,
-                AdjustedWeight,
-                BodyIndex.StandardWeight,
-                SelectedDisease);
-
-        ProteinRaw =
-            ProteinCalculator.Calculate(
-                Age,
-                weightForProtein,
-                StressTotal,
-                proteinCorrect);
-
-        ProteinDisplayText =
-            Math.Round(ProteinRaw, 1, MidpointRounding.AwayFromZero)
-                .ToString("F1");
-
-        //--------------------------
-        // 8. …•ª
-        //--------------------------
-        double water =
-            WaterCalculator.CalculateTotal(
-                Age,
-                Weight,
-                IsHemodialysis,
-                IsPregnant,
-                AdjustedWeight,
-                BodyIndex.ObesityDegree ?? 0,
-                SelectedBodyTemperature);
-
-        WaterDisplay =
-            (int)Math.Round(water, MidpointRounding.AwayFromZero);
-
-        WaterFeverCorrected =
-            !IsHemodialysis &&
-            SelectedBodyTemperature != BodyTemperatureLevel.Normal;
-
-        // ==============================
-        // Œo’°‰h—{i•K—v—Êƒx[ƒX + Š„•tŒó•âj
-        // ==============================
-        // ‚Ü‚¸•\¦Œn‚ğ‰Šú‰»i‘O‰ñ’l‚ªc‚ç‚È‚¢‚æ‚¤‚Éj
-        EnteralPackagePlans = Array.Empty<EnteralPackagePlan>();
-        PackageVolumeOptions = new List<SelectListItem>();
-
-        // Action ‚Í hidden ‚Å Bind ‚³‚ê‚Ä‚¢‚é‘O’ñ
-        var act = (Action ?? "").ToLowerInvariant();
-
-        if (SelectedEnteralFormula.HasValue)
-        {
-            var formula = SelectedEnteralFormula.Value;
-
-            // ƒe[ƒuƒ‹æ“¾
-            var comp = EnteralFormulaTable.Get(formula);
-            var packageVolumes = EnteralPackageTable.Get(formula);
-
-            // ‹KŠiŒó•âi«—ˆ select ‚Ég‚¤‚È‚çj
-            PackageVolumeOptions = packageVolumes
-                .Select(v => new SelectListItem($"{v} mL", v.ToString()))
-                .ToList();
-
-            // Š„•tŒó•â‚Í 1‹KŠi¨1ŒA2‹KŠiˆÈã¨2Œ
-            var maxToShow = packageVolumes.Count <= 1 ? 1 : 2;
-
-            // 1) ‚Ç‚¿‚ç‚Ì“ü—Í‚ğ—Dæ‚·‚é‚©Œˆ‚ß‚é
-            //    volume ‚Ì‚Æ‚«‚¾‚¯ mL ‚ğ—DæB‚»‚êˆÈŠO‚Í kcal¨mL ‚ğ•K‚¸ÄŒvZ‚µ‚Ä“ü—Í—“‚à“¯ŠúB
-            if (act == "volume" && EnteralVolumeInput.HasValue && EnteralVolumeInput.Value > 0)
-            {
-                // --- mLè“ü—Íƒ‹[ƒg ---
-                EnteralVolume = EnteralVolumeInput.Value;
-
-                // •\¦“Š—^—Ê‚©‚ç kcal ‚ğ‹tZi¬•ª‚ÌŠî€j
-                EnteralEnergy =
-                    EnteralEnergyCalculator.CalculateEnergyFromVolume(
-                        EnteralVolume.Value,
-                        comp);
-
-                // ƒ†[ƒU[‚ª mL ‚ğ•Ï‚¦‚½Œ‹‰Ê‚È‚Ì‚ÅAkcal“ü—Í‘¤‚à“¯Šú‚µ‚Ä‚¨‚­
-                var kcalRounded = (int)Math.Round(EnteralEnergy.Value, MidpointRounding.AwayFromZero); // ®”‰»
-                EnergyOrderValue = kcalRounded;
-                // EnteralEnergy ‚à•\¦‚Æˆê’v‚³‚¹‚½‚¢‚Ì‚Å‚±‚¿‚ç‚à‘µ‚¦‚é
-                EnteralEnergy = kcalRounded;
-
-                ModelState.Remove(nameof(EnergyOrderValue));
-
-                // Š„•tŒó•âi–ÚˆÀj
-                EnteralPackagePlans =
-                    EnteralPackageAllocator.BuildPlans(
-                        (int)Math.Round(EnteralVolume.Value, MidpointRounding.AwayFromZero),
-                        packageVolumes.ToList(),
-                        maxPlans: maxToShow);
-            }
-            else if (EnergyOrderValue.HasValue && EnergyOrderValue.Value > 0)
-            {
-                // --- kcal“ü—Íƒ‹[ƒgi»Ü•ÏXEƒJƒƒŠ[•ÏX‚Å‚à‚±‚±‚É“ü‚éj ---
-                var targetKcal = EnergyOrderValue.Value;
-
-                // •K—v“Š—^—Êi’[”ŠÜ‚Şj
-                var rawVolume = targetKcal * comp.VolumePerKcal;
-                var targetVolumeMl = (int)Math.Round(rawVolume, MidpointRounding.AwayFromZero);
-
-                EnteralVolume = targetVolumeMl;
-
-                // š‚±‚±‚ªd—vF“Š—^—Ê“ü—Í—“‚àí‚É“¯Šú‚³‚¹‚é
-                EnteralVolumeInput = targetVolumeMl;
-
-                // Razor Pages ‚Í ModelState ‚ª—Dæ‚³‚ê‚é‚½‚ßA“ü—Í—“‚ªŒÃ‚¢’l‚Ì‚Ü‚Ü‚É‚È‚é‚±‚Æ‚ª‚ ‚é
-                // ¨ “¯Šú‚µ‚½‚Æ‚«‚Í–¾¦“I‚É ModelState ‚©‚çÁ‚·
-                ModelState.Remove(nameof(EnteralVolumeInput));
-
-                // ¬•ª‚ÌŠî€‚Æ‚È‚é kcali•\¦“Š—^—Êƒx[ƒXj
-                EnteralEnergy =
-                    EnteralEnergyCalculator.CalculateEnergyFromVolume(
-                        EnteralVolume.Value,
-                        comp);
-
-                // Š„•tŒó•âi–ÚˆÀj
-                EnteralPackagePlans =
-                    EnteralPackageAllocator.BuildPlans(
-                        targetVolumeMl,
-                        packageVolumes.ToList(),
-                        maxPlans: maxToShow);
-            }
-            else
-            {
-                // kcal ‚à mL ‚à–³‚¢
-                EnteralVolume = null;
-                EnteralEnergy = null;
-                EnteralVolumeInput = null;
-                ModelState.Remove(nameof(EnteralVolumeInput));
-            }
-
-            // 2) ¬•ªŒvZFí‚Éu•\¦‚³‚ê‚Ä‚¢‚é“Š—^—Êv‚©‚çi= EnteralEnergy ‚©‚çj
-            if (EnteralEnergy.HasValue)
-            {
-                EnteralProtein = EnteralEnergy.Value * comp.ProteinPerKcal;
-                EnteralFat = EnteralEnergy.Value * comp.FatPerKcal;
-                EnteralCarb = EnteralEnergy.Value * comp.CarbPerKcal;
-                EnteralSalt = EnteralEnergy.Value * comp.SaltPerKcal;
-                EnteralVitaminK = EnteralEnergy.Value * comp.VitaminKPerKcal;
-                EnteralWater = EnteralEnergy.Value * comp.WaterPerKcal;
-            }
-            else
-            {
-                EnteralProtein = null;
-                EnteralFat = null;
-                EnteralCarb = null;
-                EnteralSalt = null;
-                EnteralVitaminK = null;
-                EnteralWater = null;
-            }
+            EnergyOrderValue = EnergyFinal.Value;
+            ModelState.Remove(nameof(EnergyOrderValue));
+            ModelState.Remove(nameof(EnteralVolumeInput)); // mLæ¬„ã‚‚è¿½å¾“ã•ã›ãŸã„å ´åˆ
         }
         else
         {
-            // »Ü‚ª–¢‘I‘ğ
-            EnteralVolume = null;
-            EnteralEnergy = null;
-            EnteralVolumeInput = null;
-            ModelState.Remove(nameof(EnteralVolumeInput));
-
-            EnteralProtein = null;
-            EnteralFat = null;
-            EnteralCarb = null;
-            EnteralSalt = null;
-            EnteralVitaminK = null;
-            EnteralWater = null;
-
-            EnteralPackagePlans = Array.Empty<EnteralPackagePlan>();
-            PackageVolumeOptions = new List<SelectListItem>();
-        }
-    }
-}
-        /*
-        EnteralPackagePlans = Array.Empty<EnteralPackagePlan>();
-
-        if (SelectedEnteralFormula.HasValue && EnergyOrderValue.HasValue)
-        {
-            var formula = SelectedEnteralFormula.Value;
-            var comp = EnteralFormulaTable.Get(formula);
-
-            // ‹KŠi—ÊŒó•âi1–{‚ ‚½‚èmLj
-            var packageVolumes = EnteralPackageTable.Get(formula);
-
-            // UI‚ÌselectŒó•âi¡Œãg‚¤‚È‚çj
-            PackageVolumeOptions = packageVolumes
-                .Select(v => new SelectListItem($"{v} mL", v.ToString()))
-                .ToList();
-
-            // 1) kcal ¨ •K—v“Š—^—ÊimL/dayj
-            //    ¦‚±‚±‚Íu•\¦‚³‚ê‚Ä‚¢‚é“Š—^—Êv‚ğì‚éd—v‰ÓŠ
-            var targetKcal = EnergyOrderValue.Value;
-
-            // —˜_•K—v—ÊimLjc’[”‚ªo‚é‰Â”\«‚ ‚è
-            var rawVolume = targetKcal * comp.VolumePerKcal; // double
-
-            // UI‚Å‚Í mL ‚ğ®”•\¦‚µ‚Ä‚¢‚é‚Ì‚ÅA“Š—^—Ê‚Í int ‚É³‹K‰»
-            // ’[”‚Ìˆµ‚¢‚Í‚±‚±‚ÅŒÅ’èi‚Ü‚¸‚ÍlÌŒÜ“üFAwayFromZeroj
-            var targetVolumeMl = (int)Math.Round(rawVolume, MidpointRounding.AwayFromZero);
-
-            EnteralVolume = targetVolumeMl;
-
-            // 2) Š„•tŒó•â‚ğ¶¬i—áF400~4 + 300~2 + 22mLj
-            //    ¦u’´‚¦‚È‚¢”ÍˆÍ‚Å—]‚èÅ¬v‚ÌŒó•â‚ª•Ô‚é
-            EnteralPackagePlans =
-                EnteralPackageAllocator.BuildPlans(
-                    targetVolumeMl,
-                    packageVolumes.ToList(),
-                    maxPlans: 5);
-            // Å‘å2ˆÄ‚Ü‚Å•\¦
-            var maxToShow = packageVolumes.Count <= 1 ? 1 : 2;
-            EnteralPackagePlans = EnteralPackagePlans.Take(maxToShow).ToList();
-
-            // 3) ¬•ªŒvZ‚Íu•\¦‚³‚ê‚Ä‚¢‚é“Š—^—Êv‚©‚ç
-            //    i= ƒpƒbƒP[ƒWŠÛ‚ß‚Å‚Í•Ï‚¦‚È‚¢j
-            EnteralEnergy =
-                EnteralEnergyCalculator.CalculateEnergyFromVolume(
-                    EnteralVolume.Value,
-                    comp);
-
-            if (EnteralEnergy.HasValue)
+            // (B) ãƒ•ã‚©ãƒ¼ãƒ«ãƒãƒƒã‚¯ï¼šEnergyFinalãŒä½œã‚Œãªã„æ™‚ã ã‘ã€å€™è£œï¼ˆBMR/25/30/35ï¼‰ã‹ã‚‰å…¥ã‚Œã‚‹
+            EnergyOrderValue = SelectedEnergyOrder switch
             {
-                EnteralProtein = EnteralEnergy.Value * comp.ProteinPerKcal;
-                EnteralFat = EnteralEnergy.Value * comp.FatPerKcal;
-                EnteralCarb = EnteralEnergy.Value * comp.CarbPerKcal;
-                EnteralSalt = EnteralEnergy.Value * comp.SaltPerKcal;
-                EnteralVitaminK = EnteralEnergy.Value * comp.VitaminKPerKcal;
-                EnteralWater = EnteralEnergy.Value * comp.WaterPerKcal;
-            }
-
-            // šd—vF‚±‚±‚Å‚Í EnergyOrderValue ‚ğã‘‚«‚µ‚È‚¢
-            // ƒ†[ƒU[‚ª“ü—Í‚µ‚½ kcal ‚ğ‘¸d‚µA“ü—Í’l•ÏX‚ÅÄŒvZ‚·‚é‚½‚ß
-        }
-        else
-        {
-            EnteralVolume = null;
-            EnteralEnergy = null;
-            EnteralProtein = null;
-            EnteralFat = null;
-            EnteralCarb = null;
-            EnteralSalt = null;
-            EnteralVitaminK = null;
-            EnteralWater = null;
-        }
-    }
-}
-
-
-    /*
-        // ==============================
-        // Œo’°‰h—{i“‡”ÅFaction‘Î‰j
-        // ==============================
-        if (SelectedEnteralFormula.HasValue && EnergyOrderValue.HasValue)
-        {
-            var formula = SelectedEnteralFormula.Value;
-            var comp = EnteralFormulaTable.Get(formula);
-
-            // ‹KŠi—ÊŒó•âiint‚ÌƒŠƒXƒgj
-            var packageVolumes = EnteralPackageTable.Get(formula); // IEnumerable<int> ‘O’ñ
-
-            // UI‚ÌselectŒó•â‚ğì‚éi–ˆ‰ñì‚Á‚ÄOKFŠm”F—pUI‚È‚çŠÈ’P‚ª³‹`j
-            PackageVolumeOptions = packageVolumes
-                .Select(v => new SelectListItem($"{v} mL", v.ToString()))
-                .ToList();
-
-            // action”»’è
-            var act = (Action ?? "").ToLowerInvariant();
-
-            if (act == "formula")
-            {
-                // »Ü•ÏXFŒó•â‚ª•Ï‚í‚é‚Ì‚Åuƒ†[ƒU[‘I‘ğ‚È‚µv‚É–ß‚·
-                HasUserSelectedPackage = false;
-                SelectedPackageVolume = 0;
-            }
-            else if (act == "package")
-            {
-                // ‹KŠi—Ê‚ğƒ†[ƒU[‚ªG‚Á‚½
-                HasUserSelectedPackage = true;
-            }
-            else if (act == "disease")
-            {
-                //UIŠm”F—p
-                SelectedEnergyOrder = EnergyOrderDefaultSelector.GetDefault(SelectedDisease);
-                ManualEnergyValue = null;
-                IsEnergyManuallyEdited = false;
-            }
-            else if (act == "order")
-            {
-                // Zo–@•ÏXFè“ü—Íƒtƒ‰ƒO‚ğ“KØ‚ÉƒŠƒZƒbƒg
-                IsEnergyManuallyEdited = (SelectedEnergyOrder == EnergyOrderType.Manual);
-
-                // Manual ‚ğŠO‚µ‚½‚çè“ü—Í’l‚ğ–³Œø‰»‚µ‚½‚¢‚È‚ç
-                if (SelectedEnergyOrder != EnergyOrderType.Manual)
-                    ManualEnergyValue = null;
-            }
-
-
-            // kcal¨rawVolume
-            var rawVolume = EnergyOrderValue.Value * comp.VolumePerKcal;
-
-            // ‰‰ñ‚¾‚¯Ø‚èã‚°i‚Ü‚½‚ÍŒó•âŠO‚È‚ç•ÛŒ¯‚ÅØ‚èã‚°j
-            var isSelectedValid = packageVolumes.Contains(SelectedPackageVolume);
-
-            if (!HasUserSelectedPackage || SelectedPackageVolume == 0 || !isSelectedValid)
-            {
-                SelectedPackageVolume = EnteralPackageRounder.RoundUp(rawVolume, packageVolumes);
-            }
-
-            // Šm’è“Š—^—ÊimLj
-            EnteralVolume = SelectedPackageVolume;
-
-            // mL ¨ kcaliŠm’è“Š—^—Êƒx[ƒX‚ÅÄŒvZj
-            EnteralEnergy =
-                EnteralEnergyCalculator.CalculateEnergyFromVolume(
-                    EnteralVolume.Value,
-                    comp);
-
-            // ‚±‚±‚Å•\¦‘¤kcal‚ğ“¯Šú‚µ‚½‚¢‚È‚çiŠm”FUI‚È‚ç‚â‚é‚Æ•ª‚©‚è‚â‚·‚¢j
-            EnergyOrderValue = EnteralEnergy;
-
-            // ¬•ªŒvZ‚Í EnteralEnergy Šm’èŒã
-            if (EnteralEnergy.HasValue)
-            {
-                EnteralProtein = EnteralEnergy.Value * comp.ProteinPerKcal;
-                EnteralFat = EnteralEnergy.Value * comp.FatPerKcal;
-                EnteralCarb = EnteralEnergy.Value * comp.CarbPerKcal;
-                EnteralSalt = EnteralEnergy.Value * comp.SaltPerKcal;
-                EnteralVitaminK = EnteralEnergy.Value * comp.VitaminKPerKcal;
-                EnteralWater = EnteralEnergy.Value * comp.WaterPerKcal;
-            }
-        }
-    }
-}
-        /*
-        // ==============================
-        // Œo’°‰h—{ ŒvZ’Ç‰Á•”•ª
-        // ==============================
-        if (!SelectedEnteralFormula.HasValue)
-        {
-            // »Ü–¢‘I‘ğ ¨ ‰½‚àŒvZ‚µ‚È‚¢
-            return;
-        }
-
-        var formula = SelectedEnteralFormula.Value;
-        var composition =
-            EnteralFormulaTable.Get(formula);
-       
-
-        if (action == "volume")
-        {
-            // “Š—^—Ê(mL) ¨ kcal‹tZ
-            TargetEnergyKcal =
-                EnteralFeedingCalculator.CalculateKcal(
-                    EnteralVolumeMl,
-                    composition);
-        }
-
-        // ÅI“I‚É‚Í•K‚¸ kcal Šî€‚ÅÄŒvZ
-        EnteralResult =
-            EnteralFeedingCalculator.CalculateComponents(
-                TargetEnergyKcal,
-                composition);
-
-        // •\¦—p‚É—Ê‚à“¯Šú
-        EnteralVolumeMl = EnteralResult.VolumeMl;
-
-        
-        // kcal ¨ mL
-        double rawVolume =
-            TargetEnergyKcal * composition.VolumePerKcal;
-
-        // ‹KŠi—ÊŠÛ‚ß
-        EnteralVolumeMl =
-            EnteralVolumeRounder.RoundUp(
-                formula,
-                rawVolume);
-
-        // ŠÛ‚ßŒã kcal ÄŒvZ
-        TargetEnergyKcal =
-            EnteralVolumeMl / composition.VolumePerKcal;
-
-
-        // ‹KŠi—ÊŒó•â
-        var packageSizes =
-            EnteralPackageTable.Get(formula);
-
-         Select —pƒŠƒXƒgì¬
-        PackageVolumeOptions = packageSizes
-            .OrderBy(x => x)
-            .Select(x => new SelectListItem
-            {
-                Value = x.ToString(),
-                Text = $"{x} mL"
-            })
-            .ToList();
-
-        // ‰‰ñ or –¢‘I‘ğFØ‚èã‚°‹KŠi—Ê
-        if (SelectedPackageVolume == 0)
-        {
-            SelectedPackageVolume =
-                EnteralVolumeRounder.RoundUp(
-                    formula,
-                    rawVolume);
-        }
-
-        // Šm’è“Š—^—Ê
-        EnteralVolumeMl = SelectedPackageVolume;
-
-        // kcal ‚ğ‹tZ
-        TargetEnergyKcal =
-            EnteralVolumeMl / composition.VolumePerKcal;
-
-        // ¾Š³•ÏX‚ÌƒfƒtƒHƒ‹ƒg”½‰f
-        if (!IsEnergyManuallyEdited)
-        {
-            SelectedEnergyOrder =
-                EnergyOrderDefaultSelector.GetDefault(SelectedDisease);
-        }
-
-        // ‡@ ƒfƒtƒHƒ‹ƒg‘I‘ği‰‰ñ or ¾Š³•ÏXj
-        // š ‰‰ñ or –¢‘I‘ğ‚Ì‚İƒfƒtƒHƒ‹ƒg‚ğ“ü‚ê‚é
-        if (SelectedEnergyOrder == EnergyOrderType.BmrEstimated)
-        {
-            SelectedEnergyOrder =
-                EnergyOrderDefaultSelector.GetDefault(Disease);
-        }
-
-        // ‡A ƒJƒƒŠ[Zo
-        double calculatedEnergy =
-            EnergyOrderValueTable.Calculate(
-                SelectedEnergyOrder,
-                EnergyRaw,                 // BMR“™‚©‚çZoÏ
-                BodyIndex.StandardWeight);
-
-        // ‡B è“ü—Í—Dæ
-        EnergyOrderValue =
-            SelectedEnergyOrder == EnergyOrderType.Manual
-                ? EnergyOrderValue
-                : Math.Round(calculatedEnergy);
-
-        //==============================
-        // ‡I Œo’°‰h—{iPhase Aj
-        //==============================
-        if (SelectedFormula.HasValue && EnergyOrderValue.HasValue)
-        {
-            var comp = EnteralFormulaTable.Get(SelectedFormula.Value);
-
-            EnteralEnergy = EnergyOrderValue.Value;
-
-            // “Š—^—ÊimLj
-            EnteralVolume =
-                EnteralEnergy * comp.VolumePerKcal;
-
-            // ¬•ª—Ê
-            EnteralProtein =
-                EnteralEnergy * comp.ProteinPerKcal;
-
-            EnteralFat =
-                EnteralEnergy * comp.FatPerKcal;
-
-            EnteralCarb =
-                EnteralEnergy * comp.CarbPerKcal;
-
-            EnteralSalt =
-                EnteralEnergy * comp.SaltPerKcal;
-
-            EnteralVitaminK =
-                EnteralEnergy * comp.VitaminKPerKcal;
-
-            EnteralWater =
-                EnteralEnergy * comp.WaterPerKcal;
-        }
-
-        if (SelectedFormula.HasValue && EnergyOrderValue.HasValue)
-        {
-            var comp = EnteralFormulaTable.Get(SelectedFormula.Value);
-
-            // kcal ¨ mL
-            if (!IsEnergyManuallyEdited)
-            {
-                var rawVolume = EnergyOrderValue.Value * comp.VolumePerKcal;
-
-                EnteralVolume =
-                    EnteralPackageRounder.RoundUp(
-                        rawVolume,
-                        SelectedPackage);
-
-                EnteralEnergy =
-                    EnteralEnergyCalculator.CalculateEnergyFromVolume(
-                        EnteralVolume.Value,
-                        comp);
-            }
-            // mL ¨ kcaliè“ü—Íj
-            else if (EnteralVolume.HasValue)
-            {
-                EnteralEnergy =
-                    EnteralEnergyCalculator.CalculateEnergyFromVolume(
-                        EnteralVolume.Value,
-                        comp);
-
-                EnergyOrderValue = EnteralEnergy;
-            }
-        }
-
-    }
-}
-
-
-/*
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Reflection;
-using TNTCalculatorRazor.Domain.Calculators;
-using TNTCalculatorRazor.Domain.Enums;
-using TNTCalculatorRazor.Domain.Results;
-using TNTCalculatorRazor.Domain.Selectors;
-using TNTCalculatorRazor.Domain.Tables;
-
-public class IndexModel : PageModel
-{
-    [BindProperty] public int Age { get; set; }
-    [BindProperty] public double Height { get; set; }
-    [BindProperty] public double Weight { get; set; }
-    [BindProperty] public Sex Sex { get; set; }
-    
-    //[BindProperty] 
-    //public ProteinCondition SelectedProteinCondition { get; set; }
-    
-    [BindProperty]
-    public ProteinCorrectionType SelectedProteinCorrection { get; set; }
-           
-    [BindProperty]
-    public ActivityFactorType ActivityFactor { get; set; }
-    = ActivityFactorType.BedriddenComa;
-    
-
-    [BindProperty]
-    public StressFactorType StressFactor { get; set; }
-        = StressFactorType.Normal;
-
-    [BindProperty]
-    public bool IsHemodialysis { get; set; }
-
-    [BindProperty]
-    public bool IsPregnant { get; set; }
-
-    [BindProperty]
-    public BodyTemperatureLevel SelectedBodyTemperature { get; set; }
-
-
-    public BmrResult? BmrResult { get; set; }
-
-    public BodyIndexResult? BodyIndex { get; set; }
-
-    public double AdjustedWeight { get; private set; }
-    // ‘Ì•\–ÊÏ
-    public double BodySurfaceArea { get; private set; }
-
-    // •\¦—piŒW”‚»‚Ì‚à‚Ìj
-    public double ActivityFactorValue { get; set; }
-    public double StressFactorValue { get; set; }
-
-   // Energy
-    public double EnergyRaw { get; private set; }
-    public int EnergyDisplay { get; private set; }
-
-    // Protein
-    public double ProteinRaw { get; private set; }
-    public double ProteinDisplay { get; private set; }
-    public string? ProteinDisplayText { get; private set; }
-    // Water
-    public double WaterRaw { get; private set; }
-    public int WaterDisplay { get; private set; }
-    public bool WaterFeverCorrected { get; private set; }
-
-    // ’`”’¿¾Š³•â³ŒW”i1.0 / 0.7 / 0.5j
-    public double ProteinCorrect { get; set; } = 1.0;
-           
-    //StressŒW”“à–ói•\¦—pj
-    public double StressBase { get; private set; }
-    public double StressTemperature { get; private set; }
-    public double StressTotal { get; private set; }
-
-    //==============================
-    // ¾Š³EƒGƒlƒ‹ƒM[ŠÖ˜A
-    //==============================
-    // ¾Š³
-    [BindProperty]
-    public DiseaseType Disease { get; set; }
-
-    // ƒJƒƒŠ[w¦•û–@
-    [BindProperty]
-    public EnergyOrderType SelectedEnergyOrder { get; set; }
-
-    // è“ü—Í kcaliManual —pj
-    [BindProperty]
-
-    // Še•û®‚ÌŒvZŒ‹‰Êi•\¦—pj
-    public double EnergyBmrEstimated { get; private set; }
-    public double Energy25 { get; private set; }
-    public double Energy30 { get; private set; }
-    public double Energy35 { get; private set; }
-
-    // ÅIƒI[ƒ_[
-    public double EnergyFinal { get; private set; }
-    public double? ManualEnergyKcal { get; set; }
-    [BindProperty]
-    public EnergyOrderType? SelectedEnergyLevel { get; set; }
-
-    // ÅIƒI[ƒ_[ƒJƒƒŠ[iè“ü—Íj
-    [BindProperty]
-    public int? OrderedEnergy { get; set; }
-
-    // •\¦—p
-    public int? CalculatedEnergy { get; private set; }
-    public int? StandardWeightEnergy { get; private set; }
-    public int? FinalEnergy { get; private set; }
-    
-    [BindProperty]
-    public DiseaseType SelectedDisease { get; set; }
-
-    [BindProperty]
-    public EnergyOrderType SelectedEnergyOrder { get; set; }
-
-    [BindProperty]
-    public double? ManualEnergyValue { get; set; }
-
-    // •\¦—p
-    public double EnergyByBmr { get; private set; }
-    public double Kcal25 { get; private set; }
-    public double Kcal30 { get; private set; }
-    public double Kcal35 { get; private set; }
-    //public int EnergyDisplay { get; private set; }
-
-
-    public void OnPost()
-    {
-        //==============================
-        // 0. ’`”’•â³‚Ì©“®‰Šú‰»
-        //==============================
-        var autoCorrection =
-            ProteinCorrectionSelector.GetDefault(
-                Age,
-                SelectedDisease);
-
-        // ƒ†[ƒU[–¢‘I‘ğ‚Ì‚İ©“®İ’è
-        if (SelectedProteinCorrection == ProteinCorrectionType.None)
-        {
-            SelectedProteinCorrection = autoCorrection;
-        }
-
-        // ŒW””’l
-        ProteinCorrect =
-            SelectedProteinCorrection switch
-            {
-                ProteinCorrectionType.CKD3bTo5 => 0.7,
-                ProteinCorrectionType.LiverCirrhosisPoor => 0.5,
-                _ => 1.0
+                EnergyOrderType.BmrEstimated => BmrKcal,
+                EnergyOrderType.Kcal25 => Kcal25,
+                EnergyOrderType.Kcal30 => Kcal30,
+                EnergyOrderType.Kcal35 => Kcal35,
+                _ => EnergyOrderValue
             };
 
-        //==============================
-        // ‡@ •\¦—pBMRiÀ‘ª‘Ìdj
-        //==============================
-        BmrResult = BmrCalculator.Calculate(
-            Age,
-            Weight,
-            Height,
-            Sex);
-
-        //==============================
-        // ‡A •W€‘ÌdE”ì–“x
-        //==============================
-        BodyIndex = BodyIndexCalculator.Calculate(
-            Age,
-            Height,
-            Weight,
-            Sex);
-        
-        //==============================
-        // š ‘Ì•\–ÊÏiBSAj
-        //==============================
-        BodySurfaceArea =
-            BodySurfaceAreaCalculator.Calculate(
-                heightCm: Height,
-                weightKg: Weight);
-        
-        //==============================
-        // ‡B •â³‘Ìd
-        //==============================
-        AdjustedWeight = AdjustedWeightCalculator.Calculate(
-            age: Age,
-            actualWeight: Weight,
-            standardWeight: BodyIndex.StandardWeight,
-            obesityDegree: BodyIndex.ObesityDegree ?? 0);
-
-        //==============================
-        // ‡C ‰h—{ŒvZ—p‘Ìd
-        //==============================
-        double weightForEnergy =
-            WeightForCalculationSelector.Select(
-                usage: WeightUsage.Energy,
-                age: Age,
-                actualWeight: Weight,
-                adjustedWeight: AdjustedWeight,
-                standardWeight: BodyIndex.StandardWeight,
-                disease: SelectedDisease);
-
-        double weightForProtein =
-            WeightForCalculationSelector.Select(
-                usage: WeightUsage.Protein,
-                age: Age,
-                actualWeight: Weight,
-                adjustedWeight: AdjustedWeight,
-                standardWeight: BodyIndex.StandardWeight,
-                disease: SelectedDisease);
-
-        //==============================
-        // ‡D ‰h—{ŒvZ—pBMRi”ñ•\¦j
-        //==============================
-        var bmrForEnergy = BmrCalculator.Calculate(
-            Age,
-            weightForEnergy,
-            Height,
-            Sex);
-
-        //==============================
-        // ‡E Šˆ“®ŒW”EƒXƒgƒŒƒXŒW”
-        //==============================
-        var activity =
-            ActivityFactorTable.Get(ActivityFactor);
-
-        double stressBase =
-            StressFactorTable.Get(StressFactor);
-
-        double stressTemperature =
-            TemperatureStressTable.GetAddition(
-                SelectedBodyTemperature);
-
-        double stressTotal =
-            stressBase + stressTemperature;
-
-        StressBase = stressBase;
-        StressTemperature = stressTemperature;
-        StressTotal = stressTotal;
-
-        //==============================
-        // ‡F „’è•K—vƒJƒƒŠ[
-        //==============================
-        if (Age == 0)
-        {
-            // “û™
-            double infantBmr = BmrResult!.RawValue;
-
-            EnergyRaw =
-                ((infantBmr * stressTotal)
-                 + (40.0 * Weight))
-                * 1.1;
+            ModelState.Remove(nameof(EnergyOrderValue));
         }
-        else
-        {
-            EnergyRaw =
-                bmrForEnergy.RawValue
-                * activity
-                * stressTotal;
-        }
-
-        EnergyDisplay =
-            (int)Math.Round(
-                EnergyRaw,
-                MidpointRounding.AwayFromZero);
-
-        // ¾Š³ƒfƒtƒHƒ‹ƒg
-        SelectedEnergyOrder =
-            DiseaseEnergyDefaultTable.Get(SelectedDisease);
-
-        // kcal/kg Œó•â
-        Kcal25 = 25 * BodyIndex.StandardWeight;
-        Kcal30 = 30 * BodyIndex.StandardWeight;
-        Kcal35 = 35 * BodyIndex.StandardWeight;
-       
-        */
-/*
-//==============================
-// ‡A ¬l¾Š³ ¨ kcal/kg ©“®İ’è
-//==============================
-if (Age >= 18)
-{
-    var defaultLevel =
-        DiseaseEnergyLevelTable.GetDefault(SelectedDisease);
-
-    // ƒ†[ƒU[‚ª–¢‘I‘ğ‚È‚ç©“®İ’è
-    if (!SelectedEnergyLevel.HasValue)
-    {
-        SelectedEnergyLevel = defaultLevel;
     }
+
+    // 6) çµŒè…¸æ „é¤Šï¼ˆkcal?mL åŒæœŸã€æˆåˆ†ã€å‰²ä»˜å€™è£œï¼‰
+    RecalcEnteral();
 }
 
 //==============================
-// ‡B •W€‘Ìd ~ kcal/kg
+// åŸºæœ¬è¨ˆç®—
 //==============================
-if (Age >= 18 && BodyIndex?.StandardWeight != null && SelectedEnergyLevel.HasValue)
+private bool CanCalcBase()
 {
-    StandardWeightEnergy =
-        (int)Math.Round(
-            BodyIndex.StandardWeight
-            * (int)SelectedEnergyLevel.Value,
-            MidpointRounding.AwayFromZero);
+    // å¿…é ˆï¼šå¹´é½¢ãƒ»èº«é•·ãƒ»ä½“é‡
+    if (!Age.HasValue || !Height.HasValue || !Weight.HasValue)
+        return false;
+
+    // ç¯„å›²ï¼ˆã€Œã‚ã‚Šå¾—ãªã„å€¤ã€ã‚’å¼¾ãï¼‰
+    if (Age.Value < 0 || Age.Value >= 130) return false;
+    if (Height.Value < 30 || Height.Value >= 250) return false;
+    if (Weight.Value < 0.5 || Weight.Value >= 300) return false;
+
+    return true;
 }
 
-//==============================
-// ‡C ÅIƒI[ƒ_[ƒJƒƒŠ[
-//==============================
-FinalEnergy =
-    OrderedEnergy
-    ?? StandardWeightEnergy
-    ?? CalculatedEnergy;
-*/
+private void RecalcBase()
+{
+    // åˆæœŸåŒ–
+    BmrResult = null;
+    BodyIndex = null;
+    BodySurfaceArea = null;
+    AdjustedWeight = null;
 
+    BmrKcal = Kcal25 = Kcal30 = Kcal35 = null;
 
-/*
-        //==============================
-        // ‡G „’è•K—v’`”’¿—Ê
-        //==============================
-        ProteinRaw =
-            ProteinCalculator.Calculate(
-                age: Age,
-                weightForProtein: weightForProtein,
-                stressFactor: stressTotal,
-                proteinCorrect: ProteinCorrect);
+    if (!CanCalcBase())
+        return;
 
-        ProteinDisplay =
-            Math.Round(
-                ProteinRaw,
-                1,
-                MidpointRounding.AwayFromZero);
+    // BMR / ä½“æ ¼ / BSA
+    BmrResult = BmrCalculator.Calculate(Age!.Value, Weight!.Value, Height!.Value, Gender);
+    BodyIndex = BodyIndexCalculator.Calculate(Age.Value, Height.Value, Weight.Value, Gender);
+    BodySurfaceArea = BodySurfaceAreaCalculator.Calculate(Height.Value, Weight.Value);
 
-        ProteinDisplayText =
-            ProteinDisplay.ToString("F1");
-
-        //==============================
-        // ‡H …•ª—Ê
-        //==============================
-        WaterRaw =
-            WaterCalculator.CalculateTotal(
-                age: Age,
-                actualWeight: Weight,
-                isHemodialysis: IsHemodialysis,
-                isPregnant: IsPregnant,
-                adjustedWeight: AdjustedWeight,
-                obesityDegree: BodyIndex.ObesityDegree ?? 0,
-                temperatureLevel: SelectedBodyTemperature);
-
-        WaterDisplay =
-            (int)Math.Round(
-                WaterRaw,
-                MidpointRounding.AwayFromZero);
-
-        // š ”­”M•â³‚ª“ü‚Á‚½‚©
-        WaterFeverCorrected =
-            !IsHemodialysis &&
-            SelectedBodyTemperature != BodyTemperatureLevel.Normal;
-    }
-
-
-    /*
-    // ¾Š³•ÏX‚É‰‚¶‚½©“®’`”’•â³i‰Šú’lj
-    var autoCorrection =
-        ProteinCorrectionSelector.GetDefault(
-            Age,
-            SelectedProteinCondition);
-
-    // š ƒ†[ƒU[‚ª‚Ü‚¾ None ‚Ìê‡‚Ì‚İ©“®İ’è
-    if (SelectedProteinCorrection == ProteinCorrectionType.None)
-    {
-        SelectedProteinCorrection = autoCorrection;
-    }
-    if (ProteinCorrect <= 0)
-    {
-        ProteinCorrect = 1.0;
-    }
-
-    // ƒXƒgƒŒƒXŒW”
-
-      var baseStress = StressFactorTable.Get(StressFactor);
-    var tempStress =
-        TemperatureStressTable.GetAddition(SelectedBodyTemperature);
-
-    double totalStress = baseStress + tempStress;
-
-
-
-
-    //==============================
-    // ‡@ •\¦—pBMRiÀ‘ª‘Ìdj
-    //==============================
-    BmrResult = BmrCalculator.Calculate(
-        Age,
-        Weight,
-        Height,
-        Sex);
-
-    //==============================
-    // ‡A •W€‘ÌdE”ì–“x
-    //==============================
-    BodyIndex = BodyIndexCalculator.Calculate(
-        Age,
-        Height,
-        Weight,
-        Sex);
-
-    //==============================
-    // ‡B •â³‘Ìdi‹¤’Êj
-    //==============================
     AdjustedWeight = AdjustedWeightCalculator.Calculate(
-        age: Age,
-        actualWeight: Weight,
-        standardWeight: BodyIndex.StandardWeight,
-        obesityDegree: BodyIndex.ObesityDegree ?? 0);
+        Age.Value,
+        Weight.Value,
+        BodyIndex.StandardWeight,
+        BodyIndex.ObesityDegree ?? 0);
 
-    //==============================
-    // ‡C ‰h—{ŒvZ—p‘ÌdiƒGƒlƒ‹ƒM[j
-    //==============================
-    double weightForEnergy =
-        WeightForCalculationSelector.Select(
-            usage: WeightUsage.Energy,
-            age: Age,
-            actualWeight: Weight,
-            adjustedWeight: AdjustedWeight,
-            standardWeight: BodyIndex.StandardWeight,
-            proteinCondition: ProteinCondition.None); // Energy‚Å‚Í–¢g—p‚¾‚ª–¾¦“I‚É None
+    // è¡¨ç¤ºç”¨ã‚¨ãƒãƒ«ã‚®ãƒ¼å€™è£œï¼ˆæ•´æ•°ï¼‰
+    BmrKcal = (int)Math.Round(BmrResult.RawValue, MidpointRounding.AwayFromZero);
 
-    //==============================
-    // ‡D ‰h—{ŒvZ—p‘Ìdi’`”’¿j
-    //==============================
+    // 25/30/35 ã¯æ¨™æº–ä½“é‡ãƒ™ãƒ¼ã‚¹ï¼ˆå¹´é½¢ã«é–¢ä¿‚ãªãè¡¨ç¤ºã™ã‚‹æ–¹é‡ã«å¯„ã›ã‚‹ï¼‰
+    // â€» StandardWeight ãŒè¨ˆç®—ã§ãã¦ã„ã‚‹å‰æ
+    Kcal25 = (int)Math.Round(BodyIndex.StandardWeight * 25.0, MidpointRounding.AwayFromZero);
+    Kcal30 = (int)Math.Round(BodyIndex.StandardWeight * 30.0, MidpointRounding.AwayFromZero);
+    Kcal35 = (int)Math.Round(BodyIndex.StandardWeight * 35.0, MidpointRounding.AwayFromZero);
+}
+
+//==============================
+// ã‚¨ãƒãƒ«ã‚®ãƒ¼/è›‹ç™½/æ°´åˆ†ï¼ˆå‚è€ƒè¡¨ç¤ºï¼‰
+//==============================
+private void RecalcEnergyProteinWater()
+{
+    EnergyFinal = null;
+    ProteinRaw = null;
+    ProteinDisplayText = "";
+    WaterDisplay = null;
+    WaterFeverCorrected = false;
+
+    // ã‚¹ãƒˆãƒ¬ã‚¹ã¯å…¥åŠ›ãŒæƒã‚ãªãã¦ã‚‚è¨ˆç®—å¯èƒ½
+    StressBase = StressFactorTable.Get(StressFactor);
+    StressTemperature = TemperatureStressTable.GetAddition(SelectedBodyTemperature);
+    StressTotal = StressBase + StressTemperature;
+
+    if (!CanCalcBase() || BodyIndex is null || AdjustedWeight is null || BmrResult is null)
+        return;
+
+    // BMRæ¨å®šã‚¨ãƒãƒ«ã‚®ãƒ¼
+    var bmrForEnergy = BmrCalculator.Calculate(Age!.Value, AdjustedWeight.Value, Height!.Value, Gender);
+
+    var energyByBmr =
+        Age.Value == 0
+            ? ((BmrResult.RawValue * StressTotal) + (40 * Weight!.Value)) * 1.1
+            : bmrForEnergy.RawValue
+                * ActivityFactorTable.Get(ActivityFactor)
+                * StressTotal;
+
+    // kcal/kgï¼ˆæ¨™æº–ä½“é‡ï¼‰
+    var e25 = 25 * BodyIndex.StandardWeight;
+    var e30 = 30 * BodyIndex.StandardWeight;
+    var e35 = 35 * BodyIndex.StandardWeight;
+
+    double selected =
+        SelectedEnergyOrder switch
+        {
+            EnergyOrderType.Kcal25 => e25,
+            EnergyOrderType.Kcal30 => e30,
+            EnergyOrderType.Kcal35 => e35,
+            EnergyOrderType.Manual => ManualEnergyValue ?? energyByBmr,
+            _ => energyByBmr
+        };
+
+    EnergyFinal = (int)Math.Round(selected, MidpointRounding.AwayFromZero);
+
+    // è›‹ç™½è£œæ­£ä¿‚æ•°
+    double proteinCorrect =
+        SelectedProteinCorrection switch
+        {
+            ProteinCorrectionType.CKD3bTo5 => 0.7,
+            ProteinCorrectionType.LiverCirrhosisPoor => 0.5,
+            _ => 1.0
+        };
+
+    // è›‹ç™½
     double weightForProtein =
         WeightForCalculationSelector.Select(
-            usage: WeightUsage.Protein,
-            age: Age,
-            actualWeight: Weight,
-            adjustedWeight: AdjustedWeight,
-            standardWeight: BodyIndex.StandardWeight,
-            proteinCondition: SelectedProteinCondition);
-
-
-    //==============================
-    // ‡E ‰h—{ŒvZ—pBMRiÄŒvZj
-    //    ¦ •\¦‚µ‚È‚¢
-    //==============================
-    var bmrForEnergy = BmrCalculator.Calculate(
-        Age,
-        weightForEnergy,
-        Height,
-        Sex);
-
-
-
-    //==============================
-    // ‡F Šˆ“®ŒW”EƒXƒgƒŒƒXŒW”
-    //==============================
-    var activity = ActivityFactorTable.Get(ActivityFactor);
-    // Šî‘bƒXƒgƒŒƒXŒW”iŠ´õEŠO‚È‚Çj
-    double baseStress =
-        StressFactorTable.Get(StressFactor);
-
-    // ‘Ì‰·‚É‚æ‚é‰ÁZ
-    double temperatureStress =
-        TemperatureStressTable.GetAddition(SelectedBodyTemperature);
-
-    // ‡¬ƒXƒgƒŒƒXŒW”
-    double totalStress = baseStress + temperatureStress;
-
-    StressBase = baseStress;
-    StressTemperature = temperatureStress;
-    StressTotal = totalStress;
-
-    //==============================
-    // ‡G „’è•K—vƒJƒƒŠ[
-    //==============================
-    if (Age == 0)
-    {
-        // “û™i0Îjê—p®
-        // À‘ª‘ÌdBMRi•\¦—p‚Æ“¯‚¶j
-        double infantBmr = BmrResult!.RawValue;
-
-        EnergyRaw =
-            ((infantBmr * totalStress)
-             + (40.0 * Weight))
-            * 1.1;
-    }
-    else
-    {
-        // ¬™E¬l
-        EnergyRaw =
-            bmrForEnergy.RawValue
-            * activity
-            * totalStress;
-    }
-
-    EnergyDisplay =
-        EnergyRaw.HasValue
-            ? (int)Math.Round(
-                EnergyRaw.Value,
-                MidpointRounding.AwayFromZero)
-            : null;
-
-    //==============================
-    // ‡H „’è•K—v’`”’¿—Ê
-    //==============================
-    ActivityFactorValue = ActivityFactorTable.Get(ActivityFactor);
-    StressFactorValue = StressTotal;
+            WeightUsage.Protein,
+            Age.Value,
+            Weight.Value,
+            AdjustedWeight.Value,
+            BodyIndex.StandardWeight,
+            SelectedDisease);
 
     ProteinRaw =
         ProteinCalculator.Calculate(
-            age: Age,
-            weightForProtein: weightForProtein,
-            stressFactor: totalStress,
-            proteinCorrect: ProteinCorrect);
-
-    ProteinDisplay =
-        ProteinRaw.HasValue
-            ? Math.Round(
-                ProteinRaw.Value,
-                1,
-                MidpointRounding.AwayFromZero)
-            : null;
+            Age.Value,
+            weightForProtein,
+            StressTotal,
+            proteinCorrect,
+            SelectedDisease);
 
     ProteinDisplayText =
-        ProteinDisplay.HasValue
-            ? ProteinDisplay.Value.ToString("F1")
-            : null;
+        Math.Round(ProteinRaw.Value, 1, MidpointRounding.AwayFromZero).ToString("F1");
 
-
-    //==============================
-    // ‡E …•ª—ÊŒvZ
-    //==============================
-    // …•ª—Ê
-    WaterRaw =
+    // æ°´åˆ†ï¼ˆæ—¢å­˜ãƒ­ã‚¸ãƒƒã‚¯è¸è¥²ï¼‰
+    double water =
         WaterCalculator.CalculateTotal(
-            age: Age,
-            actualWeight: Weight,
-            isHemodialysis: IsHemodialysis,
-            isPregnant: IsPregnant,
-            adjustedWeight: AdjustedWeight,
-            obesityDegree: BodyIndex.ObesityDegree ?? 0,
-            temperatureLevel: SelectedBodyTemperature);
+            Age.Value,
+            Weight.Value,
+            IsHemodialysis,
+            IsPregnant,
+            AdjustedWeight.Value,
+            BodyIndex.ObesityDegree ?? 0,
+            SelectedBodyTemperature);
 
-    WaterDisplay =
-        (int)Math.Round(
-            WaterRaw.Value,
-            MidpointRounding.AwayFromZero);
-    
+    WaterDisplay = (int)Math.Round(water, MidpointRounding.AwayFromZero);
+
+    WaterFeverCorrected =
+        !IsHemodialysis &&
+        SelectedBodyTemperature != BodyTemperatureLevel.Normal;
 }
+
+//==============================
+// çµŒè…¸æ „é¤Šï¼ˆå¿…è¦é‡ãƒ™ãƒ¼ã‚¹ + å‰²ä»˜å€™è£œï¼‰
+//==============================
+private void RecalcEnteral()
+{
+    // åˆæœŸåŒ–
+    EnteralPackagePlans = Array.Empty<EnteralPackagePlan>();
+    PackageVolumeOptions = new List<SelectListItem>();
+
+    EnteralEnergy = null;
+    EnteralVolume = null;
+
+    EnteralProtein = null;
+    EnteralFat = null;
+    EnteralCarb = null;
+    EnteralSalt = null;
+    EnteralVitaminK = null;
+    EnteralWater = null;
+
+    var act = (Action ?? "").ToLowerInvariant();
+
+    if (!SelectedEnteralFormula.HasValue)
+    {
+        EnteralVolumeInput = null;
+        ModelState.Remove(nameof(EnteralVolumeInput));
+        return;
+    }
+
+    var formula = SelectedEnteralFormula.Value;
+    var comp = EnteralFormulaTable.Get(formula);
+    var packageVolumes = EnteralPackageTable.Get(formula);
+
+    PackageVolumeOptions = packageVolumes
+        .Select(v => new SelectListItem($"{v} mL", v.ToString()))
+        .ToList();
+
+    var maxToShow = packageVolumes.Count <= 1 ? 1 : 2;
+
+    // volume ã®ã¨ãã ã‘ mL ã‚’å„ªå…ˆã€‚ãã®ä»–ã¯ kcalâ†’mL ã‚’å†è¨ˆç®—ã—ã¦å…¥åŠ›æ¬„ã‚‚åŒæœŸã€‚
+    if (act == "volume" && EnteralVolumeInput.HasValue && EnteralVolumeInput.Value > 0)
+    {
+        EnteralVolume = EnteralVolumeInput.Value;
+
+        // mL â†’ kcal
+        var kcal = EnteralEnergyCalculator.CalculateEnergyFromVolume(EnteralVolume.Value, comp);
+        var kcalRounded = (int)Math.Round(kcal, MidpointRounding.AwayFromZero);
+
+        EnteralEnergy = kcalRounded;
+
+        // kcalå…¥åŠ›æ¬„ã‚‚åŒæœŸ
+        EnergyOrderValue = kcalRounded;
+        ModelState.Remove(nameof(EnergyOrderValue));
+
+        // å‰²ä»˜å€™è£œï¼ˆç›®å®‰ï¼‰
+        EnteralPackagePlans =
+            EnteralPackageAllocator.BuildPlans(
+                (int)Math.Round(EnteralVolume.Value, MidpointRounding.AwayFromZero),
+                packageVolumes.ToList(),
+                maxPlans: maxToShow);
+    }
+    else if (EnergyOrderValue.HasValue && EnergyOrderValue.Value > 0)
+    {
+        var targetKcal = EnergyOrderValue.Value;
+
+        // kcal â†’ å¿…è¦mLï¼ˆç«¯æ•°å«ã‚€ï¼‰
+        var rawVolume = targetKcal * comp.VolumePerKcal;
+        var targetVolumeMl = (int)Math.Round(rawVolume, MidpointRounding.AwayFromZero);
+
+        EnteralVolume = targetVolumeMl;
+
+        // å…¥åŠ›æ¬„ã‚‚åŒæœŸ
+        EnteralVolumeInput = targetVolumeMl;
+        ModelState.Remove(nameof(EnteralVolumeInput));
+
+        // è¡¨ç¤ºæŠ•ä¸é‡ãƒ™ãƒ¼ã‚¹ã® kcalï¼ˆå³å¯†ã«ã¯ targetKcal ã¨ã»ã¼ä¸€è‡´ã™ã‚‹æƒ³å®šï¼‰
+        EnteralEnergy = EnteralEnergyCalculator.CalculateEnergyFromVolume(EnteralVolume.Value, comp);
+
+        // å‰²ä»˜å€™è£œï¼ˆç›®å®‰ï¼‰
+        EnteralPackagePlans =
+            EnteralPackageAllocator.BuildPlans(
+                targetVolumeMl,
+                packageVolumes.ToList(),
+                maxPlans: maxToShow);
+    }
+    else
+    {
+        // kcal ã‚‚ mL ã‚‚ç„¡ã„
+        EnteralVolumeInput = null;
+        ModelState.Remove(nameof(EnteralVolumeInput));
+        return;
+    }
+
+    // æˆåˆ†è¨ˆç®—ï¼ˆå¸¸ã«ã€Œè¡¨ç¤ºã•ã‚Œã¦ã„ã‚‹æŠ•ä¸é‡ã€ã‹ã‚‰ï¼‰
+    if (EnteralEnergy.HasValue)
+    {
+        EnteralProtein = EnteralEnergy.Value * comp.ProteinPerKcal;
+        EnteralFat = EnteralEnergy.Value * comp.FatPerKcal;
+        EnteralCarb = EnteralEnergy.Value * comp.CarbPerKcal;
+        EnteralSalt = EnteralEnergy.Value * comp.SaltPerKcal;
+        EnteralVitaminK = EnteralEnergy.Value * comp.VitaminKPerKcal;
+        EnteralWater = EnteralEnergy.Value * comp.WaterPerKcal;
+    }
+}
+}
+
 */
