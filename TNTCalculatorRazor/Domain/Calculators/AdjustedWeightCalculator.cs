@@ -1,18 +1,32 @@
-﻿namespace TNTCalculatorRazor.Domain.Calculators;
+﻿using TNTCalculatorRazor.Domain.Enums;
+
+namespace TNTCalculatorRazor.Domain.Calculators;
 
 public static class AdjustedWeightCalculator
 {
-    /// <summary>
-    /// BMR 計算用の補正体重を算出
-    /// 0歳児は必ず実測体重
-    /// それ以外は肥満度により分岐
-    /// </summary>
+    public static BmrWeightBasisType GetBasis( int age, double obesityDegree )
+    {
+        if (age == 0) return BmrWeightBasisType.Actual;                 // 乳児は無条件で実測体重
+        if (obesityDegree <= 80.0) return BmrWeightBasisType.Standard;  // 肥満度80%以下：標準体重
+        if (obesityDegree >= 120.0) return BmrWeightBasisType.Adjusted; // 肥満度120%以上：調整体重
+        return BmrWeightBasisType.Actual;                               // 通常：実測体重
+    }
     public static double Calculate(
         int age,
         double actualWeight,
         double standardWeight,
         double obesityDegree )
     {
+        return GetBasis(age, obesityDegree) switch
+        {
+            BmrWeightBasisType.Standard => standardWeight,
+            BmrWeightBasisType.Adjusted => (actualWeight - standardWeight) * 0.25 + standardWeight, // 調整体重
+            _ => actualWeight
+        };
+    }
+}
+        /*
+          
         // 0歳児は無条件で実測体重
         if (age == 0)
         {
@@ -36,3 +50,4 @@ public static class AdjustedWeightCalculator
         }
     }
 }
+        */

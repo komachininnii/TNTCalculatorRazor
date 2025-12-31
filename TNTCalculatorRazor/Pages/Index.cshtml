@@ -64,13 +64,26 @@
 
     .kv {
       display: grid;
-      grid-template-columns: 1fr auto;
+      /* タイトル列は細め固定、値側に幅を返す */
+      grid-template-columns: 8.5em minmax(0, 1fr);
       gap: 8px 12px;
       align-items: baseline;
       margin: 0;
     }
-    .kv dt { color:#333; }
-    .kv dd { margin: 0; font-weight: 600; }
+
+    .kv dt { white-space: nowrap; } /* タイトルは原則1行に */
+    .kv dd { min-width: 0; } /* 値側をちゃんと折り返させるため */
+
+    @@media (max-width: 520px) {
+        /* 画面が狭い時は dt/dd を縦並び（タイトル折り返し問題も、内訳の圧縮も両方解消） */
+        .kv {
+            grid-template-columns: 1fr;
+        }
+        .kv dt {
+            white-space: normal;
+        }
+        
+    }
 
     .pill {
       display:inline-block;
@@ -131,6 +144,87 @@
         background: #d6d6d6;
     }
 
+    /* エラースタイル */
+    .text-danger {
+        color: #b00020;
+    }
+
+    .validation-summary {
+        margin: 8px 0 0 0;
+    }
+
+    .field-error {
+        margin-top: 4px;
+        font-size: 0.9em;
+    }
+
+    /* ストレス係数合計・内訳表示用 */
+    .pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 6px;
+    }
+
+    .pill.mini {
+        font-size: 0.82em;
+        padding: 1px 6px;
+    }
+
+    /* ストレス合計・必要エネルギーの折り返し調整 */
+    .kv dd .mainline {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+        flex-wrap: wrap; /* ここで折り返し＝1行に収まらない場合のみ */
+    }
+
+    .kv dd .subline {
+        margin-top: 6px;
+    }
+    /* 1行に収める：右にはみ出したら横スクロール（縦は増やさない） */
+    .line {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-bottom: 2px; /* スクロールバーが被らないように */
+    }
+
+        .line::-webkit-scrollbar {
+            height: 6px;
+        }    /* 任意：スクロールバー薄く */
+
+    .kv-need {
+        grid-template-columns: 7.5em minmax(0, 1fr);
+    }
+
+    .kv-need dd {
+            min-width: 0;
+    }
+
+    /* ストレス合計の内訳表示用 */
+    .need-line {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        align-items: baseline;
+    }
+
+    .need-line + .need-line {
+        margin-top: 6px;
+    }
+
+    /* BMR計算式名pill表示用 */
+    .pill.trunc {
+        max-width: 10.5em; /* ここを調整：狭いなら9em、余裕あるなら12em */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
 </style>
 
 <form method="post">
@@ -146,6 +240,12 @@
 
             <div class="card">
                 <h3>基本入力</h3>
+                
+                @if (((Model.Action ?? "").Trim().ToLowerInvariant()) == "anthro")
+                {
+                    <div class="validation-summary text-danger" asp-validation-summary="ModelOnly"></div>
+                }
+
                 <div class="fields">
 
                     <div class="field">
@@ -154,7 +254,11 @@
                             <input asp-for="Age" type="number" step="1" inputmode="numeric"
                                    onkeydown="submitOnEnter(event,'anthro')" />
                             <span class="unit">歳</span>
-                        </div>
+                            @if (((Model.Action ?? "").Trim().ToLowerInvariant()) == "anthro")
+                            {
+                                <div class="field-error text-danger"><span asp-validation-for="Age"></span></div>                
+                            }
+                            </div>
                     </div>
 
                     <div class="field">
@@ -163,6 +267,10 @@
                             <input asp-for="Height" type="number" step="0.1" inputmode="decimal"
                                    onkeydown="submitOnEnter(event,'anthro')" />
                             <span class="unit">cm</span>
+                            @if (((Model.Action ?? "").Trim().ToLowerInvariant()) == "anthro")
+                            {
+                                <div class="field-error text-danger"><span asp-validation-for="Height"></span></div>
+                            }
                         </div>
                     </div>
 
@@ -172,6 +280,10 @@
                             <input asp-for="Weight" type="number" step="0.1" inputmode="decimal"
                                    onkeydown="submitOnEnter(event,'anthro')" />
                             <span class="unit">kg</span>
+                            @if (((Model.Action ?? "").Trim().ToLowerInvariant()) == "anthro")
+                            {
+                                <div class="field-error text-danger"><span asp-validation-for="Weight"></span></div>
+                            }
                         </div>
                     </div>
 
@@ -192,7 +304,7 @@
                 <h3>疾患</h3>
                 <div class="fields">
                     <div class="field">
-                        <div class="label">疾患</div>
+                        <div class="label">疾患別例外</div>
                         <div class="control">
                             <select asp-for="SelectedDisease"
                                     asp-items="Html.GetEnumSelectList<DiseaseType>()"
@@ -201,7 +313,7 @@
                             </select>
                             @if (Model.Age.HasValue && Model.Age.Value < 18)
                             {
-                                <div class="muted small">※ 小児は院内マニュアル上、疾患別デフォルトの対象外（疾患は「なし」に固定）</div>
+                                <div class="muted small">※ 小児は疾患別例外の対象外</div>
                             }
                             <span class="muted small">※ 疾患によりデフォルトや計算式が変わる場合があります</span>
                         </div>
@@ -243,6 +355,16 @@
                         </div>
                     </div>
 
+                    <div class="field">
+                        <div class="label">褥瘡</div>
+                        <div class="control">
+                            <select asp-for="SelectedPressureUlcer"
+                                    asp-items="Html.GetEnumSelectList<PressureUlcerLevel>()"
+                                    onchange="document.getElementById('Action').value='factors'; this.form.submit();">
+                            </select>
+                        </div>
+                    </div>
+
                     @if (Model.SelectedDisease == DiseaseType.LiverCirrhosis)
                     {
                         <div class="field sub">
@@ -273,7 +395,7 @@
             </div>
 
             <div class="card">
-                <h3>投与カロリー</h3>
+                <h3>必要エネルギー</h3>
 
                 <div class="fields">
                     <div class="field">
@@ -287,7 +409,7 @@
                     </div>
 
                     <div class="field">
-                        <div class="label">投与カロリー</div>
+                        <div class="label">必要エネルギー</div>
                         <div class="control">
                             <input asp-for="EnergyOrderValue"
                                    type="number" step="1" inputmode="numeric"
@@ -307,13 +429,13 @@
                     <summary>エネルギー候補（参考）</summary>
                     <div class="small" style="margin-top:10px;">
                         <dl class="kv">
-                            <dt>BMR</dt>
-                            <dd>@(Model.BmrKcal?.ToString() ?? "-") kcal</dd>
-                            <dt>25 kcal/kg</dt>
+                            <dt>基礎エネルギー×係数</dt>
+                            <dd>@(Model.EnergyByBmrKcal?.ToString() ?? "-") kcal</dd>
+                            <dt>25kcal/標準体重kg</dt>
                             <dd>@(Model.Kcal25?.ToString() ?? "-") kcal</dd>
-                            <dt>30 kcal/kg</dt>
+                            <dt>30kcal/標準体重kg</dt>
                             <dd>@(Model.Kcal30?.ToString() ?? "-") kcal</dd>
-                            <dt>35 kcal/kg</dt>
+                            <dt>35kcal/標準体重kg</dt>
                             <dd>@(Model.Kcal35?.ToString() ?? "-") kcal</dd>
                         </dl>
                     </div>
@@ -334,6 +456,27 @@
                     <div>
                         <h4>基本計算</h4>
                         <dl class="kv">
+                            <dt>
+                                BMR(基礎エネルギー)
+                                @if (!string.IsNullOrWhiteSpace(Model.BmrFormulaDisplay)
+                                                                && Model.BmrWeightBasis.HasValue
+                                                                && Model.BmrWeightUsed.HasValue)
+                                {
+                                    <div class="pills" style="margin-top:6px;">
+                                        <span class="pill mini trunc" title="@Model.BmrFormulaDisplayLong">
+                                            @Model.BmrFormulaDisplay
+                                        </span>
+
+                                        <span class="pill mini">
+                                            @( $"W{Model.BmrWeightBasis.Value.ToDisplayName()}{Model.BmrWeightUsed.Value.ToString("F1")}" )
+                                        </span>
+                                    </div>
+                                }
+                            </dt>
+                            <dd>
+                                @(Model.BmrKcal?.ToString() ?? "-") kcal
+                            </dd>
+                            
                             <dt>BMI</dt>
                             <dd>@(Model.BodyIndex != null ? Model.BodyIndex.Bmi.ToString("F1") : "-")</dd>
 
@@ -350,28 +493,53 @@
 
                     <div>
                         <h4>必要量</h4>
-                        <dl class="kv">
+                        <dl class="kv kv-need">
                             <dt>ストレス合計</dt>
-                            <dd>@Model.StressTotal <span class="muted small">(基礎 @Model.StressBase / 体温 @Model.StressTemperature)</span></dd>
+                            <dd>
+                                <div class="need-line">
+                                    @Model.StressTotal.ToString("F1")
+                                    <span class="pill mini">基礎 @Model.StressBase.ToString("F2")</span>
+                                </div>
+
+                                <div class="need-line">
+                                    <span class="pill mini">熱 @Model.StressTemperature.ToString("F1")</span>
+                                    <span class="pill mini">褥 @Model.StressPressureUlcer.ToString("F1")</span>
+                                </div>
+                            </dd>
 
                             <dt>必要エネルギー</dt>
-                            <dd>@(Model.EnergyFinal?.ToString() ?? "-") kcal/day</dd>
+                            <dd><strong>@(Model.EnergyFinal?.ToString() ?? "-")</strong> kcal</dd>
 
                             <dt>蛋白</dt>
-                            <dd>@(Model.ProteinRaw?.ToString("F2") ?? "-") g/day <span class="muted small">(表示 @Model.ProteinDisplayText)</span></dd>
+                            <dd>
+                                <strong>@(Model.ProteinDisplayText ?? "-")</strong> g
+                                @if (Model.SelectedProteinCorrection != ProteinCorrectionType.None)
+                                {
+                                    <span class="pill mini" style="margin-left:6px;">
+                                        @(
+                                          Model.SelectedProteinCorrection switch
+                                          {
+                                              ProteinCorrectionType.CKD3bTo5 => "補正0.7",
+                                              ProteinCorrectionType.LiverCirrhosisPoor => "補正0.5",
+                                              _ => "補正"
+                                          }
+                                         )
+                                    </span>
+                                }
+                            </dd>
 
                             <dt>水分</dt>
                             <dd>
-                                @(Model.WaterDisplay?.ToString() ?? "-") mL/day
+                                <strong>@(Model.WaterDisplay?.ToString() ?? "-")</strong> mL
                                 @if (Model.WaterFeverCorrected)
                                 {
-                                    <span class="pill">発熱補正</span>
+                                    <span class="pill mini" style="margin-left:6px;">発熱</span>
                                 }
                             </dd>
                         </dl>
                         @if (Model.SelectedDisease == DiseaseType.LiverCirrhosis && Model.IsHepaticEncephalopathy)
                         {
-                            <div class="muted small">※ 肝性脳症あり：肝不全用アミノ酸製剤の併用を検討</div>
+                            <div class="muted small">※ 肝性脳症：肝不全用アミノ酸製剤の併用を検討</div>
                         }
                     </div>
                 </div>
@@ -421,7 +589,7 @@
                             <select asp-for="SelectedEnteralFormula"
                                     asp-items="Html.GetEnumSelectList<EnteralFormulaType>()"
                                     onchange="document.getElementById('Action').value='formula'; this.form.submit();">
-                                <option value="">-- 選択してください --</option>
+                                <option value="">-- 選択してください -- [ mL/袋 (kcal/袋) ] </option>
                             </select>
                         </div>
                     </div>
@@ -455,7 +623,7 @@
 
                             <div class="hr"></div>
 
-                            <h4>割付候補（目安：上位）</h4>
+                            <h4>割付候補</h4>
                             <ul class="small">
                                 @foreach (var plan in Model.EnteralPackagePlans)
                                 {
@@ -489,17 +657,20 @@
                 <details>
                     <summary>デバッグ（開発中）</summary>
                     <pre class="small" style="white-space:pre-wrap;margin-top:10px;">
-Action               : @Model.Action
-Age/Height/Weight     : @Model.Age / @Model.Height / @Model.Weight
-Gender                : @Model.Gender
-Disease               : @Model.SelectedDisease
-EnergyOrderType       : @Model.SelectedEnergyOrder
-EnergyOrderValue      : @Model.EnergyOrderValue
-IsEnergyUserEdited    : @Model.IsEnergyUserEdited
-Formula               : @Model.SelectedEnteralFormula
-EnteralVolumeInput    : @Model.EnteralVolumeInput
-EnteralVolume         : @Model.EnteralVolume
-EnteralEnergy         : @Model.EnteralEnergy
+                    Action               : @Model.Action
+                    Age/Height/Weight     : @Model.Age / @Model.Height / @Model.Weight
+                    Gender                : @Model.Gender
+                    Disease               : @Model.SelectedDisease
+                    EnergyOrderType       : @Model.SelectedEnergyOrder
+                    EnergyOrderValue      : @Model.EnergyOrderValue
+                    IsEnergyUserEdited    : @Model.IsEnergyUserEdited
+                    Formula               : @Model.SelectedEnteralFormula
+                    EnteralVolumeInput    : @Model.EnteralVolumeInput
+                    EnteralVolume         : @Model.EnteralVolume
+                    EnteralEnergy         : @Model.EnteralEnergy
+                    StressTotal           : @Model.StressTotal
+                    PressureUlcer         : @Model.SelectedPressureUlcer
+                    StressPressureUlcer   : @Model.StressPressureUlcer
           </pre>
                 </details>
             </div>

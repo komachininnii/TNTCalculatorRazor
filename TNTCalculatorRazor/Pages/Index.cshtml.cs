@@ -22,12 +22,22 @@ public class IndexModel : PageModel
     [BindProperty] public ActivityFactorType ActivityFactor { get; set; } = ActivityFactorType.BedriddenComa;
     [BindProperty] public StressFactorType StressFactor { get; set; } = StressFactorType.Normal;
     [BindProperty] public BodyTemperatureLevel SelectedBodyTemperature { get; set; } = BodyTemperatureLevel.Normal;
+    
+    // 褥瘡（ストレス加算のみ）
+    [BindProperty]
+    public PressureUlcerLevel SelectedPressureUlcer { get; set; } = PressureUlcerLevel.None;
+    // 表示用（内訳）
+    public double StressPressureUlcer { get; private set; }
 
     [BindProperty] public DiseaseType SelectedDisease { get; set; } = DiseaseType.None;
     [BindProperty] public ProteinCorrectionType SelectedProteinCorrection { get; set; } = ProteinCorrectionType.None;
 
+    // BMRで用いた式（表示用）
+    public string BmrFormulaDisplay { get; private set; } = "";
+    public string BmrFormulaDisplayLong { get; private set; } = "";
     // エネルギー算出方法（疾患でデフォルト切替）
     [BindProperty] public EnergyOrderType SelectedEnergyOrder { get; set; } = EnergyOrderType.BmrEstimated;
+
     [BindProperty] public int? ManualEnergyValue { get; set; }
 
     // 経腸栄養側の編集可能な「投与カロリー」
@@ -49,6 +59,11 @@ public class IndexModel : PageModel
     // 計算結果（表示用）
     //==============================
     public BmrResult? BmrResult { get; private set; }
+    // 基礎エネルギー算出に用いた体重の基準
+    public BmrWeightBasisType? BmrWeightBasis { get; private set; }
+    // 基礎エネルギー算出に用いた体重の値
+    public double? BmrWeightUsed { get; private set; }
+
     public BodyIndexResult? BodyIndex { get; private set; }
 
     public double? AdjustedWeight { get; private set; }
@@ -61,6 +76,8 @@ public class IndexModel : PageModel
 
     // エネルギー候補（表示用）
     public int? BmrKcal { get; private set; }
+    // 参考：基礎エネルギー×係数（BMR推定ルートの最終値）
+    public int? EnergyByBmrKcal { get; private set; }
     public int? Kcal25 { get; private set; }
     public int? Kcal30 { get; private set; }
     public int? Kcal35 { get; private set; }
@@ -152,8 +169,8 @@ public class IndexModel : PageModel
             IsProteinCorrectionUserEdited = true;
 
         // 1) 基本計算（入力が揃っていて範囲内なら BMR/標準体重などが埋まる）
-        RecalcBase();
-
+        RecalcBase(addErrors: Act == "anthro");
+       
         // 小児は「例外疾患の対象外」：疾患は None に固定（UIもdisabled化する想定）
         if (Age.HasValue && Age.Value < 18)
         {
@@ -258,35 +275,52 @@ public class IndexModel : PageModel
     // ==============================
     // 基本計算
     // ==============================
-    private bool CanCalcBase()
+    private bool CanCalcBase( bool addErrors )
     {
         // 必須：年齢・身長・体重
         if (!Age.HasValue || !Height.HasValue || !Weight.HasValue)
             return false;
 
         // 範囲（「あり得ない値」を弾く）
-        if (Age.Value < 0 || Age.Value >= 130) return false;
-        if (Height.Value < 30 || Height.Value >= 250) return false;
-        if (Weight.Value < 0.5 || Weight.Value >= 300) return false;
+        if (Age.Value < 0 || Age.Value >= 130)
+        {
+            ModelState.AddModelError(nameof(Age), "年齢は 0〜129 の範囲で入力してください。");
+            return false;
+        }
+        if (Height.Value < 30 || Height.Value >= 250)
+        {
+            ModelState.AddModelError(nameof(Height), "身長は 30.0〜249.9 cm の範囲で入力してください。");
+            return false;
+        }
+        if (Weight.Value < 0.5 || Weight.Value >= 300)
+        {
+            ModelState.AddModelError(nameof(Weight), "体重は 0.5〜299.9 kg の範囲で入力してください。");
+            return false;
+        }
 
         return true;
     }
 
-    private void RecalcBase()
+    private void RecalcBase( bool addErrors )
     {
         // 初期化
         BmrResult = null;
         BodyIndex = null;
         BodySurfaceArea = null;
         AdjustedWeight = null;
+        BmrWeightBasis = null;
+        BmrWeightUsed = null;
 
         BmrKcal = Kcal25 = Kcal30 = Kcal35 = null;
+        BmrFormulaDisplay = "";
 
-        if (!CanCalcBase())
+        if (!CanCalcBase(addErrors))
             return;
 
         // BMR / 体格 / BSA
         BmrResult = BmrCalculator.Calculate(Age!.Value, Weight!.Value, Height!.Value, Gender);
+        BmrFormulaDisplay = BmrResult.Formula.ToShortName();
+        BmrFormulaDisplayLong = BmrResult.Formula.ToLongName();
         BodyIndex = BodyIndexCalculator.Calculate(Age.Value, Height.Value, Weight.Value, Gender);
         BodySurfaceArea = BodySurfaceAreaCalculator.Calculate(Height.Value, Weight.Value);
 
@@ -296,12 +330,17 @@ public class IndexModel : PageModel
             BodyIndex.StandardWeight,
             BodyIndex.ObesityDegree ?? 0);
 
+        // BMRで用いる体重（どれを採用したか）
+        BmrWeightBasis = AdjustedWeightCalculator.GetBasis(Age.Value, BodyIndex.ObesityDegree ?? 0);
+        BmrWeightUsed = AdjustedWeight.Value;
+
         // 表示用エネルギー候補（整数）
         BmrKcal = (int)Math.Round(BmrResult.RawValue, MidpointRounding.AwayFromZero);
+        
 
-        // 25/30/35 は標準体重ベース（年齢に関係なく表示する方針に寄せる）
-        // ※ StandardWeight が計算できている前提
-        Kcal25 = (int)Math.Round(BodyIndex.StandardWeight * 25.0, MidpointRounding.AwayFromZero);
+    // 25/30/35 は標準体重ベース（年齢に関係なく表示する方針に寄せる）
+    // ※ StandardWeight が計算できている前提
+    Kcal25 = (int)Math.Round(BodyIndex.StandardWeight * 25.0, MidpointRounding.AwayFromZero);
         Kcal30 = (int)Math.Round(BodyIndex.StandardWeight * 30.0, MidpointRounding.AwayFromZero);
         Kcal35 = (int)Math.Round(BodyIndex.StandardWeight * 35.0, MidpointRounding.AwayFromZero);
     }
@@ -313,6 +352,7 @@ public class IndexModel : PageModel
     private void RecalcEnergyProteinWater()
     {
         EnergyFinal = null;
+        EnergyByBmrKcal = null;
         ProteinRaw = null;
         ProteinDisplayText = "";
         WaterDisplay = null;
@@ -321,9 +361,10 @@ public class IndexModel : PageModel
         // ストレスは入力が揃わなくても計算可能
         StressBase = StressFactorTable.Get(StressFactor);
         StressTemperature = TemperatureStressTable.GetAddition(SelectedBodyTemperature);
-        StressTotal = StressBase + StressTemperature;
+        StressPressureUlcer = PressureUlcerStressTable.GetAddition(SelectedPressureUlcer);
+        StressTotal = StressBase + StressTemperature + StressPressureUlcer;
 
-        if (!CanCalcBase() || BodyIndex is null || AdjustedWeight is null || BmrResult is null)
+        if (!CanCalcBase(addErrors: false) || BodyIndex is null || AdjustedWeight is null || BmrResult is null)
             return;
 
         // BMR推定エネルギー
@@ -335,7 +376,10 @@ public class IndexModel : PageModel
                 : bmrForEnergy.RawValue
                     * ActivityFactorTable.Get(ActivityFactor)
                     * StressTotal;
-
+        
+        // 参考表示用：基礎エネルギー×係数（整数）
+        EnergyByBmrKcal = (int)Math.Round(energyByBmr, MidpointRounding.AwayFromZero);
+        
         // kcal/kg（標準体重）
         var e25 = 25 * BodyIndex.StandardWeight;
         var e30 = 30 * BodyIndex.StandardWeight;

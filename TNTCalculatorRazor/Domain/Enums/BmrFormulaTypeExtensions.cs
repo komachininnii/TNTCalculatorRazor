@@ -2,22 +2,34 @@
 
 public static class BmrFormulaTypeExtensions
 {
-    public static string ToDisplayName( this BmrFormulaType formula )
+    //public static string ToDisplayName( this BmrFormulaType formula )
+    public static string ToShortName( this BmrFormulaType formula )
     {
         return formula switch
         {
             BmrFormulaType.Infant_KyotoPICU =>
-                "乳児：京都府立医大小児ICU式",
+                "KPUM7",
 
             BmrFormulaType.Child_JapanDRI2010 =>
-                "小児：2010年 日本人の食事摂取基準",
+                "DRI2010",
 
             BmrFormulaType.Adult_HarrisBenedict =>
-                "成人：Harris-Benedict式",
+                "HB",
 
             BmrFormulaType.Adult_Ganpule2007 =>
-                "成人：Ganpule ら（2007）",
+                "G07",
 
+            _ => "不明な式"
+        };
+    }
+    public static string ToLongName( this BmrFormulaType formula )
+    {
+        return formula switch
+        {
+            BmrFormulaType.Infant_KyotoPICU => "乳児簡易式（KPUM小児ICUマニュアル 第7版）",
+            BmrFormulaType.Child_JapanDRI2010 => "小児（厚労省 基礎代謝基準値 2010）",
+            BmrFormulaType.Adult_HarrisBenedict => "成人（Harris–Benedict）",
+            BmrFormulaType.Adult_Ganpule2007 => "成人（Ganpule 2007）",
             _ => "不明な式"
         };
     }

@@ -4,7 +4,7 @@ namespace TNTCalculatorRazor.Domain.Enums;
 
 public enum EnergyOrderType
 {
-    [Display(Name = "推定必要カロリー")]
+    [Display(Name = "基礎エネルギー×係数")]
     BmrEstimated,   // BMR推定
     [Display(Name = "25kcal/標準体重")]
     Kcal25,         // 25 kcal / 標準体重

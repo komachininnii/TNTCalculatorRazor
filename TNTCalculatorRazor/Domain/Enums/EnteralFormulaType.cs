@@ -4,57 +4,49 @@ namespace TNTCalculatorRazor.Domain.Enums;
 
 public enum EnteralFormulaType
 {
-    // =========================
-    // 1.0 kcal / mL
-    // =========================
-    [Display(Name = "メイバランス 1.0（1.0 kcal/mL）")]
+    [Display(Name = "メイバランス1.0 [ 300(300) / 400(400) ]")]
     Meibalance10,
 
-    [Display(Name = "ペプタメン インテンス（1.0 kcal/mL）")]
-    PeptamenIntense10,
-
-    [Display(Name = "MEIN（1.0 kcal/mL）")]
-    Mein10,
-
-    [Display(Name = "グルセルナ REX（1.0 kcal/mL）")]
-    GlucernaRex10,
-
-    [Display(Name = "ラコール NF（1.0 kcal/mL）")]
-    RacolNF10,
-
-    [Display(Name = "ラコール NF 半固形（1.0 kcal/mL）")]
-    RacolNFSemiSolid10,
-
-    [Display(Name = "エレンタール（1.0 kcal/mL）")]
-    Elental10,
-
-    // =========================
-    // 1.5 kcal / mL
-    // =========================
-    [Display(Name = "ペプタメン プレバイオ（1.5 kcal/mL）")]
+    [Display(Name = "ペプタメンプレビオ [ 200(300) / 267(400) ] 消化態")]
     PeptamenPrebio15,
 
-    [Display(Name = "ペプタメン AF（1.5 kcal/mL）")]
+    [Display(Name = "ペプタメンインテンス [ 200(200) ] 侵襲期")]
+
+    PeptamenIntense10,
+    [Display(Name = "ペプタメンAF [ 200(300) ] 術後･回復期")]
     PeptamenAF15,
 
-    [Display(Name = "アイソカル サポート（1.5 kcal/mL）")]
+    [Display(Name = "アイソカルサポート [ 200(300) / 267(400) ] 乳糖0")]
     IsocalSupport15,
 
-    [Display(Name = "ラクフィア 1.5（1.5 kcal/mL）")]
+    [Display(Name = "ラクフィア1.5 [200(300) / 267(400)] 乳酸菌")]
     Lacphia15,
 
-    [Display(Name = "PGソフト EJ（1.5 kcal/mL）")]
-    PGSoftEJ15,
+    [Display(Name = "MEIN [ 200(200) ] 高蛋白･免疫調整")]
+    Mein10,
 
-    [Display(Name = "エンシュア H（1.5 kcal/mL）")]
-    EnsureH15,
-
-    // =========================
-    // 1.6 kcal / mL
-    // =========================
-    [Display(Name = "リーナレン MP（1.6 kcal/mL）")]
+    [Display(Name = "リーナレンMP [ 250(400) ] 腎不全")]
     RenalenMP16,
 
-    [Display(Name = "イノラス（1.6 kcal/mL）")]
-    Inoras16
+    [Display(Name = "グルセルナREX [ 200(200) / 400(400) ] 糖尿病")]
+    GlucernaRex10,
+
+    [Display(Name = "PGソフトEJ [ 200(300) / 267(400) ] 粘度2万,胃瘻")]
+    PGSoftEJ15,
+
+    [Display(Name = "ラコールNF [ 200(200) ] 脂質20%,処方")]
+    RacolNF10,
+
+    [Display(Name = "ラコール半固形 [ 300(300) ] 胃瘻,処方")]
+    RacolNFSemiSolid10,
+
+    [Display(Name = "エンシュアH [ 250(375) ] 脂質32%,処方")]
+    EnsureH15,
+
+    [Display(Name = "イノラス [ 187.5(300) ] 長期摂取困難,処方")]
+    Inoras16,
+   
+    [Display(Name = "エレンタール [ 300(300) ] 成分栄養,処方")]
+    Elental10,
+
 }
