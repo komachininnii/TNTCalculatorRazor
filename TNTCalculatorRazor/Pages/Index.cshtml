@@ -2,7 +2,17 @@
 @model IndexModel
 @using TNTCalculatorRazor.Domain.Enums
 
-<h2>栄養計算</h2>
+    <div class="appbar">
+        <div class="brand">
+            <img src="~/img/TNTCalculatorSmall.png" class="brand-icon" alt="app icon" asp-append-version="true" />
+            <span class="brand-meta-inline">TNTCalculator Ver. @(Model.AppVersion) by T.Yamanoi</span>
+        <a class="brand-link"
+           href="/Help"
+           onclick="openHelpWindow(event, this.href);">
+            公式一覧
+        </a>
+        </div>
+    </div>
 
 <style>
     :root {
@@ -225,6 +235,144 @@
         white-space: nowrap;
     }
 
+    /* 基本入力に注釈を追加 */
+    .section-head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10px;
+        margin: 0 0 8px 0;
+    }
+
+        .section-head h3 {
+            margin: 0;
+        }
+
+    .section-meta {
+        font-size: .85em;
+        color: #667;
+        white-space: nowrap;
+    }
+
+    @@media (max-width: 520px) {
+        .section-head {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .section-meta {
+            white-space: normal;
+        }
+    }
+
+    /* dt/ddペアを2列にする（経腸栄養剤成分用） */
+    .kv.kv-2col {
+        display: grid;
+        grid-template-columns: 3em 1fr 3em 1fr; /* dt dd dt dd */
+        column-gap: 10px;
+        row-gap: 6px;
+    }
+
+        .kv.kv-2col dt {
+            margin: 0;
+        }
+
+        .kv.kv-2col dd {
+            margin: 0;
+            min-width: 0;
+        }
+    /* 狭い画面では1列に戻す */
+    @@media (max-width: 520px) {
+        .kv.kv-2col {
+            grid-template-columns: 8.5em 1fr;
+        }
+    }
+
+    /* 経腸栄養セクション：計算結果＋割付候補 */
+    .enteral-top {
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* 計算結果 | 割付候補 */
+        gap: 10px 14px;
+        align-items: start;
+    }
+
+    .enteral-box h4 {
+        margin: 6px 0 6px;
+    }
+
+    .compact-list {
+        margin: 0;
+        padding-left: 1.1em;
+    }
+
+        .compact-list li {
+            margin: 2px 0;
+        }
+
+    /* 狭い画面は縦に戻す */
+    @@media (max-width: 520px) {
+        .enteral-top {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* 文字を詰める */
+    .kv.kv-tight {
+        margin-top: 0;
+    }
+
+    /* エネルギー候補（参照）2列化  */
+    .kv.kv-2col-energy{
+        display:grid;
+        grid-template-columns: 8em 1fr 8em 1fr;
+        column-gap:10px;
+        row-gap:6px;
+    }
+    @@media (max-width: 520px) {
+        .kv.kv-2col-energy {
+            grid-template-columns: 9em 1fr;
+        }
+    }
+
+    /* アプリバージョン */
+    .brand-meta-inline {
+        font-size: 12px;
+        color: #667; /* muted */
+        white-space: nowrap;
+    }
+
+    .brand-icon {
+        width: 18px;
+        height: 18px;
+        object-fit: contain;
+        display: inline-block;
+    }
+
+    .appbar {
+        display: flex;
+        justify-content: flex-end; /* 右寄せ */
+        margin: 0 0 6px 0;
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        opacity: 0.75; /* さらに邪魔感を減らすなら */
+    }
+
+    /* 公式一覧 */
+    .brand-link {
+        font-size: 12px;
+        color: #667;
+        text-decoration: none;
+        margin-left: 10px;
+    }
+
+        .brand-link:hover {
+            text-decoration: underline;
+        }
+
 </style>
 
 <form method="post">
@@ -239,8 +387,13 @@
         <div>
 
             <div class="card">
-                <h3>基本入力</h3>
-                
+                <div class="section-head">
+                    <h3>基本入力</h3>
+                    <div class="section-meta">
+                        （栄養：年齢・身長・体重・性別）/（推定CCr：年齢・体重・Cr・性別）
+                    </div>
+                </div>
+
                 @if (((Model.Action ?? "").Trim().ToLowerInvariant()) == "anthro")
                 {
                     <div class="validation-summary text-danger" asp-validation-summary="ModelOnly"></div>
@@ -287,6 +440,19 @@
                         </div>
                     </div>
 
+
+                    <div class="field">
+                        <div class="label">Cr</div>
+                        <div class="control">
+                            <input asp-for="SerumCreatinine"
+                                   type="number" step="0.01" inputmode="decimal"
+                                   onchange="document.getElementById('Action').value='renal'; this.form.submit();" />
+                            <span class="unit">mg/dL</span>
+                        </div>
+                    </div>
+
+
+
                     <div class="field">
                         <div class="label">性別</div>
                         <div class="control">
@@ -301,28 +467,22 @@
             </div>
 
             <div class="card">
-                <h3>疾患</h3>
-                <div class="fields">
+                @if (!(Model.Age.HasValue && Model.Age.Value < 18))
+                {
                     <div class="field">
-                        <div class="label">疾患別例外</div>
+                        <div class="label">疾患</div>
                         <div class="control">
                             <select asp-for="SelectedDisease"
                                     asp-items="Html.GetEnumSelectList<DiseaseType>()"
-                                    onchange="document.getElementById('Action').value='disease'; this.form.submit();"
-                                    disabled="@(Model.Age.HasValue && Model.Age.Value < 18)">
+                                    onchange="document.getElementById('Action').value='disease'; this.form.submit();">
                             </select>
-                            @if (Model.Age.HasValue && Model.Age.Value < 18)
-                            {
-                                <div class="muted small">※ 小児は疾患別例外の対象外</div>
-                            }
-                            <span class="muted small">※ 疾患によりデフォルトや計算式が変わる場合があります</span>
                         </div>
                     </div>
-                </div>
+                }
             </div>
 
             <div class="card">
-                <h3>係数・補正</h3>
+                
                 <div class="fields">
 
                     <div class="field">
@@ -428,14 +588,14 @@
                 <details>
                     <summary>エネルギー候補（参考）</summary>
                     <div class="small" style="margin-top:10px;">
-                        <dl class="kv">
+                        <dl class="kv kv-2col-energy">
                             <dt>基礎エネルギー×係数</dt>
                             <dd>@(Model.EnergyByBmrKcal?.ToString() ?? "-") kcal</dd>
-                            <dt>25kcal/標準体重kg</dt>
+                            <dt>25kcal/標準体重</dt>
                             <dd>@(Model.Kcal25?.ToString() ?? "-") kcal</dd>
-                            <dt>30kcal/標準体重kg</dt>
+                            <dt>30kcal/標準体重</dt>
                             <dd>@(Model.Kcal30?.ToString() ?? "-") kcal</dd>
-                            <dt>35kcal/標準体重kg</dt>
+                            <dt>35kcal/標準体重</dt>
                             <dd>@(Model.Kcal35?.ToString() ?? "-") kcal</dd>
                         </dl>
                     </div>
@@ -443,7 +603,7 @@
             </div>
 
         </div>
-
+        
         <!-- ========================= -->
         <!-- 右：結果 + 経腸 -->
         <!-- ========================= -->
@@ -454,15 +614,15 @@
 
                 <div class="two-col">
                     <div>
-                        <h4>基本計算</h4>
-                        <dl class="kv">
+                        
+                        <dl class="kv kv-tight">
                             <dt>
                                 BMR(基礎エネルギー)
                                 @if (!string.IsNullOrWhiteSpace(Model.BmrFormulaDisplay)
                                                                 && Model.BmrWeightBasis.HasValue
                                                                 && Model.BmrWeightUsed.HasValue)
                                 {
-                                    <div class="pills" style="margin-top:6px;">
+                                    <div class="pills" style="margin-top:0px;">
                                         <span class="pill mini trunc" title="@Model.BmrFormulaDisplayLong">
                                             @Model.BmrFormulaDisplay
                                         </span>
@@ -488,6 +648,35 @@
 
                             <dt>体表面積</dt>
                             <dd>@(Model.BodySurfaceArea?.ToString("F3") ?? "-") m²</dd>
+
+                            <dt>推定CCr</dt>
+                            <dd>
+                                @if (Model.CcrActual.HasValue)
+                                {
+                                    <strong>@Model.CcrActual.Value.ToString("F1")</strong>
+                                    <span class="unit">mL/min</span>
+
+                                    @if (Model.CcrCorrected.HasValue)
+                                    {
+                                        <span class="pill mini" style="margin-left:6px;">
+                                            @($"補正{Model.CcrCorrected.Value.ToString("F1")}")
+                                        </span>
+                                    }
+
+                                    @if (!string.IsNullOrWhiteSpace(Model.CcrNote))
+                                    {
+                                        <div class="muted small" style="margin-top:4px; line-height:1.2;">
+                                            @Model.CcrNote
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="muted">-</span>
+                                }
+                            </dd>
+
+
                         </dl>
                     </div>
 
@@ -536,11 +725,19 @@
                                     <span class="pill mini" style="margin-left:6px;">発熱</span>
                                 }
                             </dd>
+
+                            
+
                         </dl>
+                        @if (Model.IsHemodialysis)
+                        {
+                            <div class="muted small">※水分は目安（DW・体重推移で判断）</div>
+                        }
                         @if (Model.SelectedDisease == DiseaseType.LiverCirrhosis && Model.IsHepaticEncephalopathy)
                         {
-                            <div class="muted small">※ 肝性脳症：肝不全用アミノ酸製剤の併用を検討</div>
+                            <div class="muted small">※肝不全用アミノ酸製剤の併用を検討</div>
                         }
+
                     </div>
                 </div>
 
@@ -550,37 +747,68 @@
                     <summary>補足（考え方・注意点）</summary>
                     <div class="small" style="margin-top:10px;">
                         <ul style="margin:0; padding-left:18px;">
-                            <li class="muted">ここに補足説明を追記できます（疾患別の注意、係数の意味、計算式の採用ルールなど）。</li>
-                            @* 肝硬変 + 肝性脳症 *@
-                            @if (Model.SelectedDisease == DiseaseType.LiverCirrhosis && Model.IsHepaticEncephalopathy)
-                            {
-                                <li>肝性脳症（蛋白不耐）あり：蛋白補正は 0.5 を適用。肝不全用アミノ酸製剤の併用を検討。</li>
-                            }
-                            @* 小児 *@
-                            @if (Model.Age.HasValue && Model.Age.Value < 18)
-                            {
-                                <li>小児：疾患は院内マニュアル上の例外対象外として「なし」に固定。蛋白補正は必要に応じて手動調整してください。</li>
-                            }
-                            <li class="muted">項目が増える場合は「見出し＋箇条書き」で増やすと見やすいです。</li>
-                            <li class="muted">（ここに追記）</li>
+                            <li><b>BMR式</b>：乳児 KPUM7／小児 DRI2010／成人は条件で HB または G07。</li>
+                            <li><b>体重</b>：乳児は実測。その他は肥満度≤80%標準、80–120%実測、≥120%調整。</li>
+                            <li><b>水分（発熱）</b>：透析以外は加算、血液透析は一律加算なし。</li>
                         </ul>
+                        @* 疾患別の目安：選択した疾患のときだけ *@
+                        @if (Model.SelectedDisease != DiseaseType.None)
+                            {
+                                <div style="margin-top:10px;">
+                                    <div class="muted" style="margin-bottom:6px;">疾患別の目安（参考）</div>
+
+                                    @switch (Model.SelectedDisease)
+                                    {
+                                        case DiseaseType.Diabetes:
+                                            <ul style="margin:0; padding-left:18px;">
+                                                <li>軽い労作：25kcal/標準体重</li>
+                                                <li>普通労作：30kcal/標準体重</li>
+                                                <li>重い労作：35kcal/標準体重</li>
+                                            </ul>
+                                            break;
+
+                                        case DiseaseType.RenalFailure:
+                                            <ul style="margin:0; padding-left:18px;">
+                                                <li>エネルギー：25～35kcal/標準体重</li>
+                                                <li><b>蛋白（目安）</b>：CKD1-2 過剰摂取を避ける／CKD3a 0.8～1.0 g/標準体重</li>
+                                                <li>CKD3b-5：0.6～0.8 g/標準体重</li>
+                                            </ul>
+                                            break;
+
+                                        case DiseaseType.Hemodialysis:
+                                            <ul style="margin:0; padding-left:18px;">
+                                                <li>エネルギー：30～35kcal/標準体重</li>
+                                                <li>水分：15mL/kg は目安（ドライウェイト・体重推移で判断）</li>
+                                                <li><b>蛋白（目安）</b>：0.9～1.2 g/標準体重</li>
+                                            </ul>
+                                            break;
+
+                                        case DiseaseType.LiverCirrhosis:
+                                            <ul style="margin:0; padding-left:18px;">
+                                                <li>耐糖能異常なし：30～40kcal/標準体重</li>
+                                                <li>耐糖能異常あり：25～30kcal/標準体重</li>
+                                                <li><b>蛋白（目安）</b>：不耐なし 1.0～1.5 g/標準体重</li>
+                                                <li>不耐あり 0.5～0.7 g/標準体重＋肝不全用栄養</li>
+                                            </ul>
+                                            break;
+                                    }
+                                </div>
+                            }
+                        @* 小児（動的に注意） *@
+                        @if (Model.Age.HasValue && Model.Age.Value < 18)
+                        {
+                            <div class="muted" style="margin-top:8px;">
+                                小児：疾患選択なし。蛋白補正は必要に応じて手動調整。
+                            </div>
+                        }
+
                     </div>
                  </details>
             </div>
 
             <div class="card">
                 <h3>経腸栄養</h3>
-
-                @if (Model.SelectedDisease == DiseaseType.LiverCirrhosis && Model.IsHepaticEncephalopathy)
-                {
-                    <div style="margin: 8px 0 12px 0; padding: 10px; border: 1px solid #e5c07b; border-radius: 8px; background: #fff8e6;">
-                        <strong>注意：</strong> 肝性脳症（蛋白不耐）ありの場合、<strong>肝不全用アミノ酸製剤の併用</strong>を検討してください。
-                        <div class="muted small" style="margin-top:6px;">
-                                    ※ 本ツールの蛋白補正は 0.5 を適用しています（必要に応じて手動で調整してください）。
-                        </div>
-                    </div>
-                }
-
+                                
                 <div class="fields">
 
                     <div class="field">
@@ -600,8 +828,8 @@
                             <input asp-for="EnteralVolumeInput"
                                    type="number" step="1" inputmode="numeric"
                                    onchange="document.getElementById('Action').value='volume'; this.form.submit();" />
-                            <span class="unit">mL/day</span>
-                            <span class="muted small">※ 手入力可（kcalと相互同期）</span>
+                            <span class="unit">mL</span>
+                            <span class="muted small">※手入力可(kcal同期)</span>
                         </div>
                     </div>
 
@@ -609,55 +837,51 @@
 
                 @if (Model.EnteralVolume.HasValue)
                 {
-                    <div class="hr"></div>
-
-                    <div class="two-col">
-                        <div>
+                    <div class="enteral-top">
+                        <div class="enteral-box">
                             <h4>計算結果</h4>
-                            <dl class="kv">
-                                <dt>投与量</dt>
-                                <dd><strong>@Model.EnteralVolume.Value.ToString("F0")</strong> mL/day</dd>
-                                <dt>投与カロリー</dt>
-                                <dd><strong>@(Model.EnteralEnergy?.ToString("F0") ?? "-")</strong> kcal/day</dd>
-                            </dl>
+                            <p>
+                                投与量：<strong>@Model.EnteralVolume.Value.ToString("F0")</strong> mL<br />
+                                投与カロリー：<strong>@(Model.EnteralEnergy?.ToString("F0") ?? "-")</strong> kcal
+                            </p>
+                        </div>
 
-                            <div class="hr"></div>
-
+                        <div class="enteral-box">
                             <h4>割付候補</h4>
-                            <ul class="small">
+                            <ul class="compact-list">
                                 @foreach (var plan in Model.EnteralPackagePlans)
                                 {
                                     <li>@IndexModel.FormatPlan(plan)</li>
                                 }
                             </ul>
                         </div>
-
-                        <div>
-                            <h4>成分（投与量ベース）</h4>
-                            <dl class="kv">
-                                <dt>蛋白質</dt>
-                                <dd>@(Model.EnteralProtein?.ToString("F1") ?? "-") g</dd>
-                                <dt>脂質</dt>
-                                <dd>@(Model.EnteralFat?.ToString("F1") ?? "-") g</dd>
-                                <dt>糖質</dt>
-                                <dd>@(Model.EnteralCarb?.ToString("F1") ?? "-") g</dd>
-                                <dt>食塩</dt>
-                                <dd>@(Model.EnteralSalt?.ToString("F2") ?? "-") g</dd>
-                                <dt>ビタミンK</dt>
-                                <dd>@(Model.EnteralVitaminK?.ToString("F1") ?? "-") µg</dd>
-                                <dt>水分量</dt>
-                                <dd>@(Model.EnteralWater?.ToString("F0") ?? "-") mL</dd>
-                            </dl>
-                        </div>
                     </div>
-                }
+
+                    <div class="enteral-bottom">
+                        <h4>成分（投与量ベース）</h4>
+                        <dl class="kv kv-2col">
+                            <dt>蛋白質</dt>
+                            <dd>@(Model.EnteralProtein?.ToString("F1") ?? "-") g</dd>
+                            <dt>脂質</dt>
+                            <dd>@(Model.EnteralFat?.ToString("F1") ?? "-") g</dd>
+                            <dt>糖質</dt>
+                            <dd>@(Model.EnteralCarb?.ToString("F1") ?? "-") g</dd>
+                            <dt>食塩</dt>
+                            <dd>@(Model.EnteralSalt?.ToString("F2") ?? "-") g</dd>
+                            <dt>ビタミンK</dt>
+                            <dd>@(Model.EnteralVitaminK?.ToString("F1") ?? "-") µg</dd>
+                            <dt>水分量</dt>
+                            <dd>@(Model.EnteralWater?.ToString("F0") ?? "-") mL</dd>
+                        </dl>
+                    </div>
+                 }
             </div>
 
             <div class="card">
                 <details>
                     <summary>デバッグ（開発中）</summary>
                     <pre class="small" style="white-space:pre-wrap;margin-top:10px;">
-                    Action               : @Model.Action
+                    Action                : @Model.Action
                     Age/Height/Weight     : @Model.Age / @Model.Height / @Model.Weight
                     Gender                : @Model.Gender
                     Disease               : @Model.SelectedDisease
@@ -688,4 +912,24 @@
           }
         }
     </script>
+    <script>
+        function openHelpWindow(e, url) {
+          e.preventDefault(); // 既定遷移（=二重オープン）を止める
+
+          var name = "TNT_Help";
+          var features = "width=900,height=800,resizable=yes,scrollbars=yes";
+
+          var w = window.open(url, name, features);
+
+          // ポップアップがブロックされたら、新しいタブで開く（フォールバック）
+          if (!w) {
+            window.open(url, "_blank", "noopener");
+            return;
+          }
+
+          try { w.focus(); } catch (e) {}
+        }
+    </script>
+
+
 </form>

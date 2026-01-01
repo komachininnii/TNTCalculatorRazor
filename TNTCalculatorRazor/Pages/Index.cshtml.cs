@@ -1,15 +1,43 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Reflection;
 using TNTCalculatorRazor.Domain.Calculators;
 using TNTCalculatorRazor.Domain.Enums;
 using TNTCalculatorRazor.Domain.Results;
+using TNTCalculatorRazor.Domain.Rules;
 using TNTCalculatorRazor.Domain.Selectors;
 using TNTCalculatorRazor.Domain.Services;
 using TNTCalculatorRazor.Domain.Tables;
 
+
 public class IndexModel : PageModel
 {
+
+    public string AppVersion
+    {
+        get
+        {
+            var info =
+                Assembly.GetExecutingAssembly()
+                    .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+                    .InformationalVersion;
+
+            if (!string.IsNullOrWhiteSpace(info))
+            {
+                // 例: "0.9.0-beta.1+abcdef..." → "0.9.0-beta.1"
+                var cut = info.Split('+')[0];
+                return cut;
+            }
+
+            // フォールバック（数値版しかない場合）
+            var v = Assembly.GetExecutingAssembly().GetName().Version;
+            if (v is null) return "";
+            return $"{v.Major}.{v.Minor}.{v.Build}";
+        }
+    }
+    public string AppAuthor => "T.Yamanoi";
+
     //==============================
     // 入力（Bind）
     //==============================
@@ -118,6 +146,16 @@ public class IndexModel : PageModel
     }
 
 
+    // Creatinine追加入力（任意）
+    [BindProperty]
+    public double? SerumCreatinine { get; set; }  // mg/dL
+
+    // CCr（参考表示）
+    public double? CcrActual { get; private set; }
+    public double? CcrCorrected { get; private set; }
+    public string CcrNote { get; private set; } = "";
+
+
     // =====================================
     // Action 判定・ModelState ヘルパ（追加）
     // =====================================
@@ -149,6 +187,36 @@ public class IndexModel : PageModel
     [BindProperty]
     public bool IsHepaticEncephalopathy { get; set; }
 
+    // ==============================
+    // CCr計算
+    // ==============================
+    private void RecalcCcr()
+    {
+        CcrActual = null;
+        CcrCorrected = null;
+        CcrNote = "";
+
+        // 必須：年齢・体重・性別・Cr
+        if (!Age.HasValue || !Weight.HasValue) return;
+        if (!SerumCreatinine.HasValue || SerumCreatinine.Value <= 0) return;
+
+        // あり得ない値は計算しない（エラー表示は今はしない方針）
+        if (Age.Value < 0 || Age.Value >= 130) return;
+        if (Weight.Value < 0.5 || Weight.Value >= 300) return;
+
+        var cr = SerumCreatinine.Value;
+
+        CcrActual = CcrCalculator.Calculate(Age.Value, Weight.Value, cr, Gender);
+
+        var correctedCr = CcrCreatinineCorrectionRule.GetCorrectedCreatinine(Age.Value, Gender, cr);
+        if (correctedCr.HasValue)
+        {
+            CcrCorrected = CcrCalculator.Calculate(Age.Value, Weight.Value, correctedCr.Value, Gender);
+
+            var type = CcrCreatinineCorrectionRule.GetType(Age.Value, Gender, cr);
+            CcrNote = CcrCreatinineCorrectionRule.GetNote(type);
+        }
+    }
 
 
 
@@ -170,7 +238,10 @@ public class IndexModel : PageModel
 
         // 1) 基本計算（入力が揃っていて範囲内なら BMR/標準体重などが埋まる）
         RecalcBase(addErrors: Act == "anthro");
-       
+
+        // 1.5) 腎機能（参考）CCr
+        RecalcCcr();
+
         // 小児は「例外疾患の対象外」：疾患は None に固定（UIもdisabled化する想定）
         if (Age.HasValue && Age.Value < 18)
         {
