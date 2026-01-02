@@ -29,3 +29,551 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+/* カスタムスタイルここから */
+:root {
+    --gap: 12px;
+    --card: 14px;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 16px;
+    align-items: start;
+}
+
+@media (max-width: 980px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.field {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 10px;
+    align-items: center;
+}
+
+@media (max-width: 520px) {
+    .field {
+        grid-template-columns: 1fr;
+    }
+
+    .two-col {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+
+
+.label {
+    font-weight: 600;
+}
+
+.control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+    .control input, .control select {
+        padding: 6px 8px;
+        min-height: 34px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+    }
+
+.unit {
+    color: #444;
+}
+
+.two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+@media (max-width: 520px) {
+    .two-col {
+        grid-template-columns: 1fr;
+    }
+}
+
+.kv {
+    display: grid;
+    /* タイトル列は細め固定、値側に幅を返す */
+    grid-template-columns: 8.5em minmax(0, 1fr);
+    gap: 8px 12px;
+    align-items: baseline;
+    margin: 0;
+}
+
+    .kv dt {
+        white-space: nowrap;
+    }
+    /* タイトルは原則1行に */
+    .kv dd {
+        min-width: 0;
+    }
+/* 値側をちゃんと折り返させるため */
+
+@media (max-width: 520px) {
+    /* 画面が狭い時は dt/dd を縦並び（タイトル折り返し問題も、内訳の圧縮も両方解消） */
+    .kv {
+        grid-template-columns: 1fr;
+    }
+
+        .kv dt {
+            white-space: normal;
+        }
+}
+
+.pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border: 1px solid #ddd;
+    border-radius: 999px;
+    font-size: 0.85em;
+    color: #333;
+    background: #fafafa;
+}
+
+/* 右カラムを少し見やすく */
+.summary {
+    position: sticky;
+    top: 12px;
+}
+
+@media (max-width: 980px) {
+    .summary {
+        position: static;
+    }
+}
+
+details > summary {
+    cursor: pointer;
+}
+
+details summary {
+    font-weight: 600;
+}
+
+/* 補助説明：カード風 */
+.hr {
+    border-top: 1px solid #eee;
+    margin: 12px 0;
+}
+
+.small {
+    font-size: 0.92em;
+}
+
+.muted {
+    color: #666;
+}
+
+.field.sub {
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: #f7f7f7;
+    border: 1px solid #e7e7e7;
+}
+
+    /* 肝性脳症チェック表示用 */
+    .field.sub .label {
+        position: relative;
+        padding-left: 10px;
+    }
+
+        .field.sub .label::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 2px;
+            bottom: 2px;
+            width: 3px;
+            border-radius: 2px;
+            background: #d6d6d6;
+        }
+
+/* エラースタイル */
+.text-danger {
+    color: #b00020;
+}
+
+.validation-summary {
+    margin: 8px 0 0 0;
+}
+
+.field-error {
+    margin-top: 4px;
+    font-size: 0.9em;
+}
+
+/* ストレス係数合計・内訳表示用 */
+.pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.pill.mini {
+    font-size: 0.82em;
+    padding: 1px 6px;
+}
+
+/* ストレス合計・必要エネルギーの折り返し調整 */
+.kv dd .mainline {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: wrap; /* ここで折り返し＝1行に収まらない場合のみ */
+}
+
+.kv dd .subline {
+    margin-top: 6px;
+}
+/* 1行に収める：右にはみ出したら横スクロール（縦は増やさない） */
+.line {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 2px; /* スクロールバーが被らないように */
+}
+
+    .line::-webkit-scrollbar {
+        height: 6px;
+    }
+/* 任意：スクロールバー薄く */
+
+.kv-need {
+    grid-template-columns: 7.5em minmax(0, 1fr);
+}
+
+    .kv-need dd {
+        min-width: 0;
+    }
+
+/* ストレス合計の内訳表示用 */
+.need-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: baseline;
+}
+
+    .need-line + .need-line {
+        margin-top: 6px;
+    }
+
+/* BMR計算式名pill表示用 */
+.pill.trunc {
+    max-width: 10.5em; /* ここを調整：狭いなら9em、余裕あるなら12em */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* 基本入力に注釈を追加 */
+.section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 0 0 8px 0;
+}
+
+    .section-head h3 {
+        margin: 0;
+    }
+
+.section-meta {
+    font-size: .85em;
+    color: #667;
+    white-space: nowrap;
+}
+
+@media (max-width: 520px) {
+    .section-head {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .section-meta {
+        white-space: normal;
+    }
+}
+
+/* dt/ddペアを2列にする（経腸栄養剤成分用） */
+.kv.kv-2col {
+    display: grid;
+    grid-template-columns: 3em 1fr 3em 1fr; /* dt dd dt dd */
+    column-gap: 10px;
+    row-gap: 6px;
+}
+
+    .kv.kv-2col dt {
+        margin: 0;
+    }
+
+    .kv.kv-2col dd {
+        margin: 0;
+        min-width: 0;
+    }
+/* 狭い画面では1列に戻す */
+@media (max-width: 520px) {
+    .kv.kv-2col {
+        grid-template-columns: 8.5em 1fr;
+    }
+}
+
+/* 経腸栄養セクション：計算結果＋割付候補 */
+.enteral-top {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 計算結果 | 割付候補 */
+    gap: 10px 14px;
+    align-items: start;
+}
+
+.enteral-box h4 {
+    margin: 6px 0 6px;
+}
+
+.compact-list {
+    margin: 0;
+    padding-left: 1.1em;
+}
+
+    .compact-list li {
+        margin: 2px 0;
+    }
+
+/* 狭い画面は縦に戻す */
+@media (max-width: 520px) {
+    .enteral-top {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 文字を詰める */
+.kv.kv-tight {
+    margin-top: 0;
+}
+
+/* エネルギー候補（参照）2列化  */
+.kv.kv-2col-energy {
+    display: grid;
+    grid-template-columns: 8em 1fr 8em 1fr;
+    column-gap: 10px;
+    row-gap: 6px;
+}
+
+@media (max-width: 520px) {
+    .kv.kv-2col-energy {
+        grid-template-columns: 9em 1fr;
+    }
+}
+
+/* アプリバージョン */
+.brand-meta-inline {
+    font-size: 12px;
+    color: #667; /* muted */
+    white-space: nowrap;
+}
+
+.brand-icon {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    display: inline-block;
+}
+
+.appbar {
+    display: flex;
+    justify-content: flex-end; /* 右寄せ */
+    margin: 0 0 6px 0;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.75; /* さらに邪魔感を減らすなら */
+}
+
+/* 公式一覧 */
+.brand-link {
+    font-size: 12px;
+    color: #667;
+    text-decoration: none;
+    margin-left: 10px;
+}
+
+    .brand-link:hover {
+        text-decoration: underline;
+    }
+
+/* 2カラムの基本 */
+.layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 12px;
+    align-items: start;
+}
+
+    /* 重要：中身が長い時に横はみ出しを起こしにくくする */
+    .layout > .main,
+    .layout > .summary {
+        min-width: 0;
+    }
+
+/* スマホ：1カラムに */
+@media (max-width: 720px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+
+    .summary {
+        margin-top: 12px;
+    }
+}
+/* 結果（参照）の2カラムをスマホで縦にする */
+@media (max-width: 720px) {
+    .two-col {
+        display: block; /* これで2列→縦積みに確実にできる */
+    }
+
+        .two-col > div {
+            margin-top: 10px;
+        }
+
+            .two-col > div:first-child {
+                margin-top: 0;
+            }
+}
+
+
+/* 経腸栄養：スマホで「成分・割付候補」を折りたたみ */
+.enteral-details {
+    margin-top: 10px;
+}
+
+    .enteral-details > summary {
+        list-style: none;
+        cursor: pointer;
+        font-weight: 600;
+        padding: 6px 0;
+    }
+
+        /* Safari用：summaryのマーカー調整（任意） */
+        .enteral-details > summary::-webkit-details-marker {
+            display: none;
+        }
+
+/* PCでは常時展開（summaryは非表示） */
+@media (min-width: 981px) {
+    .enteral-details > summary {
+        display: none;
+    }
+
+    .enteral-details {
+        /* 常時見せたいので見た目を自然に */
+        margin-top: 0;
+    }
+}
+
+/* スマホでは初期は閉じてもOK：openを外したいならここで制御も可能 */
+@media (max-width: 980px) {
+    .enteral-details[open] > summary {
+        margin-bottom: 6px;
+    }
+}
+/* スマホでは経腸栄養カードを弱く見せる　*/
+@media (max-width: 980px) {
+    .summary .card {
+        opacity: 0.95;
+    }
+
+        .summary .card h3 {
+            font-size: 1rem;
+        }
+}
+/* スマホでは経腸栄養カードをsummery(右カラム)の一番下に固定　*/
+@media (max-width: 980px) {
+    .summary {
+        margin-top: 24px;
+    }
+}
+
+@media (max-width: 980px) {
+    .enteral-card {
+        border-top: 1px dashed #ccc;
+        padding-top: 12px;
+    }
+}
+
+/* 右カラム先頭「要点」3点レイアウト */
+.hero3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.hero3-label {
+    font-size: 0.78rem;
+    opacity: 0.75;
+    margin-bottom: 4px;
+    line-height: 1.1;
+}
+
+.hero3-value {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    flex-wrap: wrap;
+    line-height: 1.1;
+}
+
+    .hero3-value strong {
+        font-size: 1.35em;
+    }
+
+.hero3 .unit {
+    font-size: 0.85em;
+    opacity: 0.8;
+    white-space: nowrap;
+}
+
+/* 結果をボタンっぽく　*/
+.result-details > summary {
+    cursor: pointer;
+    font-weight: 600;
+    padding: 6px 0;
+    list-style: none;
+}
+
+    .result-details > summary::-webkit-details-marker {
+        display: none;
+    }
+
+/* PCでは常時表示（折りたたみ不要）  */
+@media (min-width: 981px) {
+    .result-details > summary {
+        display: none;
+    }
+}
+/* PCでは要点（スマホ専用）を非表示 */
+@media (min-width: 981px) {
+    .summary-hero {
+        display: none !important;
+    }
+}

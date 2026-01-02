@@ -5,7 +5,7 @@
     <div class="appbar">
         <div class="brand">
             <img src="~/img/TNTCalculatorSmall.png" class="brand-icon" alt="app icon" asp-append-version="true" />
-            <span class="brand-meta-inline">TNTCalculator Ver. @(Model.AppVersion) by T.Yamanoi</span>
+            <span class="brand-meta-inline">TNTCalculator Ver. @(Model.AppVersion) by tyama</span>
         <a class="brand-link"
            href="/Help"
            onclick="openHelpWindow(event, this.href);">
@@ -14,366 +14,6 @@
         </div>
     </div>
 
-<style>
-    :root {
-        --gap: 12px;
-        --card: 14px;
-    }
-
-    .layout {
-        display: grid;
-        grid-template-columns: 1.05fr 0.95fr;
-        gap: 16px;
-        align-items: start;
-    }
-
-    @@media (max-width: 980px) {
-        .layout {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    .field {
-        display: grid;
-        grid-template-columns: 140px 1fr;
-        gap: 10px;
-        align-items: center;
-    }
-
-    @@media (max-width: 520px) {
-        .field {
-            grid-template-columns: 1fr;
-        }
-
-        .two-col {
-            grid-template-columns: 1fr;
-        }
-    }
-
-
-
-
-    .label { font-weight: 600; }
-    .control { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .control input, .control select {
-      padding: 6px 8px;
-      min-height: 34px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
-    .unit { color:#444; }
-
-    .two-col {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-    @@media (max-width: 520px) {
-      .two-col { grid-template-columns: 1fr; }
-    }
-
-    .kv {
-      display: grid;
-      /* タイトル列は細め固定、値側に幅を返す */
-      grid-template-columns: 8.5em minmax(0, 1fr);
-      gap: 8px 12px;
-      align-items: baseline;
-      margin: 0;
-    }
-
-    .kv dt { white-space: nowrap; } /* タイトルは原則1行に */
-    .kv dd { min-width: 0; } /* 値側をちゃんと折り返させるため */
-
-    @@media (max-width: 520px) {
-        /* 画面が狭い時は dt/dd を縦並び（タイトル折り返し問題も、内訳の圧縮も両方解消） */
-        .kv {
-            grid-template-columns: 1fr;
-        }
-        .kv dt {
-            white-space: normal;
-        }
-        
-    }
-
-    .pill {
-      display:inline-block;
-      padding: 2px 8px;
-      border: 1px solid #ddd;
-      border-radius: 999px;
-      font-size: 0.85em;
-      color:#333;
-      background:#fafafa;
-    }
-
-    /* 右カラムを少し見やすく */
-    .summary {
-      position: sticky;
-      top: 12px;
-    }
-    @@media (max-width: 980px) {
-      .summary { position: static; }
-    }
-
-    details > summary { cursor: pointer; }
-    details summary { font-weight: 600; }
-
-    /* 補助説明：カード風 */
-    .hr {
-        border-top: 1px solid #eee;
-        margin: 12px 0;
-    }
-
-    .small {
-        font-size: 0.92em;
-    }
-
-    .muted {
-        color: #666;
-    }
-
-    .field.sub {
-        padding: 8px 10px;
-        border-radius: 10px;
-        background: #f7f7f7;
-        border: 1px solid #e7e7e7;
-    }
-
-    /* 肝性脳症チェック表示用 */
-    .field.sub .label {
-        position: relative;
-        padding-left: 10px;
-    }
-    .field.sub .label::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: 2px;
-        bottom: 2px;
-        width: 3px;
-        border-radius: 2px;
-        background: #d6d6d6;
-    }
-
-    /* エラースタイル */
-    .text-danger {
-        color: #b00020;
-    }
-
-    .validation-summary {
-        margin: 8px 0 0 0;
-    }
-
-    .field-error {
-        margin-top: 4px;
-        font-size: 0.9em;
-    }
-
-    /* ストレス係数合計・内訳表示用 */
-    .pills {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        margin-top: 6px;
-    }
-
-    .pill.mini {
-        font-size: 0.82em;
-        padding: 1px 6px;
-    }
-
-    /* ストレス合計・必要エネルギーの折り返し調整 */
-    .kv dd .mainline {
-        display: flex;
-        align-items: baseline;
-        gap: 8px;
-        flex-wrap: wrap; /* ここで折り返し＝1行に収まらない場合のみ */
-    }
-
-    .kv dd .subline {
-        margin-top: 6px;
-    }
-    /* 1行に収める：右にはみ出したら横スクロール（縦は増やさない） */
-    .line {
-        display: flex;
-        align-items: baseline;
-        gap: 8px;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        white-space: nowrap;
-        padding-bottom: 2px; /* スクロールバーが被らないように */
-    }
-
-        .line::-webkit-scrollbar {
-            height: 6px;
-        }    /* 任意：スクロールバー薄く */
-
-    .kv-need {
-        grid-template-columns: 7.5em minmax(0, 1fr);
-    }
-
-    .kv-need dd {
-            min-width: 0;
-    }
-
-    /* ストレス合計の内訳表示用 */
-    .need-line {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        align-items: baseline;
-    }
-
-    .need-line + .need-line {
-        margin-top: 6px;
-    }
-
-    /* BMR計算式名pill表示用 */
-    .pill.trunc {
-        max-width: 10.5em; /* ここを調整：狭いなら9em、余裕あるなら12em */
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-    /* 基本入力に注釈を追加 */
-    .section-head {
-        display: flex;
-        align-items: baseline;
-        justify-content: space-between;
-        gap: 10px;
-        margin: 0 0 8px 0;
-    }
-
-        .section-head h3 {
-            margin: 0;
-        }
-
-    .section-meta {
-        font-size: .85em;
-        color: #667;
-        white-space: nowrap;
-    }
-
-    @@media (max-width: 520px) {
-        .section-head {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .section-meta {
-            white-space: normal;
-        }
-    }
-
-    /* dt/ddペアを2列にする（経腸栄養剤成分用） */
-    .kv.kv-2col {
-        display: grid;
-        grid-template-columns: 3em 1fr 3em 1fr; /* dt dd dt dd */
-        column-gap: 10px;
-        row-gap: 6px;
-    }
-
-        .kv.kv-2col dt {
-            margin: 0;
-        }
-
-        .kv.kv-2col dd {
-            margin: 0;
-            min-width: 0;
-        }
-    /* 狭い画面では1列に戻す */
-    @@media (max-width: 520px) {
-        .kv.kv-2col {
-            grid-template-columns: 8.5em 1fr;
-        }
-    }
-
-    /* 経腸栄養セクション：計算結果＋割付候補 */
-    .enteral-top {
-        display: grid;
-        grid-template-columns: 1fr 1fr; /* 計算結果 | 割付候補 */
-        gap: 10px 14px;
-        align-items: start;
-    }
-
-    .enteral-box h4 {
-        margin: 6px 0 6px;
-    }
-
-    .compact-list {
-        margin: 0;
-        padding-left: 1.1em;
-    }
-
-        .compact-list li {
-            margin: 2px 0;
-        }
-
-    /* 狭い画面は縦に戻す */
-    @@media (max-width: 520px) {
-        .enteral-top {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    /* 文字を詰める */
-    .kv.kv-tight {
-        margin-top: 0;
-    }
-
-    /* エネルギー候補（参照）2列化  */
-    .kv.kv-2col-energy{
-        display:grid;
-        grid-template-columns: 8em 1fr 8em 1fr;
-        column-gap:10px;
-        row-gap:6px;
-    }
-    @@media (max-width: 520px) {
-        .kv.kv-2col-energy {
-            grid-template-columns: 9em 1fr;
-        }
-    }
-
-    /* アプリバージョン */
-    .brand-meta-inline {
-        font-size: 12px;
-        color: #667; /* muted */
-        white-space: nowrap;
-    }
-
-    .brand-icon {
-        width: 18px;
-        height: 18px;
-        object-fit: contain;
-        display: inline-block;
-    }
-
-    .appbar {
-        display: flex;
-        justify-content: flex-end; /* 右寄せ */
-        margin: 0 0 6px 0;
-    }
-
-    .brand {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        opacity: 0.75; /* さらに邪魔感を減らすなら */
-    }
-
-    /* 公式一覧 */
-    .brand-link {
-        font-size: 12px;
-        color: #667;
-        text-decoration: none;
-        margin-left: 10px;
-    }
-
-        .brand-link:hover {
-            text-decoration: underline;
-        }
-
-</style>
 
 <form method="post">
     <input type="hidden" id="Action" name="Action" value="" />
@@ -384,7 +24,7 @@
         <!-- ========================= -->
         <!-- 左：入力 -->
         <!-- ========================= -->
-        <div>
+        <div class="main">
 
             <div class="card">
                 <div class="section-head">
@@ -609,7 +249,58 @@
         <!-- ========================= -->
         <div class="summary">
 
-            <div class="card">
+            <!-- 追加：右カラム先頭（スマホで先に読む3点） -->
+            <div class="card summary-hero">
+                <h3>要点</h3>
+
+                <div class="hero3">
+                    <div class="hero3-item">
+                        <div class="hero3-label">蛋白</div>
+                        <div class="hero3-value">
+                            <strong>@(Model.ProteinDisplayText ?? "-")</strong>
+                            <span class="unit">g</span>
+                        </div>
+                    </div>
+
+                    <div class="hero3-item">
+                        <div class="hero3-label">水分</div>
+                        <div class="hero3-value">
+                            <strong>@(Model.WaterDisplay?.ToString() ?? "-")</strong>
+                            <span class="unit">mL</span>
+                            @if (Model.WaterFeverCorrected)
+                            {
+                                <span class="pill mini" style="margin-left:6px;">発熱</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="hero3-item">
+                        <div class="hero3-label">推定CCr</div>
+                        <div class="hero3-value">
+                            @if (Model.CcrCorrected.HasValue)
+                            {
+                                <strong>@Model.CcrCorrected.Value.ToString("F1")</strong>
+                                <span class="unit">mL/min</span>
+                            }
+                            else if (Model.CcrActual.HasValue)
+                            {
+                                <strong>@Model.CcrActual.Value.ToString("F1")</strong>
+                                <span class="unit">mL/min</span>
+                            }
+                            else
+                            {
+                                <span class="muted">-</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 以下、既存の結果（参照）カードや経腸栄養カードが続く -->
+            <details class="result-details" open>
+                <summary>結果（参照）</summary>
+
+            <div class="card result-card">
                 <h3>結果（参考）</h3>
 
                 <div class="two-col">
@@ -805,8 +496,9 @@
                     </div>
                  </details>
             </div>
+            </details>
 
-            <div class="card">
+            <div class="card enteral-card">
                 <h3>経腸栄養</h3>
                                 
                 <div class="fields">
@@ -845,37 +537,43 @@
                                 投与カロリー：<strong>@(Model.EnteralEnergy?.ToString("F0") ?? "-")</strong> kcal
                             </p>
                         </div>
+                    </div>
 
-                        <div class="enteral-box">
-                            <h4>割付候補</h4>
-                            <ul class="compact-list">
-                                @foreach (var plan in Model.EnteralPackagePlans)
-                                {
-                                    <li>@IndexModel.FormatPlan(plan)</li>
-                                }
-                            </ul>
+                    <!-- 追加：スマホで折りたたむ領域 -->
+                    <details class="enteral-details" open>
+                        <summary>成分・割付候補</summary>
+
+                        <div class="enteral-top">
+                            <div class="enteral-box">
+                                <h4>割付候補</h4>
+                                <ul class="compact-list">
+                                    @foreach (var plan in Model.EnteralPackagePlans)
+                                    {
+                                        <li>@IndexModel.FormatPlan(plan)</li>
+                                    }
+                                </ul>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="enteral-bottom">
-                        <h4>成分（投与量ベース）</h4>
-                        <dl class="kv kv-2col">
-                            <dt>蛋白質</dt>
-                            <dd>@(Model.EnteralProtein?.ToString("F1") ?? "-") g</dd>
-                            <dt>脂質</dt>
-                            <dd>@(Model.EnteralFat?.ToString("F1") ?? "-") g</dd>
-                            <dt>糖質</dt>
-                            <dd>@(Model.EnteralCarb?.ToString("F1") ?? "-") g</dd>
-                            <dt>食塩</dt>
-                            <dd>@(Model.EnteralSalt?.ToString("F2") ?? "-") g</dd>
-                            <dt>ビタミンK</dt>
-                            <dd>@(Model.EnteralVitaminK?.ToString("F1") ?? "-") µg</dd>
-                            <dt>水分量</dt>
-                            <dd>@(Model.EnteralWater?.ToString("F0") ?? "-") mL</dd>
-                        </dl>
-                    </div>
-                 }
-            </div>
+                        <div class="enteral-bottom">
+                            <h4>成分（投与量ベース）</h4>
+                            <dl class="kv kv-2col">
+                                <dt>蛋白質</dt>
+                                <dd>@(Model.EnteralProtein?.ToString("F1") ?? "-") g</dd>
+                                <dt>脂質</dt>
+                                <dd>@(Model.EnteralFat?.ToString("F1") ?? "-") g</dd>
+                                <dt>糖質</dt>
+                                <dd>@(Model.EnteralCarb?.ToString("F1") ?? "-") g</dd>
+                                <dt>食塩</dt>
+                                <dd>@(Model.EnteralSalt?.ToString("F2") ?? "-") g</dd>
+                                <dt>ビタミンK</dt>
+                                <dd>@(Model.EnteralVitaminK?.ToString("F1") ?? "-") µg</dd>
+                                <dt>水分量</dt>
+                                <dd>@(Model.EnteralWater?.ToString("F0") ?? "-") mL</dd>
+                            </dl>
+                        </div>
+                    </details>
+                }
 
             <div class="card">
                 <details>
@@ -931,5 +629,16 @@
         }
     </script>
 
-
+        <!-- スマホの初期で経腸栄養詳細を折りたたむ -->
+        <script>
+            if (window.matchMedia("(max-width: 980px)").matches) {
+                document.querySelectorAll(".enteral-details").forEach(d => d.removeAttribute("open"));
+            }
+        </script>
+        <!-- スマホの初期で結果詳細を折りたたむ -->
+        <script>
+            if (window.matchMedia("(max-width: 980px)").matches) {
+              document.querySelectorAll(".result-details").forEach(d => d.removeAttribute("open"));
+            }
+        </script>
 </form>
