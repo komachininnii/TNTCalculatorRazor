@@ -577,3 +577,9 @@ details summary {
         display: none !important;
     }
 }
+
+.calc-actions {
+    display: none;
+}
+
+

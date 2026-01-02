@@ -159,7 +159,6 @@ public class IndexModel : PageModel
     // =====================================
     // Action 判定・ModelState ヘルパ（追加）
     // =====================================
-
     private string Act => (Action ?? "").Trim().ToLowerInvariant();
 
     // kcal or mL をユーザーが触ったとみなす Action
@@ -304,12 +303,12 @@ public class IndexModel : PageModel
         // 4) 係数・補正込みの必要量を計算（EnergyFinal / Protein / Water など）
         RecalcEnergyProteinWater();
 
-        // 5) 必要量（EnergyFinal）→ 経腸の投与カロリーへ同期
-        //    ※ ユーザーが編集していないときのみ
-        if (ShouldSyncEnergyOrder(act) && !IsEnergyUserEdited)
+        // 5) 必要量（EnergyFinal）→ EnergyOrderValue に同期（ユーザー手動編集していないときのみ）
+        if (!IsEnergyUserEdited)
         {
             SyncEnergyOrderValueFromNeedOrFallback();
         }
+
 
         // 6) 経腸栄養（kcal↔mL 同期、成分、割付候補）
         RecalcEnteral();
@@ -409,9 +408,9 @@ public class IndexModel : PageModel
         BmrKcal = (int)Math.Round(BmrResult.RawValue, MidpointRounding.AwayFromZero);
         
 
-    // 25/30/35 は標準体重ベース（年齢に関係なく表示する方針に寄せる）
-    // ※ StandardWeight が計算できている前提
-    Kcal25 = (int)Math.Round(BodyIndex.StandardWeight * 25.0, MidpointRounding.AwayFromZero);
+        // 25/30/35 は標準体重ベース（年齢に関係なく表示する方針に寄せる）
+        // ※ StandardWeight が計算できている前提
+        Kcal25 = (int)Math.Round(BodyIndex.StandardWeight * 25.0, MidpointRounding.AwayFromZero);
         Kcal30 = (int)Math.Round(BodyIndex.StandardWeight * 30.0, MidpointRounding.AwayFromZero);
         Kcal35 = (int)Math.Round(BodyIndex.StandardWeight * 35.0, MidpointRounding.AwayFromZero);
     }

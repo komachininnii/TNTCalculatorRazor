@@ -16,7 +16,7 @@
 
 
 <form method="post">
-    <input type="hidden" id="Action" name="Action" value="" />
+    <input type="hidden" asp-for="Action" id="Action" />
     <input asp-for="IsProteinCorrectionUserEdited" type="hidden" />
    
     <div class="layout">
@@ -641,4 +641,22 @@
               document.querySelectorAll(".result-details").forEach(d => d.removeAttribute("open"));
             }
         </script>
+
+        <!-- 入力欄のblurでActionセット -->
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+              const form = document.querySelector("form");
+              if (!form) return;
+
+              form.querySelectorAll("input[type='number'], input[type='text'], select").forEach(el => {
+                el.addEventListener("blur", () => {
+                  const action = document.getElementById("Action");
+                  if (action && !action.value) action.value = "calc";
+                  // blurで必ず確定させる（必要なら）
+                  // form.requestSubmit();  // 自動送信したい場合のみ有効化
+                });
+              });
+            });
+        </script>
+
 </form>
