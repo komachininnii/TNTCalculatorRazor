@@ -71,7 +71,8 @@
                         <div class="label">体重</div>
                         <div class="control">
                             <input asp-for="Weight" type="number" step="0.1" inputmode="decimal"
-                                   onkeydown="submitOnEnter(event,'anthro')" />
+                                   onkeydown="submitOnEnter(event,'anthro')"
+                                   onblur="document.getElementById('Action').value='anthro'; this.form.submit();" />
                             <span class="unit">kg</span>
                             @if (((Model.Action ?? "").Trim().ToLowerInvariant()) == "anthro")
                             {
@@ -86,7 +87,9 @@
                         <div class="control">
                             <input asp-for="SerumCreatinine"
                                    type="number" step="0.01" inputmode="decimal"
-                                   onchange="document.getElementById('Action').value='renal'; this.form.submit();" />
+                                   onchange="document.getElementById('Action').value='renal'; this.form.submit();"
+                                   onblur="document.getElementById('Action').value='renal'; this.form.submit();" />
+
                             <span class="unit">mg/dL</span>
                         </div>
                     </div>
