@@ -1,4 +1,4 @@
-html {
+ï»¿html {
   font-size: 14px;
 }
 
@@ -30,7 +30,7 @@ body {
   text-align: start;
 }
 
-/* ƒJƒXƒ^ƒ€ƒXƒ^ƒCƒ‹‚±‚±‚©‚ç */
+/* ã‚«ã‚¹ã‚¿ãƒ ã‚¹ã‚¿ã‚¤ãƒ«ã“ã“ã‹ã‚‰ */
 :root {
     --gap: 12px;
     --card: 14px;
@@ -105,7 +105,7 @@ body {
 
 .kv {
     display: grid;
-    /* ƒ^ƒCƒgƒ‹—ñ‚Í×‚ßŒÅ’èA’l‘¤‚É•‚ğ•Ô‚· */
+    /* ã‚¿ã‚¤ãƒˆãƒ«åˆ—ã¯ç´°ã‚å›ºå®šã€å€¤å´ã«å¹…ã‚’è¿”ã™ */
     grid-template-columns: 8.5em minmax(0, 1fr);
     gap: 8px 12px;
     align-items: baseline;
@@ -115,14 +115,14 @@ body {
     .kv dt {
         white-space: nowrap;
     }
-    /* ƒ^ƒCƒgƒ‹‚ÍŒ´‘¥1s‚É */
+    /* ã‚¿ã‚¤ãƒˆãƒ«ã¯åŸå‰‡1è¡Œã« */
     .kv dd {
         min-width: 0;
     }
-/* ’l‘¤‚ğ‚¿‚á‚ñ‚ÆÜ‚è•Ô‚³‚¹‚é‚½‚ß */
+/* å€¤å´ã‚’ã¡ã‚ƒã‚“ã¨æŠ˜ã‚Šè¿”ã•ã›ã‚‹ãŸã‚ */
 
 @media (max-width: 520px) {
-    /* ‰æ–Ê‚ª‹·‚¢‚Í dt/dd ‚ğc•À‚Ñiƒ^ƒCƒgƒ‹Ü‚è•Ô‚µ–â‘è‚àA“à–ó‚Ìˆ³k‚à—¼•û‰ğÁj */
+    /* ç”»é¢ãŒç‹­ã„æ™‚ã¯ dt/dd ã‚’ç¸¦ä¸¦ã³ï¼ˆã‚¿ã‚¤ãƒˆãƒ«æŠ˜ã‚Šè¿”ã—å•é¡Œã‚‚ã€å†…è¨³ã®åœ§ç¸®ã‚‚ä¸¡æ–¹è§£æ¶ˆï¼‰ */
     .kv {
         grid-template-columns: 1fr;
     }
@@ -142,7 +142,7 @@ body {
     background: #fafafa;
 }
 
-/* ‰EƒJƒ‰ƒ€‚ğ­‚µŒ©‚â‚·‚­ */
+/* å³ã‚«ãƒ©ãƒ ã‚’å°‘ã—è¦‹ã‚„ã™ã */
 .summary {
     position: sticky;
     top: 12px;
@@ -162,7 +162,7 @@ details summary {
     font-weight: 600;
 }
 
-/* •â•à–¾FƒJ[ƒh•— */
+/* è£œåŠ©èª¬æ˜ï¼šã‚«ãƒ¼ãƒ‰é¢¨ */
 .hr {
     border-top: 1px solid #eee;
     margin: 12px 0;
@@ -183,7 +183,7 @@ details summary {
     border: 1px solid #e7e7e7;
 }
 
-    /* ŠÌ«”]Çƒ`ƒFƒbƒN•\¦—p */
+    /* è‚æ€§è„³ç—‡ãƒã‚§ãƒƒã‚¯è¡¨ç¤ºç”¨ */
     .field.sub .label {
         position: relative;
         padding-left: 10px;
@@ -200,7 +200,7 @@ details summary {
             background: #d6d6d6;
         }
 
-/* ƒGƒ‰[ƒXƒ^ƒCƒ‹ */
+/* ã‚¨ãƒ©ãƒ¼ã‚¹ã‚¿ã‚¤ãƒ« */
 .text-danger {
     color: #b00020;
 }
@@ -214,7 +214,7 @@ details summary {
     font-size: 0.9em;
 }
 
-/* ƒXƒgƒŒƒXŒW”‡ŒvE“à–ó•\¦—p */
+/* ã‚¹ãƒˆãƒ¬ã‚¹ä¿‚æ•°åˆè¨ˆãƒ»å†…è¨³è¡¨ç¤ºç”¨ */
 .pills {
     display: flex;
     flex-wrap: wrap;
@@ -227,18 +227,18 @@ details summary {
     padding: 1px 6px;
 }
 
-/* ƒXƒgƒŒƒX‡ŒvE•K—vƒGƒlƒ‹ƒM[‚ÌÜ‚è•Ô‚µ’²® */
+/* ã‚¹ãƒˆãƒ¬ã‚¹åˆè¨ˆãƒ»å¿…è¦ã‚¨ãƒãƒ«ã‚®ãƒ¼ã®æŠ˜ã‚Šè¿”ã—èª¿æ•´ */
 .kv dd .mainline {
     display: flex;
     align-items: baseline;
     gap: 8px;
-    flex-wrap: wrap; /* ‚±‚±‚ÅÜ‚è•Ô‚µ1s‚Éû‚Ü‚ç‚È‚¢ê‡‚Ì‚İ */
+    flex-wrap: wrap; /* ã“ã“ã§æŠ˜ã‚Šè¿”ã—ï¼1è¡Œã«åã¾ã‚‰ãªã„å ´åˆã®ã¿ */
 }
 
 .kv dd .subline {
     margin-top: 6px;
 }
-/* 1s‚Éû‚ß‚éF‰E‚É‚Í‚İo‚µ‚½‚ç‰¡ƒXƒNƒ[ƒ‹ic‚Í‘‚â‚³‚È‚¢j */
+/* 1è¡Œã«åã‚ã‚‹ï¼šå³ã«ã¯ã¿å‡ºã—ãŸã‚‰æ¨ªã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ï¼ˆç¸¦ã¯å¢—ã‚„ã•ãªã„ï¼‰ */
 .line {
     display: flex;
     align-items: baseline;
@@ -246,13 +246,13 @@ details summary {
     flex-wrap: nowrap;
     overflow-x: auto;
     white-space: nowrap;
-    padding-bottom: 2px; /* ƒXƒNƒ[ƒ‹ƒo[‚ª”í‚ç‚È‚¢‚æ‚¤‚É */
+    padding-bottom: 2px; /* ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ãƒãƒ¼ãŒè¢«ã‚‰ãªã„ã‚ˆã†ã« */
 }
 
     .line::-webkit-scrollbar {
         height: 6px;
     }
-/* ”CˆÓFƒXƒNƒ[ƒ‹ƒo[”–‚­ */
+/* ä»»æ„ï¼šã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ãƒãƒ¼è–„ã */
 
 .kv-need {
     grid-template-columns: 7.5em minmax(0, 1fr);
@@ -262,7 +262,7 @@ details summary {
         min-width: 0;
     }
 
-/* ƒXƒgƒŒƒX‡Œv‚Ì“à–ó•\¦—p */
+/* ã‚¹ãƒˆãƒ¬ã‚¹åˆè¨ˆã®å†…è¨³è¡¨ç¤ºç”¨ */
 .need-line {
     display: flex;
     flex-wrap: wrap;
@@ -274,15 +274,15 @@ details summary {
         margin-top: 6px;
     }
 
-/* BMRŒvZ®–¼pill•\¦—p */
+/* BMRè¨ˆç®—å¼åpillè¡¨ç¤ºç”¨ */
 .pill.trunc {
-    max-width: 10.5em; /* ‚±‚±‚ğ’²®F‹·‚¢‚È‚ç9emA—]—T‚ ‚é‚È‚ç12em */
+    max-width: 10.5em; /* ã“ã“ã‚’èª¿æ•´ï¼šç‹­ã„ãªã‚‰9emã€ä½™è£•ã‚ã‚‹ãªã‚‰12em */
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-/* Šî–{“ü—Í‚É’ß‚ğ’Ç‰Á */
+/* åŸºæœ¬å…¥åŠ›ã«æ³¨é‡ˆã‚’è¿½åŠ  */
 .section-head {
     display: flex;
     align-items: baseline;
@@ -312,7 +312,7 @@ details summary {
     }
 }
 
-/* dt/ddƒyƒA‚ğ2—ñ‚É‚·‚éiŒo’°‰h—{Ü¬•ª—pj */
+/* dt/ddãƒšã‚¢ã‚’2åˆ—ã«ã™ã‚‹ï¼ˆçµŒè…¸æ „é¤Šå‰¤æˆåˆ†ç”¨ï¼‰ */
 .kv.kv-2col {
     display: grid;
     grid-template-columns: 3em 1fr 3em 1fr; /* dt dd dt dd */
@@ -328,17 +328,17 @@ details summary {
         margin: 0;
         min-width: 0;
     }
-/* ‹·‚¢‰æ–Ê‚Å‚Í1—ñ‚É–ß‚· */
+/* ç‹­ã„ç”»é¢ã§ã¯1åˆ—ã«æˆ»ã™ */
 @media (max-width: 520px) {
     .kv.kv-2col {
         grid-template-columns: 8.5em 1fr;
     }
 }
 
-/* Œo’°‰h—{ƒZƒNƒVƒ‡ƒ“FŒvZŒ‹‰Ê{Š„•tŒó•â */
+/* çµŒè…¸æ „é¤Šã‚»ã‚¯ã‚·ãƒ§ãƒ³ï¼šè¨ˆç®—çµæœï¼‹å‰²ä»˜å€™è£œ */
 .enteral-top {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* ŒvZŒ‹‰Ê | Š„•tŒó•â */
+    grid-template-columns: 1fr 1fr; /* è¨ˆç®—çµæœ | å‰²ä»˜å€™è£œ */
     gap: 10px 14px;
     align-items: start;
 }
@@ -356,19 +356,19 @@ details summary {
         margin: 2px 0;
     }
 
-/* ‹·‚¢‰æ–Ê‚Íc‚É–ß‚· */
+/* ç‹­ã„ç”»é¢ã¯ç¸¦ã«æˆ»ã™ */
 @media (max-width: 520px) {
     .enteral-top {
         grid-template-columns: 1fr;
     }
 }
 
-/* •¶š‚ğ‹l‚ß‚é */
+/* æ–‡å­—ã‚’è©°ã‚ã‚‹ */
 .kv.kv-tight {
     margin-top: 0;
 }
 
-/* ƒGƒlƒ‹ƒM[Œó•âiQÆj2—ñ‰»  */
+/* ã‚¨ãƒãƒ«ã‚®ãƒ¼å€™è£œï¼ˆå‚ç…§ï¼‰2åˆ—åŒ–  */
 .kv.kv-2col-energy {
     display: grid;
     grid-template-columns: 8em 1fr 8em 1fr;
@@ -382,7 +382,7 @@ details summary {
     }
 }
 
-/* ƒAƒvƒŠƒo[ƒWƒ‡ƒ“ */
+/* ã‚¢ãƒ—ãƒªãƒãƒ¼ã‚¸ãƒ§ãƒ³ */
 .brand-meta-inline {
     font-size: 12px;
     color: #667; /* muted */
@@ -398,7 +398,7 @@ details summary {
 
 .appbar {
     display: flex;
-    justify-content: flex-end; /* ‰EŠñ‚¹ */
+    justify-content: flex-end; /* å³å¯„ã› */
     margin: 0 0 6px 0;
 }
 
@@ -406,10 +406,10 @@ details summary {
     display: flex;
     align-items: center;
     gap: 8px;
-    opacity: 0.75; /* ‚³‚ç‚É×–‚Š´‚ğŒ¸‚ç‚·‚È‚ç */
+    opacity: 0.75; /* ã•ã‚‰ã«é‚ªé­”æ„Ÿã‚’æ¸›ã‚‰ã™ãªã‚‰ */
 }
 
-/* Œö®ˆê—— */
+/* å…¬å¼ä¸€è¦§ */
 .brand-link {
     font-size: 12px;
     color: #667;
@@ -421,7 +421,7 @@ details summary {
         text-decoration: underline;
     }
 
-/* 2ƒJƒ‰ƒ€‚ÌŠî–{ */
+/* 2ã‚«ãƒ©ãƒ ã®åŸºæœ¬ */
 .layout {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -429,13 +429,13 @@ details summary {
     align-items: start;
 }
 
-    /* d—vF’†g‚ª’·‚¢‚É‰¡‚Í‚İo‚µ‚ğ‹N‚±‚µ‚É‚­‚­‚·‚é */
+    /* é‡è¦ï¼šä¸­èº«ãŒé•·ã„æ™‚ã«æ¨ªã¯ã¿å‡ºã—ã‚’èµ·ã“ã—ã«ããã™ã‚‹ */
     .layout > .main,
     .layout > .summary {
         min-width: 0;
     }
 
-/* ƒXƒ}ƒzF1ƒJƒ‰ƒ€‚É */
+/* ã‚¹ãƒãƒ›ï¼š1ã‚«ãƒ©ãƒ ã« */
 @media (max-width: 720px) {
     .layout {
         grid-template-columns: 1fr;
@@ -445,10 +445,10 @@ details summary {
         margin-top: 12px;
     }
 }
-/* Œ‹‰ÊiQÆj‚Ì2ƒJƒ‰ƒ€‚ğƒXƒ}ƒz‚Åc‚É‚·‚é */
+/* çµæœï¼ˆå‚ç…§ï¼‰ã®2ã‚«ãƒ©ãƒ ã‚’ã‚¹ãƒãƒ›ã§ç¸¦ã«ã™ã‚‹ */
 @media (max-width: 720px) {
     .two-col {
-        display: block; /* ‚±‚ê‚Å2—ñ¨cÏ‚İ‚ÉŠmÀ‚É‚Å‚«‚é */
+        display: block; /* ã“ã‚Œã§2åˆ—â†’ç¸¦ç©ã¿ã«ç¢ºå®Ÿã«ã§ãã‚‹ */
     }
 
         .two-col > div {
@@ -461,7 +461,7 @@ details summary {
 }
 
 
-/* Œo’°‰h—{FƒXƒ}ƒz‚Åu¬•ªEŠ„•tŒó•âv‚ğÜ‚è‚½‚½‚İ */
+/* çµŒè…¸æ „é¤Šï¼šã‚¹ãƒãƒ›ã§ã€Œæˆåˆ†ãƒ»å‰²ä»˜å€™è£œã€ã‚’æŠ˜ã‚ŠãŸãŸã¿ */
 .enteral-details {
     margin-top: 10px;
 }
@@ -473,30 +473,30 @@ details summary {
         padding: 6px 0;
     }
 
-        /* Safari—pFsummary‚Ìƒ}[ƒJ[’²®i”CˆÓj */
+        /* Safariç”¨ï¼šsummaryã®ãƒãƒ¼ã‚«ãƒ¼èª¿æ•´ï¼ˆä»»æ„ï¼‰ */
         .enteral-details > summary::-webkit-details-marker {
             display: none;
         }
 
-/* PC‚Å‚Íí“WŠJisummary‚Í”ñ•\¦j */
+/* PCã§ã¯å¸¸æ™‚å±•é–‹ï¼ˆsummaryã¯éè¡¨ç¤ºï¼‰ */
 @media (min-width: 981px) {
     .enteral-details > summary {
         display: none;
     }
 
     .enteral-details {
-        /* íŒ©‚¹‚½‚¢‚Ì‚ÅŒ©‚½–Ú‚ğ©‘R‚É */
+        /* å¸¸æ™‚è¦‹ã›ãŸã„ã®ã§è¦‹ãŸç›®ã‚’è‡ªç„¶ã« */
         margin-top: 0;
     }
 }
 
-/* ƒXƒ}ƒz‚Å‚Í‰Šú‚Í•Â‚¶‚Ä‚àOKFopen‚ğŠO‚µ‚½‚¢‚È‚ç‚±‚±‚Å§Œä‚à‰Â”\ */
+/* ã‚¹ãƒãƒ›ã§ã¯åˆæœŸã¯é–‰ã˜ã¦ã‚‚OKï¼šopenã‚’å¤–ã—ãŸã„ãªã‚‰ã“ã“ã§åˆ¶å¾¡ã‚‚å¯èƒ½ */
 @media (max-width: 980px) {
     .enteral-details[open] > summary {
         margin-bottom: 6px;
     }
 }
-/* ƒXƒ}ƒz‚Å‚ÍŒo’°‰h—{ƒJ[ƒh‚ğã‚­Œ©‚¹‚é@*/
+/* ã‚¹ãƒãƒ›ã§ã¯çµŒè…¸æ „é¤Šã‚«ãƒ¼ãƒ‰ã‚’å¼±ãè¦‹ã›ã‚‹ã€€*/
 @media (max-width: 980px) {
     .summary .card {
         opacity: 0.95;
@@ -506,7 +506,7 @@ details summary {
             font-size: 1rem;
         }
 }
-/* ƒXƒ}ƒz‚Å‚ÍŒo’°‰h—{ƒJ[ƒh‚ğsummery(‰EƒJƒ‰ƒ€)‚Ìˆê”Ô‰º‚ÉŒÅ’è@*/
+/* ã‚¹ãƒãƒ›ã§ã¯çµŒè…¸æ „é¤Šã‚«ãƒ¼ãƒ‰ã‚’summery(å³ã‚«ãƒ©ãƒ )ã®ä¸€ç•ªä¸‹ã«å›ºå®šã€€*/
 @media (max-width: 980px) {
     .summary {
         margin-top: 24px;
@@ -520,7 +520,7 @@ details summary {
     }
 }
 
-/* ‰EƒJƒ‰ƒ€æ“ªu—v“_v3“_ƒŒƒCƒAƒEƒg */
+/* å³ã‚«ãƒ©ãƒ å…ˆé ­ã€Œè¦ç‚¹ã€3ç‚¹ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ */
 .hero3 {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -553,7 +553,7 @@ details summary {
     white-space: nowrap;
 }
 
-/* Œ‹‰Ê‚ğƒ{ƒ^ƒ“‚Á‚Û‚­@*/
+/* çµæœã‚’ãƒœã‚¿ãƒ³ã£ã½ãã€€*/
 .result-details > summary {
     cursor: pointer;
     font-weight: 600;
@@ -565,13 +565,13 @@ details summary {
         display: none;
     }
 
-/* PC‚Å‚Íí•\¦iÜ‚è‚½‚½‚İ•s—vj  */
+/* PCã§ã¯å¸¸æ™‚è¡¨ç¤ºï¼ˆæŠ˜ã‚ŠãŸãŸã¿ä¸è¦ï¼‰  */
 @media (min-width: 981px) {
     .result-details > summary {
         display: none;
     }
 }
-/* PC‚Å‚Í—v“_iƒXƒ}ƒzê—pj‚ğ”ñ•\¦ */
+/* PCã§ã¯è¦ç‚¹ï¼ˆã‚¹ãƒãƒ›å°‚ç”¨ï¼‰ã‚’éè¡¨ç¤º */
 @media (min-width: 981px) {
     .summary-hero {
         display: none !important;
@@ -582,7 +582,7 @@ details summary {
     display: none;
 }
 
-/* ƒXƒ}ƒz‰‰ñ‚Ì‚İ‚ÌˆÄ“à */
+/* ã‚¹ãƒãƒ›åˆå›ã®ã¿ã®æ¡ˆå†… */
 @media (max-width: 980px) {
     .homehint--dismissible {
         display: flex;
@@ -616,4 +616,86 @@ details summary {
             opacity: 1;
         }
 }
+
+@media (max-width: 980px) {
+    /* ãƒ©ãƒ™ãƒ« + ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã¯2åˆ— */
+    .field-compact {
+        display: grid;
+        grid-template-columns: 6em 1fr;
+        gap: 8px;
+        align-items: start; /* ã‚¨ãƒ©ãƒ¼è¡ŒãŒå‡ºã¦ã‚‚å´©ã‚Œãªã„ */
+    }
+
+        /* å³å´ã‚’ flex ã§1è¡Œå›ºå®š */
+        .field-compact .control {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap; /* â† ã‚¨ãƒ©ãƒ¼ã ã‘ä¸‹ã«è½ã¨ã™ãŸã‚ wrap */
+            gap: 6px;
+            min-width: 0;
+        }
+
+            /* input ã¯å¿…è¦åˆ†ã ã‘ä¼¸ã³ã‚‹ï¼ˆunitã®åˆ†ã‚’æ®‹ã™ï¼‰ */
+            .field-compact .control input[type="number"],
+            .field-compact .control input[type="text"] {
+                flex: 1 1 8ch; /* â† ä¼¸ã³ã‚‹ãŒæœ€ä½å¹…ã‚’ç¢ºä¿ */
+                width: auto;
+                min-width: 0;
+            }
+
+            /* unit ã¯æŠ˜ã‚Šè¿”ã•ãªã„ãƒ»æ¨ªã«å›ºå®š */
+            .field-compact .control .unit {
+                flex: 0 0 auto;
+                white-space: nowrap;
+            }
+
+            /* ã‚¨ãƒ©ãƒ¼è¡¨ç¤ºã¯å¿…ãšæ¬¡ã®è¡Œã¸ï¼ˆæ¨ªå¹…ã„ã£ã±ã„ï¼‰ */
+            .field-compact .control .field-error {
+                flex: 0 0 100%;
+                margin-top: 2px;
+            }
+
+            /* select ã¯100%ã§OKï¼ˆunitç„¡ã—ï¼‰ */
+            .field-compact .control select {
+                width: 100%;
+            }
+}
+@media (max-width: 980px) {
+    /* 1è¡Œç¶­æŒã®ã¾ã¾ã€å…¥åŠ›æ¬„ã®æœ€å¤§å¹…ã‚’åˆ¶é™ï¼ˆPCã«è¿‘ã„è¦‹ãŸç›®ï¼‰ */
+    .field-compact .control input[type="number"],
+    .field-compact .control input[type="text"] {
+        max-width: 12rem; /* â† ã“ã“ã‚’å¥½ã¿ã§èª¿æ•´ï¼ˆä¾‹ï¼š10remã€œ14remï¼‰ */
+    }
+}
+@media (max-width: 980px) {
+    /* æ€§åˆ¥ãƒ»ç–¾æ‚£ãªã© select ã‚‚PCã£ã½ã„å¹…ã§é ­æ‰“ã¡ */
+    .field-compact .control select {
+        width: auto; /* 100%ã‚’è§£é™¤ */
+        flex: 0 0 auto;
+        max-width: 14rem; /* å¥½ã¿ã§èª¿æ•´ï¼ˆä¾‹ï¼š12remã€œ16remï¼‰ */
+    }
+}
+/* å¿…è¦ã‚¨ãƒãƒ«ã‚®ãƒ¼å€¤å¼·èª¿è¡¨ç¤º */
+#EnergyOrderValue {
+    font-weight: 700;
+    font-size: 1.05em;
+}
+
+@media (max-width: 980px) {
+    /* åŸºæœ¬ï¼šâ‘¢ ãƒ©ãƒ™ãƒ«åˆ—ã‚’å°‘ã—åºƒã’ã‚‹ï¼ˆæŠ˜ã‚Šè¿”ã—ã‚’æ¸›ã‚‰ã™ï¼‰ */
+    .field-compact {
+        grid-template-columns: 7.5em 1fr;
+    }
+}
+
+/* ã•ã‚‰ã«ç‹­ã„ç«¯æœ«ã ã‘ï¼šâ‘¡ çœç•¥è¡¨ç¤ºã§å…¥åŠ›æ¬„ã‚’å®ˆã‚‹ */
+@media (max-width: 360px) {
+    .field-compact .label {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+
 

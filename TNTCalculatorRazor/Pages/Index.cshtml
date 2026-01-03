@@ -47,7 +47,7 @@
 
                 <div class="fields">
 
-                    <div class="field">
+                    <div class="field field-compact">
                         <div class="label">年齢</div>
                         <div class="control">
                             <input asp-for="Age" type="number" step="1" inputmode="numeric"
@@ -60,7 +60,7 @@
                             </div>
                     </div>
 
-                    <div class="field">
+                    <div class="field field-compact">
                         <div class="label">身長</div>
                         <div class="control">
                             <input asp-for="Height" type="number" step="0.1" inputmode="decimal"
@@ -73,7 +73,7 @@
                         </div>
                     </div>
 
-                    <div class="field">
+                    <div class="field field-compact">
                         <div class="label">体重</div>
                         <div class="control">
                             <input asp-for="Weight" type="number" step="0.1" inputmode="decimal"
@@ -88,7 +88,7 @@
                     </div>
 
 
-                    <div class="field">
+                    <div class="field field-compact">
                         <div class="label">Cr</div>
                         <div class="control">
                             <input asp-for="SerumCreatinine"
@@ -102,7 +102,7 @@
 
 
 
-                    <div class="field">
+                    <div class="field field-compact">
                         <div class="label">性別</div>
                         <div class="control">
                             <select asp-for="Gender"
@@ -118,7 +118,7 @@
             <div class="card">
                 @if (!(Model.Age.HasValue && Model.Age.Value < 18))
                 {
-                    <div class="field">
+                    <div class="field field-compact">
                         <div class="label">疾患</div>
                         <div class="control">
                             <select asp-for="SelectedDisease"
@@ -207,7 +207,7 @@
                 <h3>必要エネルギー</h3>
 
                 <div class="fields">
-                    <div class="field">
+                    <div class="field field-compact">
                         <div class="label">算出方法</div>
                         <div class="control">
                             <select asp-for="SelectedEnergyOrder"
@@ -217,7 +217,7 @@
                         </div>
                     </div>
 
-                    <div class="field">
+                    <div class="field field-compact">
                         <div class="label">必要エネルギー</div>
                         <div class="control">
                             <input asp-for="EnergyOrderValue"
