@@ -25,7 +25,13 @@
         <!-- 左：入力 -->
         <!-- ========================= -->
         <div class="main">
-
+            <!-- スマホ初回のみ：ホーム画面追加の案内 -->
+            <div id="homehint" class="homehint homehint--dismissible" style="display:none;">
+                <div class="homehint-text">
+                    スマホは「ホーム画面に追加」するとすぐ開けます。Androidでは「インストール」と表示される場合がありますが、オフライン対応などのアプリ化はしていません。
+                </div>
+                <button type="button" class="homehint-close" aria-label="閉じる">×</button>
+            </div>
             <div class="card">
                 <div class="section-head">
                     <h3>基本入力</h3>
@@ -632,22 +638,38 @@
         }
     </script>
 
-        <!-- スマホの初期で経腸栄養詳細を折りたたむ -->
-        <script>
-            if (window.matchMedia("(max-width: 980px)").matches) {
-                document.querySelectorAll(".enteral-details").forEach(d => d.removeAttribute("open"));
-            }
-        </script>
-        <!-- スマホの初期で結果詳細を折りたたむ -->
-        <script>
-            if (window.matchMedia("(max-width: 980px)").matches) {
-              document.querySelectorAll(".result-details").forEach(d => d.removeAttribute("open"));
-            }
-        </script>
+    <!-- スマホ時：初期表示調整（details折りたたみ + 初回案内） -->
+    <script>
+        (function () {
+          const isMobile = window.matchMedia("(max-width: 980px)").matches;
+          if (!isMobile) return;
+              // 1) details を初期で折りたたむ
+              document.querySelectorAll(".enteral-details, .result-details")
+              .forEach(d => d.removeAttribute("open"));
 
-        <!-- 入力欄のblurでActionセット -->
-        <script>
-            document.addEventListener("DOMContentLoaded", () => {
+              // 2) 初回だけ：ホーム画面追加の案内を表示（×で閉じたら二度と出さない）
+              const key = "tnt_homehint_dismissed_v1";
+              if (localStorage.getItem(key) === "1") return;
+
+              const el = document.getElementById("homehint");
+              if (!el) return;
+
+              el.style.display = "flex";
+
+              const btn = el.querySelector(".homehint-close");
+              if (btn) {
+                btn.addEventListener("click", () => {
+                  localStorage.setItem(key, "1");
+                  el.remove();
+                });
+              }
+            })();
+     </script>
+
+
+     <!-- 入力欄のblurでActionセット -->
+     <script>
+          document.addEventListener("DOMContentLoaded", () => {
               const form = document.querySelector("form");
               if (!form) return;
 
@@ -660,6 +682,6 @@
                 });
               });
             });
-        </script>
+     </script>
 
 </form>
