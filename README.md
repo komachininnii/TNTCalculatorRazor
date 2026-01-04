@@ -1,104 +1,155 @@
-TNTCalculatorRazor
-概要
+# TNTCalculatorRazor
 
-経腸栄養量（必要エネルギー・蛋白・水分）を算出する Web アプリ。
-PC・スマートフォン双方での臨床利用を想定。
+## 概要
+経腸栄養量（必要エネルギー・蛋白・水分）を算出する Web アプリ。  
+ASP.NET Core Razor Pages で実装している。
 
-院外公開版：個人 Azure App Service で公開
+- 院外公開版：個人 Azure App Service で公開  
+- 院内版：院内サーバーから配信（専用PC・HD画角のみ）
 
-院内版：院内サーバーから配信（専用PC・HD画角のみ）
+---
 
-基本方針
+## 基本設計方針（最重要）
+- ソースは **1系統のみ**（院内／院外で分岐しない）
+- 院内限定情報（院内マニュアルURL等）は **設定で制御**
+- GitHub / Azure に **院内情報を絶対に混入させない**
 
-ソースは1系統のみ（院内／院外で分岐しない）
+この方針により、  
+ソース分岐による保守事故や、院内／院外での機能乖離を防止する。
 
-院内限定情報（マニュアルURL等）は 設定で制御
+---
 
-GitHub（Private）にも Azure（院外）にも 院内URLを混入させない
+## UI 設計の要点
 
-UI設計の要点
-PC
+### PC
+- 1画面完結
+- スクリーンショット運用を想定
 
-1画面完結
+### スマートフォン（院外）
+- 入力〜「必要エネルギー／蛋白／水分（要点）」まで初期画面1画面内
+- 体重・Cr は onblur submit により入力取りこぼしを防止
+- Validation エラーは ModelState にエラーがある場合のみ描画し、行間揺れを防ぐ
 
-スクリーンショット運用を想定
+---
 
-スマートフォン（院外のみ）
+## 院内マニュアルリンクの設計
 
-入力〜「必要エネルギー／蛋白／水分（要点）」まで 初期画面1画面内
+### 目的
+院内サーバー配信時のみ、  
+ヘッダー右側（「公式一覧」の右）に「院内マニュアル」リンクを表示する。
 
-入力取りこぼし防止のため、体重・Cr は onblur submit
+院外（Azure）では **一切表示しない**。
 
-行間揺れ防止のため、Validation エラーは ModelState にエラーがある場合のみ描画
+### 表示制御の考え方
+- 設定キー **InternalManual** の内容で表示を制御
+- URL はソースコード・GitHub・Azure 発行物に含めない
 
-院内マニュアルリンクの設計（重要）
-目的
+### 表示条件
+- InternalManual.Enabled が true  
+- かつ InternalManual.Url が空でない
 
-院内サーバー配信時のみ
-ヘッダー右側（「公式一覧」の右）に「院内マニュアル」リンクを表示する
+---
 
-院外（Azure）では 一切表示しない
+## InternalManual 設定の考え方
 
-実装方針
+### 設定モデル（概念）
+InternalManual には以下の2項目を持たせる。
 
-設定キー InternalManual の有無・内容で表示を制御
+- Enabled：院内マニュアルリンクを表示するかどうか  
+- Url：院内PDFへのリンク
 
-URLはソースコード・GitHub・Azure発行物に含めない
-
-設定モデル
+【ここに appsettings.json の InternalManual 設定例を記載】
 "InternalManual": {
   "Enabled": false,
   "Url": ""
 }
 
-表示条件（IndexModel）
+---
 
-Enabled == true
+## 設定ファイルの扱い（安全設計）
 
-かつ Url が空でない
+### GitHub に含める設定ファイル
+- appsettings.json  
+- appsettings.Development.json  
 
-設定ファイルの扱い（安全設計）
-GitHub に含める
+※ いずれにも院内URL等の機微情報は記載しない。
 
-appsettings.json
+### GitHub に含めない設定ファイル
+- appsettings.Production.json  
 
-appsettings.Development.json
+院内専用のURLや設定は、このファイルにのみ記載する。
 
-※ 機微情報は記載しない
-
-GitHub に含めない（.gitignore 済）
-
-appsettings.Production.json
-→ 院内URL等を 書いてよい唯一の設定ファイル
-
-.gitignore には以下を追加済み：
-
+【ここに .gitignore の設定内容を記載】
+.gitignore
 appsettings.Production.json
 
-Azure 発行（Publish）時の安全対策
+---
 
-Visual Studio から直接 Azure に Zip Deploy するため、
-Publish からも appsettings.Production.json を除外している。
+## Azure 発行（Publish）時の安全対策
 
-csproj 設定
+### Zip Deploy の重要な挙動
+Azure App Service（Zip Deploy）は、
+
+- 発行物に含まれないファイルを  
+- 自動的には削除しない  
+
+という挙動を持つ。
+
+そのため、過去の発行で一度でも  
+appsettings.Production.json が配置されていると、  
+以後の発行で除外しても Azure 側に残存する可能性がある。
+残骸確認（Azure /home/site/wwwroot）
+Azure Portal → App Service → SSH
+ls -la /home/site/wwwroot | grep appsettings
+見つかった場合は
+rm /home/site/wwwroot/appsettings.Production.json
+で削除後、アプリを再起動。
+---
+
+
+### 安全対策の基本方針
+- appsettings.Production.json は **Publish 対象から完全に除外**
+- csproj 側で根本的に Publish 入力から外す
+- pubxml 側でも除外指定を行う（保険）
+
+---
+
+### csproj による除外設定（確定版）
+appsettings.Production.json を  
+Publish の入力段階から完全に外す。
+
+【ここに csproj の Content Remove / None Remove 設定を記載】
 <ItemGroup>
-  <Content Update="appsettings.Production.json">
-    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-  </Content>
+  <!-- Internal-only settings: never publish, never copy -->
+  <Content Remove="appsettings.Production.json" />
+  <None Remove="appsettings.Production.json" />
 </ItemGroup>
 
+この設定により、
 
-これにより：
+- GitHub に含まれない  
+- Azure Publish に含まれない  
+- Zip Deploy による復活事故を防止できる  
+- ソリユーションエクスプローラーでは全て表示で見えるようになる
+---
 
-ローカル／院内サーバーでは使用可能
+### pubxml による除外設定（保険）
+Zip Deploy の発行プロファイル（.pubxml）に、  
+appsettings.Production.json を除外する指定を追加する。
 
-Azure 発行物には 絶対に含まれない
+【ここに pubxml の ExcludeFilesFromDeployment 設定を記載】
+<PropertyGroup>
+  <!-- Never deploy internal-only settings -->
+  <ExcludeFilesFromDeployment>appsettings.Production.json</ExcludeFilesFromDeployment>
 
-Program.cs（静的ファイル配信）
+  <!-- Clean up extra files on server -->
+  <SkipExtraFilesOnServer>false</SkipExtraFilesOnServer>
+</PropertyGroup>
 
-Production 実行時のレイアウト崩れ対策として、
-従来方式の静的ファイル配信を使用。
+
+## Program.cs（静的ファイル配信）
+
+Production 環境でもレイアウトが崩れないよう、従来方式で静的ファイル配信を行う。
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -106,53 +157,47 @@ app.UseRouting();
 app.UseAuthorization();
 app.MapRazorPages();
 
+※ MapStaticAssets() / WithStaticAssets() は使用しない。
+---
 
-※ MapStaticAssets() / WithStaticAssets() は使用しない
+### Azure 側の初期確認
+初回のみ、Azure 側に設定ファイルの残骸が残っていないか確認する。
 
-ローカル動作確認方法
-院内リンク表示の確認（おすすめ）
+確認対象：
+- /home/site/wwwroot 配下
 
-ASPNETCORE_ENVIRONMENT=Development のまま
+【ここに Azure SSH での確認方法を記載】
+ls -la /home/site/wwwroot | grep appsettings
 
-launchSettings.json の environmentVariables に一時的に以下を追加：
+## ローカル動作確認方法
+院内リンク表示だけ確認したい場合は、Development のまま環境変数で上書きする（見た目を壊さない）。
+launchSettings.json に一時的に追加：
 
 "InternalManual__Enabled": "true",
 "InternalManual__Url": "http://127.0.0.1/test.pdf"
+※ 本物の院内URLはローカル確認では記載しない。
+---
 
+## トラブルシューティング
 
-→ レイアウトを壊さず、リンク表示のみ確認可能
+### Azure で院内マニュアルリンクが表示されてしまう場合
+- /home/site/wwwroot 配下に appsettings.Production.json が残っていないか確認
+- Zip Deploy は不要ファイルを自動削除しない点に注意
+- README の「Azure 発行時の安全対策」を参照
 
-院内サーバー配信時の運用
-方法A（推奨）：情シスに環境変数設定を依頼
+---
 
-InternalManual__Enabled=true
+## TODO
+- 情報システム課からの PDF アクセス仕様確定
+- 院内サーバーでの設定方式（環境変数 or ファイル）最終決定
 
-InternalManual__Url=http://<院内PDFのURL>
+---
 
-方法B：設定ファイル配置
-
-appsettings.Production.json を
-
-appsettings.json と同じフォルダに配置
-
-Production 環境で自動読込
-
-注意事項
-
-院内URLは 絶対に GitHub / Azure に入れない
-
-Development / Production 切替は表示確認用途のみに使用
-
-本番挙動は設定で制御する
-
-TODO
-
-情報システム課からの PDF アクセス仕様確定
-
-院内サーバーでの設定方式（環境変数 or ファイル）最終決定
-
-ひとこと（未来の自分へ）
-
+## 未来の自分へ
 この設計にしておけば、
-ソースを分けずに、安全に院内専用リンクを出せる。
-迷ったら README のこのページを最初に読むこと。
+
+- ソースは 1 系統のまま
+- 院内専用リンクを安全に制御でき
+- GitHub / Azure への情報混入事故は起きない
+
+迷ったら、まずこの README を読むこと。

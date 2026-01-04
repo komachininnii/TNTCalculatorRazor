@@ -35,12 +35,10 @@
     <Content Remove="wwwroot\help\TNTCalculatorHelp.html" />
   </ItemGroup>
 
-  <!-- Prevent accidental publishing of internal-only settings -->
   <ItemGroup>
-    <Content Update="appsettings.Production.json">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-    </Content>
+    <!-- Internal-only settings: keep local, never publish -->
+    <Content Remove="appsettings.Production.json" />
+    <None Remove="appsettings.Production.json" />
   </ItemGroup>
 
 </Project>
