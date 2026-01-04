@@ -11,6 +11,15 @@
            onclick="openHelpWindow(event, this.href);">
             公式一覧
         </a>
+        @if (Model.ShowInternalManualLink && !string.IsNullOrEmpty(Model.InternalManualUrl))
+        {
+            <a class="brand-link"
+               href="@Model.InternalManualUrl"
+               target="_blank"
+               rel="noopener">
+                院内マニュアル
+            </a>
+        }
         </div>
     </div>
 

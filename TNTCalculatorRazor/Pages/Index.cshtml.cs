@@ -9,6 +9,8 @@ using TNTCalculatorRazor.Domain.Rules;
 using TNTCalculatorRazor.Domain.Selectors;
 using TNTCalculatorRazor.Domain.Services;
 using TNTCalculatorRazor.Domain.Tables;
+using Microsoft.Extensions.Options;
+using TNTCalculatorRazor.Domain.Models;
 
 
 public class IndexModel : PageModel
@@ -36,7 +38,19 @@ public class IndexModel : PageModel
             return $"{v.Major}.{v.Minor}.{v.Build}";
         }
     }
-    public string AppAuthor => "T.Yamanoi";
+    
+    // コンストラクタ
+    public IndexModel( IOptions<InternalManualOptions> manualOptions )
+    {
+        var m = manualOptions.Value;
+        ShowInternalManualLink = m.Enabled && !string.IsNullOrWhiteSpace(m.Url);
+        InternalManualUrl = m.Url;
+    }
+
+    // 内部マニュアルリンク
+    public bool ShowInternalManualLink { get; private set; }
+    public string? InternalManualUrl { get; private set; }
+   
 
     //==============================
     // 入力（Bind）
@@ -113,7 +127,7 @@ public class IndexModel : PageModel
     // 計算した最終値（参考表示用）
     public int? EnergyFinal { get; private set; }                // SelectedEnergyOrder + Manual の結果
     public double? ProteinRaw { get; private set; }
-    public string ProteinDisplayText { get; private set; } = "";
+    public string? ProteinDisplayText { get; private set; }
     public int? WaterDisplay { get; private set; }
     public bool WaterFeverCorrected { get; private set; }
 
@@ -424,7 +438,7 @@ public class IndexModel : PageModel
         EnergyFinal = null;
         EnergyByBmrKcal = null;
         ProteinRaw = null;
-        ProteinDisplayText = "";
+        ProteinDisplayText = null;
         WaterDisplay = null;
         WaterFeverCorrected = false;
 

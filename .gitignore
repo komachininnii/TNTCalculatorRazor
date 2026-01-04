@@ -361,3 +361,9 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# ===== Internal / environment specific settings =====
+# Do NOT commit internal server configuration
+appsettings.Production.json
+appsettings.Staging.json
+appsettings.*.Production.json
