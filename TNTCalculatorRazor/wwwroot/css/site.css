@@ -696,6 +696,16 @@ details summary {
         text-overflow: ellipsis;
     }
 }
-
-
+/* ストレス係数・体温補正・褥瘡のselectを広げる */
+@media (max-width: 980px) {
+    .field-compact .control select.sel-wide {
+        max-width: 20rem; /* 好みで 16〜20rem */
+    }
+}
+/* かなり狭い端末だけ少し縮める */
+@media (max-width: 360px) {
+    .field-compact .control select.sel-wide {
+        max-width: 16rem;
+    }
+}
 
