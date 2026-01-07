@@ -416,7 +416,8 @@ public class IndexModel : PageModel
         if (!CanCalcBase(addErrors))
             return;
 
-        if (Gender != GenderType.Female) IsPregnant = false;
+        if (Gender != GenderType.Female || Age < 18)
+            IsPregnant = false;
 
         // BMR / 体格 / BSA
         BmrResult = BmrCalculator.Calculate(Age!.Value, Weight!.Value, Height!.Value, Gender);

@@ -132,7 +132,14 @@
                                         onchange="document.getElementById('Action').value='anthro'; this.form.submit();">
                                 </select>
 
-                                @if (Model.Gender == GenderType.Female)
+                                @{
+                                    bool showPregnant =
+                                    Model.Gender == GenderType.Female
+                                    && Model.Age.HasValue
+                                    && Model.Age.Value >= 18;
+                                }
+
+                                @if (showPregnant)
                                 {
                                     <label class="inline-check"
                                            title="妊娠かつ肥満度120%以上では、水分計算に調整体重を使用します。">
