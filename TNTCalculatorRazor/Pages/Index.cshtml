@@ -17,7 +17,7 @@
                href="@Model.InternalManualUrl"
                target="_blank"
                rel="noopener">
-                院内マニュアル
+                院内マニュアル(EN-map)
             </a>
         }
         </div>
@@ -114,7 +114,8 @@
                             <input asp-for="SerumCreatinine"
                                    type="number" step="0.01" inputmode="decimal"
                                    onchange="document.getElementById('Action').value='renal'; this.form.submit();"
-                                   onblur="document.getElementById('Action').value='renal'; this.form.submit();" />
+                                   onblur="tntSubmitOnBlur(event,'renal')"
+                                   onkeydown="submitOnEnter(event,'renal')" />
 
                             <span class="unit">mg/dL</span>
                         </div>
@@ -125,10 +126,22 @@
                     <div class="field field-compact">
                         <div class="label">性別</div>
                         <div class="control">
-                            <select asp-for="Gender"
-                                    asp-items="Html.GetEnumSelectList<GenderType>()"
-                                    onchange="document.getElementById('Action').value='anthro'; this.form.submit();">
-                            </select>
+                            <div class="inline-controls">
+                                <select asp-for="Gender"
+                                        asp-items="Html.GetEnumSelectList<GenderType>()"
+                                        onchange="document.getElementById('Action').value='anthro'; this.form.submit();">
+                                </select>
+
+                                @if (Model.Gender == GenderType.Female)
+                                {
+                                    <label class="inline-check"
+                                           title="妊娠かつ肥満度120%以上では、水分計算に調整体重を使用します。">
+                                        <input asp-for="IsPregnant"
+                                               onchange="document.getElementById('Action').value='anthro'; this.form.submit();" />
+                                        妊娠
+                                    </label>
+                                }
+                            </div>
                         </div>
                     </div>
 
@@ -245,7 +258,8 @@
                         <div class="control">
                             <input asp-for="EnergyOrderValue"
                                    type="number" step="1" inputmode="numeric"
-                                   onchange="document.getElementById('Action').value='energy'; this.form.submit();" />
+                                   onchange="document.getElementById('Action').value='energy'; this.form.submit();"
+                                   onkeydown="submitOnEnter(event,'energy')" />
                             <span class="unit">kcal/day</span>
                             @if (Model.IsEnergyUserEdited)
                             {
@@ -256,12 +270,12 @@
                 </div>
 
                 <div class="hr"></div>
-
+            
                 <details>
                     <summary>エネルギー候補（参考）</summary>
                     <div class="small" style="margin-top:10px;">
                         <dl class="kv kv-2col-energy">
-                            <dt>基礎エネルギー×係数</dt>
+                            <dt>基礎代謝量×係数</dt>
                             <dd>@(Model.EnergyByBmrKcal?.ToString() ?? "-") kcal</dd>
                             <dt>25kcal/標準体重</dt>
                             <dd>@(Model.Kcal25?.ToString() ?? "-") kcal</dd>
@@ -337,28 +351,42 @@
 
                 <div class="two-col">
                     <div>
-                        
-                        <dl class="kv kv-tight">
-                            <dt>
-                                BMR(基礎エネルギー)
-                                @if (!string.IsNullOrWhiteSpace(Model.BmrFormulaDisplay)
-                                                                && Model.BmrWeightBasis.HasValue
-                                                                && Model.BmrWeightUsed.HasValue)
-                                {
-                                    <div class="pills" style="margin-top:0px;">
-                                        <span class="pill mini trunc" title="@Model.BmrFormulaDisplayLong">
-                                            @Model.BmrFormulaDisplay
-                                        </span>
+                        <!-- "kv kv-tight" 2行表示から"kv kv-need"1行表示に変更 -->
+                        <dl class="kv kv-need">
+            
 
-                                        <span class="pill mini">
-                                            @( $"W{Model.BmrWeightBasis.Value.ToDisplayName()}{Model.BmrWeightUsed.Value.ToString("F1")}" )
-                                        </span>
-                                    </div>
-                                }
-                            </dt>
-                            <dd>
-                                @(Model.BmrKcal?.ToString() ?? "-") kcal
-                            </dd>
+                            <dt>基礎代謝量</dt>
+
+<dd>
+    <span class="bmr-value">
+        @(Model.BmrKcal?.ToString() ?? "-") kcal
+    </span>
+
+    @* pill は dd 側へ移動（IE段ズレ対策、ストレス合計と同じ構造） *@
+    <div class="pills bmr-pills" style="margin-top:0px;">
+
+        @* 算出法 pill：計算前も表示 *@
+        <span class="pill mini trunc" title="@Model.BmrFormulaDisplayLong">
+            @(!string.IsNullOrWhiteSpace(Model.BmrFormulaDisplay) ? Model.BmrFormulaDisplay : "算出法")
+        </span>
+
+        @* 体重 pill：計算前は「使用体重」、計算後は「実測50.0/標準50.0/調整50.0」 *@
+        @if (Model.BmrWeightBasis.HasValue && Model.BmrWeightUsed.HasValue)
+        {
+            <span class="pill mini" title="@Model.BmrWeightBasis.Value.ToLongName()">
+                @( $"{Model.BmrWeightBasis.Value.ToKindName()}{Model.BmrWeightUsed.Value:F1}kg" )
+            </span>
+        }
+        else
+        {
+            <span class="pill mini" title="BMR算出に使用する体重（計算後に 実測/標準/調整 が確定します）">
+                使用体重
+            </span>
+        }
+    </div>
+</dd>
+
+
                             
                             <dt>BMI</dt>
                             <dd>@(Model.BodyIndex != null ? Model.BodyIndex.Bmi.ToString("F1") : "-")</dd>
@@ -551,16 +579,21 @@
                         <div class="control">
                             <input asp-for="EnteralVolumeInput"
                                    type="number" step="1" inputmode="numeric"
-                                   onchange="document.getElementById('Action').value='volume'; this.form.submit();" />
+                                   onchange="document.getElementById('Action').value='volume'; this.form.submit();"
+                                   onkeydown="submitOnEnter(event,'volume')" />
                             <span class="unit">mL</span>
                             <span class="muted small">※手入力可(kcal同期)</span>
                         </div>
                     </div>
 
                 </div>
-
+                
                 @if (Model.EnteralVolume.HasValue)
                 {
+                    <!-- 追加：スマホで折りたたむ領域 -->
+                    <details class="enteral-details" open>
+                        <summary>成分・割付候補</summary>
+
                     <div class="enteral-top">
                         <div class="enteral-box">
                             <h4>計算結果</h4>
@@ -569,13 +602,11 @@
                                 投与カロリー：<strong>@(Model.EnteralEnergy?.ToString("F0") ?? "-")</strong> kcal
                             </p>
                         </div>
-                    </div>
 
-                    <!-- 追加：スマホで折りたたむ領域 -->
-                    <details class="enteral-details" open>
-                        <summary>成分・割付候補</summary>
+                    
+                  
+                        
 
-                        <div class="enteral-top">
                             <div class="enteral-box">
                                 <h4>割付候補</h4>
                                 <ul class="compact-list">
@@ -585,7 +616,7 @@
                                     }
                                 </ul>
                             </div>
-                        </div>
+                            </div>
 
                         <div class="enteral-bottom">
                             <h4>成分（投与量ベース）</h4>
@@ -604,9 +635,11 @@
                                 <dd>@(Model.EnteralWater?.ToString("F0") ?? "-") mL</dd>
                             </dl>
                         </div>
+                
                     </details>
+                   
                 }
-
+</div>
             <div class="card">
                 <details>
                     <summary>デバッグ（開発中）</summary>
@@ -625,23 +658,57 @@
                     StressTotal           : @Model.StressTotal
                     PressureUlcer         : @Model.SelectedPressureUlcer
                     StressPressureUlcer   : @Model.StressPressureUlcer
-          </pre>
+                    CorrectedWeight(debug): @Model.DebugWeightLine
+                    </pre>
                 </details>
             </div>
 
-        </div>
+        
     </div>
 
     <!-- EnterでSubmit -->
-    <script>
-        function submitOnEnter(e, action) {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            document.getElementById("Action").value = action;
-            e.target.form.submit();
-          }
-        }
-    </script>
+        <script>
+            // Enterで送信した直後のblurによる二重送信を防ぐフラグ
+            var tntSkipNextBlurSubmit = false;
+
+            function tntSubmitOnBlur(e, action) {
+              if (tntSkipNextBlurSubmit) {
+                tntSkipNextBlurSubmit = false;
+                return false;
+              }
+
+              var actionEl = document.getElementById("Action");
+              if (actionEl) actionEl.value = action;
+
+              var target = (e && (e.target || e.srcElement)) || null;
+              var form = target && target.form ? target.form : document.querySelector("form");
+              if (form) form.submit();
+
+              return false;
+            }
+
+            function submitOnEnter(e, action) {
+              e = e || window.event;
+              var code = e.keyCode || e.which;
+
+              if (code === 13) {
+                if (e.preventDefault) e.preventDefault();
+                e.returnValue = false;
+
+                tntSkipNextBlurSubmit = true; // ←これが肝
+
+                var actionEl = document.getElementById("Action");
+                if (actionEl) actionEl.value = action;
+
+                var target = e.target || e.srcElement;
+                var form = target && target.form ? target.form : document.querySelector("form");
+                if (form) form.submit();
+
+                return false;
+              }
+            }
+        </script>
+
     <script>
         function openHelpWindow(e, url) {
           e.preventDefault(); // 既定遷移（=二重オープン）を止める
@@ -664,46 +731,99 @@
     <!-- スマホ時：初期表示調整（details折りたたみ + 初回案内） -->
     <script>
         (function () {
-          const isMobile = window.matchMedia("(max-width: 980px)").matches;
-          if (!isMobile) return;
-              // 1) details を初期で折りたたむ
-              document.querySelectorAll(".enteral-details, .result-details")
-              .forEach(d => d.removeAttribute("open"));
+              var isMobile = false;
 
-              // 2) 初回だけ：ホーム画面追加の案内を表示（×で閉じたら二度と出さない）
-              const key = "tnt_homehint_dismissed_v1";
-              if (localStorage.getItem(key) === "1") return;
+              if (window.matchMedia) {
+                isMobile = window.matchMedia("(max-width: 980px)").matches;
+              } else {
+                var w = document.documentElement.clientWidth || document.body.clientWidth;
+                isMobile = (w <= 980);
+              }
 
-              const el = document.getElementById("homehint");
+              if (!isMobile) return;
+
+              // detailsのopenを外す(初期で折りたたむ)
+              var list = document.querySelectorAll(".enteral-details, .result-details");
+              for (var i = 0; i < list.length; i++) {
+                list[i].removeAttribute("open");
+              }
+
+              // 初回だけホーム画面追加の案内を表示（×で閉じたら二度と出さない）
+              var key = "tnt_homehint_dismissed_v1";
+              try {
+                if (window.localStorage && localStorage.getItem(key) === "1") return;
+              } catch (e) {}
+
+              var el = document.getElementById("homehint");
               if (!el) return;
 
               el.style.display = "flex";
 
-              const btn = el.querySelector(".homehint-close");
+              var btn = el.querySelector(".homehint-close");
               if (btn) {
-                btn.addEventListener("click", () => {
-                  localStorage.setItem(key, "1");
-                  el.remove();
-                });
+                btn.onclick = function () {
+                  try {
+                    if (window.localStorage) localStorage.setItem(key, "1");
+                  } catch (e) {}
+
+                  if (el && el.parentNode) el.parentNode.removeChild(el);
+                  return false;
+                };
               }
             })();
-     </script>
+        </script>
 
+        <!-- IEで<details>全開を止める：summaryクリックを自前で入れる -->
+        <script>
+            (function () {
+              var test = document.createElement("details");
+              if ("open" in test) return; // 対応ブラウザは何もしない
+
+              var details = document.getElementsByTagName("details");
+
+              for (var i = 0; i < details.length; i++) {
+                (function (d) {
+                  var summary = d.getElementsByTagName("summary")[0];
+                  if (!summary) return;
+
+                  function apply(open) {
+                    if (open) d.setAttribute("open", "open");
+                    else d.removeAttribute("open");
+
+                    for (var j = 0; j < d.children.length; j++) {
+                      var child = d.children[j];
+                      if (child.tagName && child.tagName.toLowerCase() === "summary") continue;
+                      child.style.display = open ? "" : "none";
+                    }
+                  }
+
+                  var isOpen = d.getAttribute("open") !== null;
+                  apply(isOpen);
+
+                  summary.onclick = function (e) {
+                    if (e && e.preventDefault) e.preventDefault();
+                    isOpen = !isOpen;
+                    apply(isOpen);
+                    return false;
+                  };
+                })(details[i]);
+              }
+            })();
+        </script>
 
      <!-- 入力欄のblurでActionセット -->
      <script>
-          document.addEventListener("DOMContentLoaded", () => {
-              const form = document.querySelector("form");
+         document.addEventListener("DOMContentLoaded", function () {
+              var form = document.querySelector("form");
               if (!form) return;
 
-              form.querySelectorAll("input[type='number'], input[type='text'], select").forEach(el => {
-                el.addEventListener("blur", () => {
-                  const action = document.getElementById("Action");
+              var nodes = form.querySelectorAll("input[type='number'], input[type='text'], select");
+              for (var i = 0; i < nodes.length; i++) {
+                nodes[i].addEventListener("blur", function () {
+                  var action = document.getElementById("Action");
                   if (action && !action.value) action.value = "calc";
-                  // blurで必ず確定させる（必要なら）
-                  // form.requestSubmit();  // 自動送信したい場合のみ有効化
                 });
-              });
+              }
             });
      </script>
 

@@ -1,3 +1,7 @@
 <Solution>
+  <Folder Name="/ソリューション項目/">
+    <File Path="docs/appendix-ui-ie-mobile.md" />
+    <File Path="README.md" />
+  </Folder>
   <Project Path="TNTCalculatorRazor/TNTCalculatorRazor.csproj" />
 </Solution>

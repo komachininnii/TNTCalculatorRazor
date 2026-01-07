@@ -143,6 +143,7 @@ body {
 }
 
 /* 右カラムを少し見やすく */
+/* ★二重定義のためコメントアウト
 .summary {
     position: sticky;
     top: 12px;
@@ -153,7 +154,7 @@ body {
         position: static;
     }
 }
-
+*/
 details > summary {
     cursor: pointer;
 }
@@ -161,6 +162,7 @@ details > summary {
 details summary {
     font-weight: 600;
 }
+
 
 /* 補助説明：カード風 */
 .hr {
@@ -220,12 +222,21 @@ details summary {
     flex-wrap: wrap;
     gap: 6px;
     margin-top: 6px;
+    align-items: center;
 }
 
 .pill.mini {
     font-size: 0.82em;
     padding: 1px 6px;
 }
+
+/* mini pill は全体で統一して小さめに */
+.pill.mini {
+    font-size: 0.70em;
+    line-height: 1.2;
+    padding: 1px 6px;
+}
+
 
 /* ストレス合計・必要エネルギーの折り返し調整 */
 .kv dd .mainline {
@@ -382,46 +393,131 @@ details summary {
     }
 }
 
-/* アプリバージョン */
-.brand-meta-inline {
-    font-size: 12px;
-    color: #667; /* muted */
-    white-space: nowrap;
+/* === IE11フォールバック：kv-2col-energy を2列（dt/dd + dt/dd）にする === */
+.kv.kv-2col-energy {
+    margin: 0;
 }
 
-.brand-icon {
-    width: 18px;
-    height: 18px;
-    object-fit: contain;
-    display: inline-block;
-}
-
-.appbar {
-    display: flex;
-    justify-content: flex-end; /* 右寄せ */
-    margin: 0 0 6px 0;
-}
-
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    opacity: 0.75; /* さらに邪魔感を減らすなら */
-}
-
-/* 公式一覧 */
-.brand-link {
-    font-size: 12px;
-    color: #667;
-    text-decoration: none;
-    margin-left: 10px;
-}
-
-    .brand-link:hover {
-        text-decoration: underline;
+    /* 1つ目のdt（1,5,9...） */
+    .kv.kv-2col-energy dt:nth-of-type(odd) {
+        float: left;
+        clear: left;
+        width: 10em;
+        margin: 0;
+        padding: 0;
     }
 
-/* 2カラムの基本 */
+    /* 1つ目のdd（1,5,9...） */
+    .kv.kv-2col-energy dd:nth-of-type(odd) {
+        float: left;
+        width: calc(50% - 10em); /* ← dt幅と一致 */
+        padding-right: 10px; /* gap代替（左右の間隔） */
+        box-sizing: border-box;
+        margin: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+
+    /* 2つ目のdt（2,6,10...） */
+    .kv.kv-2col-energy dt:nth-of-type(even) {
+        float: left;
+        width: 10em;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* 2つ目のdd（2,6,10...） */
+    .kv.kv-2col-energy dd:nth-of-type(even) {
+        float: left;
+        width: calc(50% - 10em); /* ← dt幅と一致 */
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+        
+    /* floatの後始末 */
+    .kv.kv-2col-energy::after {
+        content: "";
+        display: block;
+        clear: both;
+    }
+
+/* === モダンだけ grid に戻す（院外Edge/スマホ維持） === */
+@supports (display: grid) {
+    .kv.kv-2col-energy {
+        display: grid;
+        grid-template-columns: 8em minmax(0, 1fr) 8em minmax(0, 1fr);
+        column-gap: 10px;
+        row-gap: 6px;
+    }
+        /* IE用floatの解除（←これは残す） */
+        .kv.kv-2col-energy dt,
+        .kv.kv-2col-energy dd {
+            float: none;
+            clear: none; /* 念のため */
+            width: auto;
+            margin: 0;
+            padding: 0;
+            /* 今回効いたやつ（←これを追加して残す） */
+            min-width: 0;
+        }
+        /* -kcal を守る */
+        .kv.kv-2col-energy dd {
+            white-space: nowrap;
+        }
+
+        .kv.kv-2col-energy::after {
+            content: none;
+            display: none;
+            clear: none;
+        }
+
+    @media (max-width: 520px) {
+        .kv.kv-2col-energy {
+            grid-template-columns: 9em minmax(0, 1fr);
+        }
+    }
+}
+
+    /* アプリバージョン */
+    .brand-meta-inline {
+        font-size: 12px;
+        color: #667; /* muted */
+        white-space: nowrap;
+    }
+
+    .brand-icon {
+        width: 18px;
+        height: 18px;
+        object-fit: contain;
+        display: inline-block;
+    }
+
+    .appbar {
+        display: flex;
+        justify-content: flex-end; /* 右寄せ */
+        margin: 0 0 6px 0;
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        opacity: 0.75; /* さらに邪魔感を減らすなら */
+    }
+    /* 公式一覧 */
+    .brand-link {
+        font-size: 12px;
+        color: #667;
+        text-decoration: none;
+        margin-left: 10px;
+    }
+
+        .brand-link:hover {
+            text-decoration: underline;
+        }
+    /* 2カラムの基本 */
+    /*
 .layout {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -429,13 +525,13 @@ details summary {
     align-items: start;
 }
 
-    /* 重要：中身が長い時に横はみ出しを起こしにくくする */
+    // 重要：中身が長い時に横はみ出しを起こしにくくする
     .layout > .main,
     .layout > .summary {
         min-width: 0;
     }
 
-/* スマホ：1カラムに */
+// スマホ：1カラムに
 @media (max-width: 720px) {
     .layout {
         grid-template-columns: 1fr;
@@ -445,10 +541,11 @@ details summary {
         margin-top: 12px;
     }
 }
-/* 結果（参照）の2カラムをスマホで縦にする */
-@media (max-width: 720px) {
+*/
+    /* 結果（参照）の2カラムをスマホで縦にする */
+    /*@media (max-width: 720px) {
     .two-col {
-        display: block; /* これで2列→縦積みに確実にできる */
+        display: block; // これで2列→縦積みに確実にできる
     }
 
         .two-col > div {
@@ -459,54 +556,116 @@ details summary {
                 margin-top: 0;
             }
 }
-
-
-/* 経腸栄養：スマホで「成分・割付候補」を折りたたみ */
-.enteral-details {
-    margin-top: 10px;
-}
-
-    .enteral-details > summary {
-        list-style: none;
-        cursor: pointer;
-        font-weight: 600;
-        padding: 6px 0;
+*/
+    /* === IE11フォールバック（デフォルト） === */
+    .layout {
+        display: flex;
+        align-items: flex-start;
     }
 
-        /* Safari用：summaryのマーカー調整（任意） */
-        .enteral-details > summary::-webkit-details-marker {
+        .layout > .main {
+            flex: 0 0 52.5%;
+            margin-right: 16px; /* gap 代替 */
+            min-width: 0;
+        }
+
+        .layout > .summary {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+    /* デフォルトは sticky を使わず安全側（IE含む） */
+    .summary {
+        position: static;
+    }
+    /* === モダン（Edge/スマホ）だけ grid + sticky + スマホ挙動 === */
+    @supports (display: grid) {
+        /* 2カラム(grid)の基本 */
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 12px;
+            align-items: start;
+        }
+        /* 右カラムを見やすく（PC幅では sticky） */
+        .summary {
+            position: sticky;
+            top: 12px;
+        }
+        /* スマホ(～720)：1カラムに */
+        @media (max-width: 720px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+            /* スマホは sticky を解除して自然に下へ */
+            .summary {
+                position: static;
+                margin-top: 12px;
+            }
+            /* 結果（参照）の2カラムをスマホで縦にする（モダンのみ） */
+            .two-col {
+                display: block;
+            }
+
+                .two-col > div {
+                    margin-top: 10px;
+                }
+
+                    .two-col > div:first-child {
+                        margin-top: 0;
+                    }
+        }
+        /* タブレット(721px〜980px)：右カラムを下げたい（スマホ720以下とは競合させない） */
+        @media (min-width: 721px) and (max-width: 980px) {
+            .summary {
+                margin-top: 24px;
+                position: static; /* タブレット帯はstickyを止めたいなら */
+            }
+        }
+    }
+    /* 経腸栄養：スマホで「成分・割付候補」を折りたたみ */
+    .enteral-details {
+        margin-top: 10px;
+    }
+
+        .enteral-details > summary {
+            list-style: none;
+            cursor: pointer;
+            font-weight: 600;
+            padding: 6px 0;
+        }
+            /* Safari用：summaryのマーカー調整（任意） */
+            .enteral-details > summary::-webkit-details-marker {
+                display: none;
+            }
+    /* PCでは常時展開（summaryは非表示） */
+    @media (min-width: 981px) {
+        .enteral-details > summary {
             display: none;
         }
 
-/* PCでは常時展開（summaryは非表示） */
-@media (min-width: 981px) {
-    .enteral-details > summary {
-        display: none;
-    }
-
-    .enteral-details {
-        /* 常時見せたいので見た目を自然に */
-        margin-top: 0;
-    }
-}
-
-/* スマホでは初期は閉じてもOK：openを外したいならここで制御も可能 */
-@media (max-width: 980px) {
-    .enteral-details[open] > summary {
-        margin-bottom: 6px;
-    }
-}
-/* スマホでは経腸栄養カードを弱く見せる　*/
-@media (max-width: 980px) {
-    .summary .card {
-        opacity: 0.95;
-    }
-
-        .summary .card h3 {
-            font-size: 1rem;
+        .enteral-details {
+            /* 常時見せたいので見た目を自然に */
+            margin-top: 0;
         }
-}
-/* スマホでは経腸栄養カードをsummery(右カラム)の一番下に固定　*/
+    }
+    /* スマホでは初期は閉じてもOK：openを外したいならここで制御も可能 */
+    @media (max-width: 980px) {
+        .enteral-details[open] > summary {
+            margin-bottom: 6px;
+        }
+    }
+    /* スマホでは経腸栄養カードを弱く見せる　*/
+    @media (max-width: 980px) {
+        .summary .card {
+            opacity: 0.95;
+        }
+
+            .summary .card h3 {
+                font-size: 1rem;
+            }
+    }
+    /* スマホでは経腸栄養カードをsummery(右カラム)の一番下に固定　*/
+    /* 上の@supports の中に移動
 @media (max-width: 980px) {
     .summary {
         margin-top: 24px;
@@ -519,193 +678,636 @@ details summary {
         padding-top: 12px;
     }
 }
-
-/* 右カラム先頭「要点」3点レイアウト */
-.hero3 {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 8px;
-    margin-top: 8px;
-}
-
-.hero3-label {
-    font-size: 0.78rem;
-    opacity: 0.75;
-    margin-bottom: 4px;
-    line-height: 1.1;
-}
-
-.hero3-value {
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-    flex-wrap: wrap;
-    line-height: 1.1;
-}
-
-    .hero3-value strong {
-        font-size: 1.35em;
-    }
-
-.hero3 .unit {
-    font-size: 0.85em;
-    opacity: 0.8;
-    white-space: nowrap;
-}
-
-/* 結果をボタンっぽく　*/
-.result-details > summary {
-    cursor: pointer;
-    font-weight: 600;
-    padding: 6px 0;
-    list-style: none;
-}
-
-    .result-details > summary::-webkit-details-marker {
-        display: none;
-    }
-
-/* PCでは常時表示（折りたたみ不要）  */
-@media (min-width: 981px) {
-    .result-details > summary {
-        display: none;
-    }
-}
-/* PCでは要点（スマホ専用）を非表示 */
-@media (min-width: 981px) {
-    .summary-hero {
-        display: none !important;
-    }
-}
-
-.calc-actions {
-    display: none;
-}
-
-/* スマホ初回のみの案内 */
-@media (max-width: 980px) {
-    .homehint--dismissible {
-        display: flex;
-        gap: 10px;
-        align-items: flex-start;
-        padding: 10px 12px;
-        margin: 0 0 10px 0;
-        border: 1px solid rgba(0,0,0,0.08);
-        border-radius: 12px;
-        background: rgba(0,0,0,0.02);
-        font-size: 0.9rem;
-        line-height: 1.35;
-    }
-
-    .homehint-text {
-        flex: 1;
-        min-width: 0;
-    }
-
-    .homehint-close {
-        border: 0;
-        background: transparent;
-        font-size: 1.2rem;
-        line-height: 1;
-        padding: 0 4px;
-        cursor: pointer;
-        opacity: 0.7;
-    }
-
-        .homehint-close:active {
-            opacity: 1;
-        }
-}
-
-@media (max-width: 980px) {
-    /* ラベル + コントロールは2列 */
-    .field-compact {
+*/
+    /* 右カラム先頭「要点」3点レイアウト */
+    .hero3 {
         display: grid;
-        grid-template-columns: 6em 1fr;
+        grid-template-columns: 1fr 1fr 1fr;
         gap: 8px;
-        align-items: start; /* エラー行が出ても崩れない */
+        margin-top: 8px;
     }
 
-        /* 右側を flex で1行固定 */
-        .field-compact .control {
+    .hero3-label {
+        font-size: 0.78rem;
+        opacity: 0.75;
+        margin-bottom: 4px;
+        line-height: 1.1;
+    }
+
+    .hero3-value {
+        display: flex;
+        align-items: baseline;
+        gap: 6px;
+        flex-wrap: wrap;
+        line-height: 1.1;
+    }
+
+        .hero3-value strong {
+            font-size: 1.35em;
+        }
+
+    .hero3 .unit {
+        font-size: 0.85em;
+        opacity: 0.8;
+        white-space: nowrap;
+    }
+    /* 結果をボタンっぽく　*/
+    .result-details > summary {
+        cursor: pointer;
+        font-weight: 600;
+        padding: 6px 0;
+        list-style: none;
+    }
+
+        .result-details > summary::-webkit-details-marker {
+            display: none;
+        }
+    /* PCでは常時表示（折りたたみ不要）  */
+    @media (min-width: 981px) {
+        .result-details > summary {
+            display: none;
+        }
+    }
+    /* PCでは要点（スマホ専用）を非表示 */
+    @media (min-width: 981px) {
+        .summary-hero {
+            display: none !important;
+        }
+    }
+
+    .calc-actions {
+        display: none;
+    }
+    /* スマホ初回のみの案内 */
+    @media (max-width: 980px) {
+        .homehint--dismissible {
             display: flex;
-            align-items: center;
-            flex-wrap: wrap; /* ← エラーだけ下に落とすため wrap */
-            gap: 6px;
+            gap: 10px;
+            align-items: flex-start;
+            padding: 10px 12px;
+            margin: 0 0 10px 0;
+            border: 1px solid rgba(0,0,0,0.08);
+            border-radius: 12px;
+            background: rgba(0,0,0,0.02);
+            font-size: 0.9rem;
+            line-height: 1.35;
+        }
+
+        .homehint-text {
+            flex: 1;
             min-width: 0;
         }
 
-            /* input は必要分だけ伸びる（unitの分を残す） */
-            .field-compact .control input[type="number"],
-            .field-compact .control input[type="text"] {
-                flex: 1 1 8ch; /* ← 伸びるが最低幅を確保 */
-                width: auto;
+        .homehint-close {
+            border: 0;
+            background: transparent;
+            font-size: 1.2rem;
+            line-height: 1;
+            padding: 0 4px;
+            cursor: pointer;
+            opacity: 0.7;
+        }
+
+            .homehint-close:active {
+                opacity: 1;
+            }
+    }
+
+    @media (max-width: 980px) {
+        /* ラベル + コントロールは2列 */
+        .field-compact {
+            display: grid;
+            grid-template-columns: 6em 1fr;
+            gap: 8px;
+            align-items: start; /* エラー行が出ても崩れない */
+        }
+            /* 右側を flex で1行固定 */
+            .field-compact .control {
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap; /* ← エラーだけ下に落とすため wrap */
+                gap: 6px;
                 min-width: 0;
             }
+                /* input は必要分だけ伸びる（unitの分を残す） */
+                .field-compact .control input[type="number"],
+                .field-compact .control input[type="text"] {
+                    flex: 1 1 8ch; /* ← 伸びるが最低幅を確保 */
+                    width: auto;
+                    min-width: 0;
+                }
+                /* unit は折り返さない・横に固定 */
+                .field-compact .control .unit {
+                    flex: 0 0 auto;
+                    white-space: nowrap;
+                }
+                /* エラー表示は必ず次の行へ（横幅いっぱい） */
+                .field-compact .control .field-error {
+                    flex: 0 0 100%;
+                    margin-top: 2px;
+                }
+                /* select は100%でOK（unit無し） */
+                .field-compact .control select {
+                    width: 100%;
+                }
+    }
 
-            /* unit は折り返さない・横に固定 */
-            .field-compact .control .unit {
-                flex: 0 0 auto;
-                white-space: nowrap;
+    @media (max-width: 980px) {
+        /* 1行維持のまま、入力欄の最大幅を制限（PCに近い見た目） */
+        .field-compact .control input[type="number"],
+        .field-compact .control input[type="text"] {
+            max-width: 12rem; /* ← ここを好みで調整（例：10rem〜14rem） */
+        }
+    }
+
+    @media (max-width: 980px) {
+        /* 性別・疾患など select もPCっぽい幅で頭打ち */
+        .field-compact .control select {
+            width: auto; /* 100%を解除 */
+            flex: 0 0 auto;
+            max-width: 14rem; /* 好みで調整（例：12rem〜16rem） */
+        }
+    }
+    /* 必要エネルギー値強調表示 */
+    #EnergyOrderValue {
+        font-weight: 700;
+        font-size: 1.05em;
+    }
+
+    @media (max-width: 980px) {
+        /* 基本：③ ラベル列を少し広げる（折り返しを減らす） */
+        .field-compact {
+            grid-template-columns: 7.5em 1fr;
+        }
+    }
+    /* さらに狭い端末だけ：② 省略表示で入力欄を守る */
+    @media (max-width: 360px) {
+        .field-compact .label {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+    /* ストレス係数・体温補正・褥瘡：基本は“広め”だが、枠からはみ出さない */
+    .field-compact .control select.sel-wide {
+        max-width: 100%; /* これが最重要：常に枠内 */
+    }
+
+    /* 広い画面では見やすいように上限を設ける（好みで調整） */
+    @media (min-width: 981px) {
+        .field-compact .control select.sel-wide {
+            max-width: 20rem; /* 好みで 16〜20rem */
+        }
+    }
+
+    .field-compact .control {
+        min-width: 0;
+    }
+
+    /* === IE11フォールバック：項目(ラベル)と入力を1行にする === */
+    .field {
+        display: flex;
+        align-items: center;
+    }
+
+        .field > label,
+        .field > .label {
+            flex: 0 0 140px; /* ここは今のUIに合わせて調整可 */
+            margin-right: 10px; /* gap代替 */
+            white-space: nowrap; /* ラベル折り返し防止（必要なら外す） */
+        }
+
+        .field > .control,
+        .field > input,
+        .field > select,
+        .field > textarea {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+    /* モダンだけ grid に戻す */
+    @supports (display: grid) {
+        .field {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 10px;
+            align-items: center;
+        }
+
+            .field > label,
+            .field > .label {
+                margin-right: 0;
+                white-space: normal;
+            }
+    }
+    /* === IE11フォールバック：two-col を2列にする === */
+    .two-col {
+        display: flex;
+    }
+
+        .two-col > div {
+            flex: 1 1 0;
+            min-width: 0;
+        }
+
+            .two-col > div + div {
+                margin-left: 10px; /* gap代替 */
+            }
+    /* モダンだけ grid */
+    @supports (display: grid) {
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+            .two-col > div + div {
+                margin-left: 0;
+            }
+    }
+    /* ✅ スマホは1列に戻す（モダンのみ） */
+    @media (max-width: 720px) {
+        .two-col {
+            display: block; /* 以前の挙動を復活 */
+        }
+
+            .two-col > div {
+                margin-top: 10px;
             }
 
-            /* エラー表示は必ず次の行へ（横幅いっぱい） */
-            .field-compact .control .field-error {
-                flex: 0 0 100%;
+                .two-col > div:first-child {
+                    margin-top: 0;
+                }
+    }
+    /* === IE11フォールバック：kv-need を「dt左 / dd右」で1行×複数行にする === */
+    .kv.kv-need {
+        margin: 0;
+    }
+        /* IE11: kv-need の dt は2行まで許可、pill は必ず次行 */
+        .kv.kv-need dt {
+            line-height: 1.25;
+        }
+
+            /* pill は必ずブロック化して別行に */
+            .kv.kv-need dt .pills {
+                display: block;
                 margin-top: 2px;
             }
 
-            /* select は100%でOK（unit無し） */
-            .field-compact .control select {
-                width: 100%;
+        /* dt を左に固定して、次の行へ送る */
+        .kv.kv-need dt {
+            float: left;
+            clear: left; /* ← これで「各dtが必ず新しい行から」始まる */
+            width: 8.5em; /* ← 左列幅（grid時と合わせる） */
+            margin: 0;
+            padding: 0;
+            white-space: normal; /* pills等があるので折り返し許可（nowrapにすると溢れやすい） */
+        }
+        /* dd は右側に配置（dtの幅だけ左マージン） */
+        .kv.kv-need dd {
+            margin: 0 0 6px 8.5em; /* ← 左にdt幅ぶん空ける。下マージンは好みで */
+            padding: 0;
+            min-width: 0;
+        }
+        /* dl 内の float を閉じる（カードの崩れ防止） */
+        .kv.kv-need::after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+
+
+
+    /* === モダンだけ grid に戻す（院外Edge/スマホ維持） === */
+    @supports (display: grid) {
+        .kv.kv-need {
+            display: grid;
+            grid-template-columns: 9em minmax(0, 1fr);
+            gap: 8px 12px;
+            align-items: baseline;
+        }
+
+            .kv.kv-need dt,
+            .kv.kv-need dd {
+                float: none;
+                clear: none;
+                width: auto;
+                margin: 0;
             }
-}
-@media (max-width: 980px) {
-    /* 1行維持のまま、入力欄の最大幅を制限（PCに近い見た目） */
-    .field-compact .control input[type="number"],
-    .field-compact .control input[type="text"] {
-        max-width: 12rem; /* ← ここを好みで調整（例：10rem〜14rem） */
+
+            .kv.kv-need::after {
+                content: none;
+                display: none;
+                clear: none;
+            }
     }
-}
-@media (max-width: 980px) {
-    /* 性別・疾患など select もPCっぽい幅で頭打ち */
-    .field-compact .control select {
-        width: auto; /* 100%を解除 */
-        flex: 0 0 auto;
-        max-width: 14rem; /* 好みで調整（例：12rem〜16rem） */
-    }
-}
-/* 必要エネルギー値強調表示 */
-#EnergyOrderValue {
-    font-weight: 700;
-    font-size: 1.05em;
+
+
+/* === IE11フォールバック：計算結果｜割付候補 を2列 === */
+.enteral-top {
+    display: flex;
+    align-items: flex-start;
 }
 
-@media (max-width: 980px) {
-    /* 基本：③ ラベル列を少し広げる（折り返しを減らす） */
-    .field-compact {
-        grid-template-columns: 7.5em 1fr;
+    .enteral-top > .enteral-box {
+        flex: 1 1 0;
+        min-width: 0;
     }
-}
 
-/* さらに狭い端末だけ：② 省略表示で入力欄を守る */
-@media (max-width: 360px) {
-    .field-compact .label {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        .enteral-top > .enteral-box + .enteral-box {
+            margin-left: 14px; /* gap代替（好みで） */
+        }
+
+/* === モダンだけ grid（院外Edge/スマホ維持） === */
+@supports (display: grid) {
+    .enteral-top {
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* 計算結果 | 割付候補 */
+        gap: 10px 14px;
+        align-items: start;
     }
-}
-/* ストレス係数・体温補正・褥瘡のselectを広げる */
-@media (max-width: 980px) {
-    .field-compact .control select.sel-wide {
-        max-width: 20rem; /* 好みで 16〜20rem */
-    }
-}
-/* かなり狭い端末だけ少し縮める */
-@media (max-width: 360px) {
-    .field-compact .control select.sel-wide {
-        max-width: 16rem;
+
+        .enteral-top > .enteral-box + .enteral-box {
+            margin-left: 0;
+        }
+    /* スマホは縦積み */
+    @media (max-width: 520px) {
+        .enteral-top {
+            grid-template-columns: 1fr;
+        }
     }
 }
 
+
+
+/* === IE11フォールバック：kv-2col（dt dd dt dd）を2分割 === */
+.kv.kv-2col {
+    margin: 0;
+}
+
+    .kv.kv-2col dt,
+    .kv.kv-2col dd {
+        float: left;
+        margin: 0;
+        padding: 0;
+        min-width: 0;
+    }
+
+        /* 左側 dt */
+        .kv.kv-2col dt:nth-of-type(odd) {
+            clear: left;
+            width: 8.5em; /* ここは好みで（9emなど） */
+        }
+
+        /* 左側 dd */
+        .kv.kv-2col dd:nth-of-type(odd) {
+            width: calc(50% - 8.5em);
+            padding-right: 10px;
+            box-sizing: border-box;
+        }
+
+        /* 右側 dt */
+        .kv.kv-2col dt:nth-of-type(even) {
+            width: 8.5em;
+        }
+
+        /* 右側 dd */
+        .kv.kv-2col dd:nth-of-type(even) {
+            width: calc(50% - 8.5em);
+            box-sizing: border-box;
+        }
+
+    /* floatの後始末 */
+    .kv.kv-2col::after {
+        content: "";
+        display: block;
+        clear: both;
+    }
+
+/* === モダンだけ grid に戻す === */
+@supports (display: grid) {
+    .kv.kv-2col {
+        display: grid;
+        grid-template-columns: 3em 1fr 3em 1fr; /* ←あなたの既存設定を尊重 */
+        column-gap: 10px;
+        row-gap: 6px;
+    }
+
+        .kv.kv-2col dt,
+        .kv.kv-2col dd {
+            float: none;
+            clear: none;
+            width: auto;
+            margin: 0;
+            padding: 0;
+            min-width: 0;
+        }
+
+        .kv.kv-2col dt,
+        .kv.kv-2col dd {
+            min-width: 0; /* ← これが無いとgrid内で変に潰れて1文字改行が起きやすい */
+        }
+
+        .kv.kv-2col dd {
+            white-space: nowrap; /* 数値＋単位を守る（まずはこれで改善することが多い） */
+        }
+
+        .kv.kv-2col::after {
+            content: none;
+            display: none;
+            clear: none;
+        }
+}
+.enteral-bottom {
+    margin-top: 10px;
+}
+/* === IE11向け：左右カラムの仕切り線（IEだけに出す） === */
+.layout > .main {
+    border-right: 1px solid #ccc;
+    padding-right: 12px;
+}
+
+.layout > .summary {
+    padding-left: 12px;
+}
+
+/* === モダンでは線を消す（IEは@supports無視→線が残る） === */
+@supports (display: grid) {
+    .layout > .main {
+        border-right: 0;
+    }
+
+    .layout > .summary {
+        padding-left: 0;
+    }
+}
+
+/* BMR pills は常に1行に固定（モダン側で2行になるのを防ぐ） */
+.bmr-pills {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 6px;
+    overflow: hidden; /* 収まらない分は隠す */
+}
+
+    /* BMRのpillは縮められるようにする（trunc だけでも良いが、両方に効かせる） */
+    .bmr-pills .pill {
+        min-width: 0;
+    }
+
+        /* 算出法pillは省略（既にtrunc付与済みならこれで効く） */
+        .bmr-pills .pill.trunc {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* 体重pillはできれば折り返さない（短いので通常は不要だが保険） */
+        .bmr-pills .pill:not(.trunc) {
+            white-space: nowrap;
+        }
+
+    /* BMR pillsだけ少し小さくして2行化を防ぐ */
+    .bmr-pills .pill {
+        font-size: 0.7em; /* 0.85〜0.92あたりで調整可 */
+        line-height: 1.2;
+        padding: 1px 6px; /* pillの高さも少し詰める（任意） */
+    }
+
+/* カード見出しは途中改行しない */
+.card .section-head h3 {
+    white-space: nowrap;
+    word-break: normal;
+    overflow-wrap: normal;
+}
+
+/* 見出し行：横並び基本 */
+.card .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+
+/* 右側の長文は縮められるようにする（はみ出し防止） */
+.card .section-head .section-meta {
+    min-width: 0;
+    overflow-wrap: anywhere; /* はみ出しが気になるなら anywhere が確実 */
+    }
+
+/* 中間幅から縦積み */
+@media (max-width: 1300px) {
+    .card .section-head {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+/* =========================
+   IE用：カード間の仕切り
+   （モダン側は @supports で無効化）
+   ========================= */
+/* デバッグ用 outline が残っていたら消す */
+.card {
+    outline: none !important;
+}
+
+/* IE用：カードの区切り（上線＋間隔） */
+.main .card,
+.summary .card {
+    border-top: 1px solid #d6d6d6;
+    margin-top: 8px;
+}
+
+@supports (display: grid) {
+    .main .card,
+    .summary .card {
+        border-top: 0;
+        margin-top: 0;
+    }
+
+        .main .card:first-of-type {
+            border-top: 0;
+            margin-top: 0;
+        }
+}
+
+
+.main .card:first-of-type {
+    background: #fffae6;
+}
+
+/* 性別：select の右にチェックを並べる */
+.inline-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: nowrap;
+}
+
+.inline-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+/* IE(IEモード) は flex gap 非対応なので margin で間隔を作る */
+.inline-controls > * {
+    margin-right: 10px;
+}
+
+    .inline-controls > *:last-child {
+        margin-right: 0;
+    }
+
+/* checkbox内の gap も IE 用に */
+.inline-check > input {
+    margin-right: 6px;
+}
+
+@supports (gap: 10px) {
+    .inline-controls > * {
+        margin-right: 0;
+    }
+
+    .inline-check > input {
+        margin-right: 0;
+    }
+}
+
+/* === smartphone overflow fix === */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+.field .control,
+.section-head .section-meta,
+.pills,
+.kv dd {
+    min-width: 0;
+}
+
+    /* 画面からはみ出さないよう max-width は全デバイスで効かせる */
+    .field .control select,
+    .field .control input,
+    .field .control textarea {
+        max-width: 100%;
+    }
+
+@media (max-width: 520px) {
+    /* ストレス係数など：はみ出さないように折り返す */
+    .pills {
+        flex-wrap: wrap;
+    }
+
+    /* ただしBMRだけは1行固定 */
+    .bmr-pills {
+        flex-wrap: nowrap;
+    }
+}
+
+/* 最終防波堤（必要なら残す） */
+/*html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}*/

@@ -104,6 +104,7 @@ ls -la /home/site/wwwroot | grep appsettings
 見つかった場合は
 rm /home/site/wwwroot/appsettings.Production.json
 で削除後、アプリを再起動。
+
 ---
 
 
@@ -130,7 +131,7 @@ Publish の入力段階から完全に外す。
 - GitHub に含まれない  
 - Azure Publish に含まれない  
 - Zip Deploy による復活事故を防止できる  
-- ソリユーションエクスプローラーでは全て表示で見えるようになる
+- ソリユーションエクスプローラーでは非表示になり「すべてのファイルを表示」で見えるようになる
 ---
 
 ### pubxml による除外設定（保険）
@@ -187,17 +188,13 @@ launchSettings.json に一時的に追加：
 
 ---
 
-## TODO
-- 情報システム課からの PDF アクセス仕様確定
-- 院内サーバーでの設定方式（環境変数 or ファイル）最終決定
+## 今後
+院内サーバーは今後PHPへ移行予定だが、当面は.NETを維持していただけるとのこと。
 
----
 
-## 未来の自分へ
-この設計にしておけば、
+## UI互換対応メモ
 
-- ソースは 1 系統のまま
-- 院内専用リンクを安全に制御でき
-- GitHub / Azure への情報混入事故は起きない
-
-迷ったら、まずこの README を読むこと。
+IE11互換、モダンブラウザ、スマートフォン表示に関する
+詳細な設計判断・調整履歴は以下を参照。
+なお、この際、AdjustedWeight/CorrectedWeightの整理をおこなった（3. 体重ロジックの整理（重要）に記載）
+- [Appendix: UI / IE / Mobile 対応メモ](docs/appendix-ui-ie-mobile.md)

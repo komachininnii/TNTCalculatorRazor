@@ -50,7 +50,10 @@ public class IndexModel : PageModel
     // 内部マニュアルリンク
     public bool ShowInternalManualLink { get; private set; }
     public string? InternalManualUrl { get; private set; }
-   
+    
+    // デバッグ用：体重算出内訳表示
+    public string DebugWeightLine { get; private set; } = "";
+
 
     //==============================
     // 入力（Bind）
@@ -60,6 +63,7 @@ public class IndexModel : PageModel
     [BindProperty] public double? Height { get; set; }           // 身長（cm） null=未入力
     [BindProperty] public double? Weight { get; set; }           // 体重（kg） null=未入力
     [BindProperty] public GenderType Gender { get; set; } = GenderType.Male;
+    [BindProperty] public bool IsPregnant { get; set; } = false;
 
     [BindProperty] public ActivityFactorType ActivityFactor { get; set; } = ActivityFactorType.BedriddenComa;
     [BindProperty] public StressFactorType StressFactor { get; set; } = StressFactorType.Normal;
@@ -89,8 +93,7 @@ public class IndexModel : PageModel
     [BindProperty] public bool IsEnergyUserEdited { get; set; } = false;
 
     [BindProperty] public bool IsHemodialysis { get; set; }
-    [BindProperty] public bool IsPregnant { get; set; }
-
+    
     // 経腸栄養
     [BindProperty] public EnteralFormulaType? SelectedEnteralFormula { get; set; }
     [BindProperty] public int? EnteralVolumeInput { get; set; }  // mL/day 手入力（端数調整用）
@@ -109,6 +112,15 @@ public class IndexModel : PageModel
     public BodyIndexResult? BodyIndex { get; private set; }
 
     public double? AdjustedWeight { get; private set; }
+    // BMRに最終的に採用された体重（実測/標準/調整のいずれか）
+    //public double? BmrWeightFinal { get; private set; }
+
+    // 計算に用いる補正体重（肥満度で 実測/標準/調整 を切替した“最終採用体重”）
+    public double? CorrectedWeight { get; private set; }
+
+    // BMR表示文脈で読みやすいエイリアス（中身は同じ）
+    public double? BmrWeightFinal => CorrectedWeight;
+
     public double? BodySurfaceArea { get; private set; }
 
     // ストレス内訳
@@ -231,7 +243,7 @@ public class IndexModel : PageModel
         }
     }
 
-
+    
 
     // ==============================
     // POST
@@ -392,6 +404,9 @@ public class IndexModel : PageModel
         BodyIndex = null;
         BodySurfaceArea = null;
         AdjustedWeight = null;
+        //BmrWeightFinal = null;
+        CorrectedWeight = null;
+
         BmrWeightBasis = null;
         BmrWeightUsed = null;
 
@@ -401,6 +416,8 @@ public class IndexModel : PageModel
         if (!CanCalcBase(addErrors))
             return;
 
+        if (Gender != GenderType.Female) IsPregnant = false;
+
         // BMR / 体格 / BSA
         BmrResult = BmrCalculator.Calculate(Age!.Value, Weight!.Value, Height!.Value, Gender);
         BmrFormulaDisplay = BmrResult.Formula.ToShortName();
@@ -408,15 +425,53 @@ public class IndexModel : PageModel
         BodyIndex = BodyIndexCalculator.Calculate(Age.Value, Height.Value, Weight.Value, Gender);
         BodySurfaceArea = BodySurfaceAreaCalculator.Calculate(Height.Value, Weight.Value);
 
-        AdjustedWeight = AdjustedWeightCalculator.Calculate(
+        /*
+        BmrWeightFinal = AdjustedWeightCalculator.Calculate(
             Age.Value,
             Weight.Value,
             BodyIndex.StandardWeight,
             BodyIndex.ObesityDegree ?? 0);
+        */
 
+        // ※ BodyIndex が計算済みである前提
+        double obesityDegree = BodyIndex?.ObesityDegree ?? 0;
+        var od = BodyIndex.ObesityDegree ?? 0;
+
+        // 1) まず basis を決める（nullにしない）
+        BmrWeightBasis = AdjustedWeightCalculator.GetBasis(Age.Value, obesityDegree);
+
+        // 1) まず basis を決める（nullにしない）
+        //BmrWeightBasis = AdjustedWeightCalculator.GetBasis(Age.Value, BodyIndex?.ObesityDegree ?? 0);
+
+
+        // 調整体重そのもの（式で算出した値）を保持
+        AdjustedWeight = AdjustedWeightCalculator.CalculateAdjusted(Weight.Value, BodyIndex.StandardWeight);
+
+        // 補正体重（BMR/エネルギー/蛋白などの基礎として使う“最終採用体重”）
+        CorrectedWeight = BmrWeightBasis switch
+        {
+            BmrWeightBasisType.Standard => BodyIndex.StandardWeight,
+            BmrWeightBasisType.Adjusted => AdjustedWeight.Value,
+            _ => Weight.Value
+        };
+
+        // BMRで用いる体重（値）
+        BmrWeightUsed = CorrectedWeight.Value;
+
+        DebugWeightLine =
+         $"ObesityDegree={od}  " +
+         $"Basis={BmrWeightBasis}  " +
+         $"Actual={Weight.Value:0.0}  " +
+         $"Std={BodyIndex?.StandardWeight:0.0}  " +
+         $"Adj={AdjustedWeight:0.0}  " +
+         $"Corr={CorrectedWeight:0.0}";
+
+
+        /*
         // BMRで用いる体重（どれを採用したか）
         BmrWeightBasis = AdjustedWeightCalculator.GetBasis(Age.Value, BodyIndex.ObesityDegree ?? 0);
-        BmrWeightUsed = AdjustedWeight.Value;
+        BmrWeightUsed = BmrWeightFinal.Value;
+        */
 
         // 表示用エネルギー候補（整数）
         BmrKcal = (int)Math.Round(BmrResult.RawValue, MidpointRounding.AwayFromZero);
@@ -428,7 +483,7 @@ public class IndexModel : PageModel
         Kcal30 = (int)Math.Round(BodyIndex.StandardWeight * 30.0, MidpointRounding.AwayFromZero);
         Kcal35 = (int)Math.Round(BodyIndex.StandardWeight * 35.0, MidpointRounding.AwayFromZero);
     }
-
+    
 
     // ==============================
     // エネルギー/蛋白/水分（参考表示）
@@ -448,11 +503,11 @@ public class IndexModel : PageModel
         StressPressureUlcer = PressureUlcerStressTable.GetAddition(SelectedPressureUlcer);
         StressTotal = StressBase + StressTemperature + StressPressureUlcer;
 
-        if (!CanCalcBase(addErrors: false) || BodyIndex is null || AdjustedWeight is null || BmrResult is null)
+        if (!CanCalcBase(addErrors: false) || BodyIndex is null || CorrectedWeight is null || BmrResult is null)
             return;
 
         // BMR推定エネルギー
-        var bmrForEnergy = BmrCalculator.Calculate(Age!.Value, AdjustedWeight.Value, Height!.Value, Gender);
+        var bmrForEnergy = BmrCalculator.Calculate(Age!.Value, CorrectedWeight.Value, Height!.Value, Gender);
 
         var energyByBmr =
             Age.Value == 0
@@ -496,7 +551,7 @@ public class IndexModel : PageModel
                 WeightUsage.Protein,
                 Age.Value,
                 Weight.Value,
-                AdjustedWeight.Value,
+                CorrectedWeight.Value,
                 BodyIndex.StandardWeight,
                 SelectedDisease);
 
@@ -518,7 +573,7 @@ public class IndexModel : PageModel
                 Weight.Value,
                 IsHemodialysis,
                 IsPregnant,
-                AdjustedWeight.Value,
+                AdjustedWeight!.Value,          // 妊娠で肥満度120%以上なら調整体重
                 BodyIndex.ObesityDegree ?? 0,
                 SelectedBodyTemperature);
 
@@ -637,328 +692,3 @@ public class IndexModel : PageModel
 
 
 
-/*
-
-//==============================
-// POST
-//==============================
-public void OnPost()
-{
-   var act = (Action ?? "").ToLowerInvariant();
-
-    // 0) ユーザー編集フラグ（kcal or mL を触ったら以後自動同期しない）
-    if (act == "energy" || act == "volume")
-        IsEnergyUserEdited = true;
-
-    // 1) 基本計算（入力が揃っていて範囲内なら BMR/標準体重などが埋まる）
-    RecalcBase();
-
-    // ★ 疾患から透析フラグを同期（UIにチェックが無くても一致させる）
-    IsHemodialysis = (SelectedDisease == DiseaseType.Hemodialysis);
-
-    // 2) 疾患 → 算出方法（デフォルト）へ切替（ただし手動編集後は尊重）
-    if (act == "disease" && !IsEnergyUserEdited)
-    {
-        SelectedEnergyOrder = EnergyOrderDefaultSelector.GetDefault(SelectedDisease);
-        ModelState.Remove(nameof(SelectedEnergyOrder)); // UIのselectに反映
-    }
-
-    // 3) 蛋白補正のデフォルト（年齢が入っているときだけ）
-    //    - ユーザーが手動選択していない（Noneのまま）場合のみ自動決定
-    if (SelectedProteinCorrection == ProteinCorrectionType.None && Age.HasValue)
-    {
-        SelectedProteinCorrection =
-            ProteinCorrectionSelector.GetDefault(Age.Value, SelectedDisease);
-
-        // selectに反映（ModelState優先対策）
-        ModelState.Remove(nameof(SelectedProteinCorrection));
-    }
-
-    // 4) 係数・補正込みの必要量を計算（EnergyFinal / Protein / Water など）
-    RecalcEnergyProteinWater();
-
-    // 5) 必要量（EnergyFinal）→ 経腸の投与カロリーへ同期
-    //    ※ ユーザーが編集していないときのみ
-    var shouldSync =
-        act == "anthro" || act == "disease" || act == "order" || act == "factors" || act == "protein";
-
-    if (shouldSync && !IsEnergyUserEdited)
-    {
-        // (A) 原則：EnergyFinal があれば最優先で採用
-        if (EnergyFinal.HasValue)
-        {
-            EnergyOrderValue = EnergyFinal.Value;
-            ModelState.Remove(nameof(EnergyOrderValue));
-            ModelState.Remove(nameof(EnteralVolumeInput)); // mL欄も追従させたい場合
-        }
-        else
-        {
-            // (B) フォールバック：EnergyFinalが作れない時だけ、候補（BMR/25/30/35）から入れる
-            EnergyOrderValue = SelectedEnergyOrder switch
-            {
-                EnergyOrderType.BmrEstimated => BmrKcal,
-                EnergyOrderType.Kcal25 => Kcal25,
-                EnergyOrderType.Kcal30 => Kcal30,
-                EnergyOrderType.Kcal35 => Kcal35,
-                _ => EnergyOrderValue
-            };
-
-            ModelState.Remove(nameof(EnergyOrderValue));
-        }
-    }
-
-    // 6) 経腸栄養（kcal?mL 同期、成分、割付候補）
-    RecalcEnteral();
-}
-
-//==============================
-// 基本計算
-//==============================
-private bool CanCalcBase()
-{
-    // 必須：年齢・身長・体重
-    if (!Age.HasValue || !Height.HasValue || !Weight.HasValue)
-        return false;
-
-    // 範囲（「あり得ない値」を弾く）
-    if (Age.Value < 0 || Age.Value >= 130) return false;
-    if (Height.Value < 30 || Height.Value >= 250) return false;
-    if (Weight.Value < 0.5 || Weight.Value >= 300) return false;
-
-    return true;
-}
-
-private void RecalcBase()
-{
-    // 初期化
-    BmrResult = null;
-    BodyIndex = null;
-    BodySurfaceArea = null;
-    AdjustedWeight = null;
-
-    BmrKcal = Kcal25 = Kcal30 = Kcal35 = null;
-
-    if (!CanCalcBase())
-        return;
-
-    // BMR / 体格 / BSA
-    BmrResult = BmrCalculator.Calculate(Age!.Value, Weight!.Value, Height!.Value, Gender);
-    BodyIndex = BodyIndexCalculator.Calculate(Age.Value, Height.Value, Weight.Value, Gender);
-    BodySurfaceArea = BodySurfaceAreaCalculator.Calculate(Height.Value, Weight.Value);
-
-    AdjustedWeight = AdjustedWeightCalculator.Calculate(
-        Age.Value,
-        Weight.Value,
-        BodyIndex.StandardWeight,
-        BodyIndex.ObesityDegree ?? 0);
-
-    // 表示用エネルギー候補（整数）
-    BmrKcal = (int)Math.Round(BmrResult.RawValue, MidpointRounding.AwayFromZero);
-
-    // 25/30/35 は標準体重ベース（年齢に関係なく表示する方針に寄せる）
-    // ※ StandardWeight が計算できている前提
-    Kcal25 = (int)Math.Round(BodyIndex.StandardWeight * 25.0, MidpointRounding.AwayFromZero);
-    Kcal30 = (int)Math.Round(BodyIndex.StandardWeight * 30.0, MidpointRounding.AwayFromZero);
-    Kcal35 = (int)Math.Round(BodyIndex.StandardWeight * 35.0, MidpointRounding.AwayFromZero);
-}
-
-//==============================
-// エネルギー/蛋白/水分（参考表示）
-//==============================
-private void RecalcEnergyProteinWater()
-{
-    EnergyFinal = null;
-    ProteinRaw = null;
-    ProteinDisplayText = "";
-    WaterDisplay = null;
-    WaterFeverCorrected = false;
-
-    // ストレスは入力が揃わなくても計算可能
-    StressBase = StressFactorTable.Get(StressFactor);
-    StressTemperature = TemperatureStressTable.GetAddition(SelectedBodyTemperature);
-    StressTotal = StressBase + StressTemperature;
-
-    if (!CanCalcBase() || BodyIndex is null || AdjustedWeight is null || BmrResult is null)
-        return;
-
-    // BMR推定エネルギー
-    var bmrForEnergy = BmrCalculator.Calculate(Age!.Value, AdjustedWeight.Value, Height!.Value, Gender);
-
-    var energyByBmr =
-        Age.Value == 0
-            ? ((BmrResult.RawValue * StressTotal) + (40 * Weight!.Value)) * 1.1
-            : bmrForEnergy.RawValue
-                * ActivityFactorTable.Get(ActivityFactor)
-                * StressTotal;
-
-    // kcal/kg（標準体重）
-    var e25 = 25 * BodyIndex.StandardWeight;
-    var e30 = 30 * BodyIndex.StandardWeight;
-    var e35 = 35 * BodyIndex.StandardWeight;
-
-    double selected =
-        SelectedEnergyOrder switch
-        {
-            EnergyOrderType.Kcal25 => e25,
-            EnergyOrderType.Kcal30 => e30,
-            EnergyOrderType.Kcal35 => e35,
-            EnergyOrderType.Manual => ManualEnergyValue ?? energyByBmr,
-            _ => energyByBmr
-        };
-
-    EnergyFinal = (int)Math.Round(selected, MidpointRounding.AwayFromZero);
-
-    // 蛋白補正係数
-    double proteinCorrect =
-        SelectedProteinCorrection switch
-        {
-            ProteinCorrectionType.CKD3bTo5 => 0.7,
-            ProteinCorrectionType.LiverCirrhosisPoor => 0.5,
-            _ => 1.0
-        };
-
-    // 蛋白
-    double weightForProtein =
-        WeightForCalculationSelector.Select(
-            WeightUsage.Protein,
-            Age.Value,
-            Weight.Value,
-            AdjustedWeight.Value,
-            BodyIndex.StandardWeight,
-            SelectedDisease);
-
-    ProteinRaw =
-        ProteinCalculator.Calculate(
-            Age.Value,
-            weightForProtein,
-            StressTotal,
-            proteinCorrect,
-            SelectedDisease);
-
-    ProteinDisplayText =
-        Math.Round(ProteinRaw.Value, 1, MidpointRounding.AwayFromZero).ToString("F1");
-
-    // 水分（既存ロジック踏襲）
-    double water =
-        WaterCalculator.CalculateTotal(
-            Age.Value,
-            Weight.Value,
-            IsHemodialysis,
-            IsPregnant,
-            AdjustedWeight.Value,
-            BodyIndex.ObesityDegree ?? 0,
-            SelectedBodyTemperature);
-
-    WaterDisplay = (int)Math.Round(water, MidpointRounding.AwayFromZero);
-
-    WaterFeverCorrected =
-        !IsHemodialysis &&
-        SelectedBodyTemperature != BodyTemperatureLevel.Normal;
-}
-
-//==============================
-// 経腸栄養（必要量ベース + 割付候補）
-//==============================
-private void RecalcEnteral()
-{
-    // 初期化
-    EnteralPackagePlans = Array.Empty<EnteralPackagePlan>();
-    PackageVolumeOptions = new List<SelectListItem>();
-
-    EnteralEnergy = null;
-    EnteralVolume = null;
-
-    EnteralProtein = null;
-    EnteralFat = null;
-    EnteralCarb = null;
-    EnteralSalt = null;
-    EnteralVitaminK = null;
-    EnteralWater = null;
-
-    var act = (Action ?? "").ToLowerInvariant();
-
-    if (!SelectedEnteralFormula.HasValue)
-    {
-        EnteralVolumeInput = null;
-        ModelState.Remove(nameof(EnteralVolumeInput));
-        return;
-    }
-
-    var formula = SelectedEnteralFormula.Value;
-    var comp = EnteralFormulaTable.Get(formula);
-    var packageVolumes = EnteralPackageTable.Get(formula);
-
-    PackageVolumeOptions = packageVolumes
-        .Select(v => new SelectListItem($"{v} mL", v.ToString()))
-        .ToList();
-
-    var maxToShow = packageVolumes.Count <= 1 ? 1 : 2;
-
-    // volume のときだけ mL を優先。その他は kcal→mL を再計算して入力欄も同期。
-    if (act == "volume" && EnteralVolumeInput.HasValue && EnteralVolumeInput.Value > 0)
-    {
-        EnteralVolume = EnteralVolumeInput.Value;
-
-        // mL → kcal
-        var kcal = EnteralEnergyCalculator.CalculateEnergyFromVolume(EnteralVolume.Value, comp);
-        var kcalRounded = (int)Math.Round(kcal, MidpointRounding.AwayFromZero);
-
-        EnteralEnergy = kcalRounded;
-
-        // kcal入力欄も同期
-        EnergyOrderValue = kcalRounded;
-        ModelState.Remove(nameof(EnergyOrderValue));
-
-        // 割付候補（目安）
-        EnteralPackagePlans =
-            EnteralPackageAllocator.BuildPlans(
-                (int)Math.Round(EnteralVolume.Value, MidpointRounding.AwayFromZero),
-                packageVolumes.ToList(),
-                maxPlans: maxToShow);
-    }
-    else if (EnergyOrderValue.HasValue && EnergyOrderValue.Value > 0)
-    {
-        var targetKcal = EnergyOrderValue.Value;
-
-        // kcal → 必要mL（端数含む）
-        var rawVolume = targetKcal * comp.VolumePerKcal;
-        var targetVolumeMl = (int)Math.Round(rawVolume, MidpointRounding.AwayFromZero);
-
-        EnteralVolume = targetVolumeMl;
-
-        // 入力欄も同期
-        EnteralVolumeInput = targetVolumeMl;
-        ModelState.Remove(nameof(EnteralVolumeInput));
-
-        // 表示投与量ベースの kcal（厳密には targetKcal とほぼ一致する想定）
-        EnteralEnergy = EnteralEnergyCalculator.CalculateEnergyFromVolume(EnteralVolume.Value, comp);
-
-        // 割付候補（目安）
-        EnteralPackagePlans =
-            EnteralPackageAllocator.BuildPlans(
-                targetVolumeMl,
-                packageVolumes.ToList(),
-                maxPlans: maxToShow);
-    }
-    else
-    {
-        // kcal も mL も無い
-        EnteralVolumeInput = null;
-        ModelState.Remove(nameof(EnteralVolumeInput));
-        return;
-    }
-
-    // 成分計算（常に「表示されている投与量」から）
-    if (EnteralEnergy.HasValue)
-    {
-        EnteralProtein = EnteralEnergy.Value * comp.ProteinPerKcal;
-        EnteralFat = EnteralEnergy.Value * comp.FatPerKcal;
-        EnteralCarb = EnteralEnergy.Value * comp.CarbPerKcal;
-        EnteralSalt = EnteralEnergy.Value * comp.SaltPerKcal;
-        EnteralVitaminK = EnteralEnergy.Value * comp.VitaminKPerKcal;
-        EnteralWater = EnteralEnergy.Value * comp.WaterPerKcal;
-    }
-}
-}
-
-*/
