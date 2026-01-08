@@ -30,8 +30,8 @@ public static class CcrCreatinineCorrectionRule
     {
         return type switch
         {
-            CcrCreatinineCorrectionType.Male70Plus_Min08 => "※筋量低下なら補正(Cr0.8)",
-            CcrCreatinineCorrectionType.Female70Plus_Min06 => "※筋量低下なら補正(Cr0.6)",
+            CcrCreatinineCorrectionType.Male70Plus_Min08 => "※補正(Cr0.8)",
+            CcrCreatinineCorrectionType.Female70Plus_Min06 => "※補正(Cr0.6)",
             _ => ""
         };
     }

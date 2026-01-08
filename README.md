@@ -198,3 +198,7 @@ IE11互換、モダンブラウザ、スマートフォン表示に関する
 詳細な設計判断・調整履歴は以下を参照。
 なお、この際、AdjustedWeight/CorrectedWeightの整理をおこなった（3. 体重ロジックの整理（重要）に記載）
 - [Appendix: UI / IE / Mobile 対応メモ](docs/appendix-ui-ie-mobile.md)
+
+※ 妊娠チェックの表示は WaterCalculator の年齢区切り（55/56）に合わせ、
+　Female かつ 18～55歳に限定した。
+---

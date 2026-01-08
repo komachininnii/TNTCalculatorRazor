@@ -136,7 +136,8 @@
                                     bool showPregnant =
                                     Model.Gender == GenderType.Female
                                     && Model.Age.HasValue
-                                    && Model.Age.Value >= 18;
+                                    && Model.Age.Value >= 18
+                                    && Model.Age.Value <= 55;
                                 }
 
                                 @if (showPregnant)
@@ -364,34 +365,33 @@
 
                             <dt>基礎代謝量</dt>
 
-<dd>
-    <span class="bmr-value">
-        @(Model.BmrKcal?.ToString() ?? "-") kcal
-    </span>
-
-    @* pill は dd 側へ移動（IE段ズレ対策、ストレス合計と同じ構造） *@
-    <div class="pills bmr-pills" style="margin-top:0px;">
-
-        @* 算出法 pill：計算前も表示 *@
-        <span class="pill mini trunc" title="@Model.BmrFormulaDisplayLong">
-            @(!string.IsNullOrWhiteSpace(Model.BmrFormulaDisplay) ? Model.BmrFormulaDisplay : "算出法")
-        </span>
-
-        @* 体重 pill：計算前は「使用体重」、計算後は「実測50.0/標準50.0/調整50.0」 *@
-        @if (Model.BmrWeightBasis.HasValue && Model.BmrWeightUsed.HasValue)
-        {
-            <span class="pill mini" title="@Model.BmrWeightBasis.Value.ToLongName()">
-                @( $"{Model.BmrWeightBasis.Value.ToKindName()}{Model.BmrWeightUsed.Value:F1}kg" )
+         <dd>
+            <span class="bmr-value">
+                @(Model.BmrKcal?.ToString() ?? "-") kcal
             </span>
-        }
-        else
-        {
-            <span class="pill mini" title="BMR算出に使用する体重（計算後に 実測/標準/調整 が確定します）">
-                使用体重
-            </span>
-        }
-    </div>
-</dd>
+
+            @* pill は dd 側へ移動（IE段ズレ対策、ストレス合計と同じ構造） *@
+               <div class="pills bmr-pills" style="margin-top:0px;">
+                    @* 算出法 pill：計算前も表示 *@
+                    <span class="pill mini trunc" title="@Model.BmrFormulaDisplayLong">
+                    @(!string.IsNullOrWhiteSpace(Model.BmrFormulaDisplay) ? Model.BmrFormulaDisplay : "算出法")
+                    </span>
+
+                    @* 体重 pill：計算前は「使用体重」、計算後は「実測50.0/標準50.0/調整50.0」 *@
+                    @if (Model.BmrWeightBasis.HasValue && Model.BmrWeightUsed.HasValue)
+                    {
+                        <span class="pill mini" title="@Model.BmrWeightBasis.Value.ToLongName()">
+                            @( $"{Model.BmrWeightBasis.Value.ToKindName()}{Model.BmrWeightUsed.Value:F1}kg" )
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="pill mini" title="BMR算出に使用する体重（計算後に 実測/標準/調整 が確定します）">
+                            使用体重
+                        </span>
+                    }
+                </div>
+        </dd>
 
 
                             
@@ -407,32 +407,37 @@
                             <dt>体表面積</dt>
                             <dd>@(Model.BodySurfaceArea?.ToString("F3") ?? "-") m²</dd>
 
-                            <dt>推定CCr</dt>
-                            <dd>
-                                @if (Model.CcrActual.HasValue)
-                                {
-                                    <strong>@Model.CcrActual.Value.ToString("F1")</strong>
-                                    <span class="unit">mL/min</span>
-
-                                    @if (Model.CcrCorrected.HasValue)
+                                <dt>推定CCr</dt>
+                                <dd>
+                                    @if (Model.CcrActual.HasValue)
                                     {
-                                        <span class="pill mini" style="margin-left:6px;">
-                                            @($"補正{Model.CcrCorrected.Value.ToString("F1")}")
-                                        </span>
-                                    }
+                                        @* 主役：補正後（あれば補正後、なければ補正前） *@
+                                        var ccrMain = Model.CcrCorrected ?? Model.CcrActual;
 
-                                    @if (!string.IsNullOrWhiteSpace(Model.CcrNote))
-                                    {
-                                        <div class="muted small" style="margin-top:4px; line-height:1.2;">
-                                            @Model.CcrNote
-                                        </div>
+                                        <strong>@ccrMain.Value.ToString("F1")</strong>
+                                        <span class="unit">mL/min</span>
+
+                                        @* 参照：補正がある場合のみ、補正前を pill で表示 *@
+                                        @if (Model.CcrCorrected.HasValue)
+                                        {
+                                            <span class="pill" style="margin-left:6px;">
+                                                @($"補正前 {Model.CcrActual.Value.ToString("F1")}")
+                                            </span>
+                                        }
+
+                                        @* 注記（補正条件など） *@
+                                        @if (!string.IsNullOrWhiteSpace(Model.CcrNote))
+                                        {
+                                            <div class="muted small" style="margin-top:4px; line-height:1.2;">
+                                                @Model.CcrNote
+                                            </div>
+                                        }
                                     }
-                                }
-                                else
-                                {
-                                    <span class="muted">-</span>
-                                }
-                            </dd>
+                                    else
+                                    {
+                                        <span class="muted">-</span>
+                                    }
+                                </dd>
 
 
                         </dl>
@@ -441,6 +446,7 @@
                     <div>
                         <h4>必要量</h4>
                         <dl class="kv kv-need">
+                            @*
                             <dt>ストレス合計</dt>
                             <dd>
                                 <div class="need-line">
@@ -453,7 +459,7 @@
                                     <span class="pill mini">褥 @Model.StressPressureUlcer.ToString("F1")</span>
                                 </div>
                             </dd>
-
+                            *@
                             <dt>必要エネルギー</dt>
                             <dd><strong>@(Model.EnergyFinal?.ToString() ?? "-")</strong> kcal</dd>
 

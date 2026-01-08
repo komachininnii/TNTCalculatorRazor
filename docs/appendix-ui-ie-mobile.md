@@ -112,7 +112,7 @@ CorrectedWeight = BmrWeightBasis.Value switch { ... };
 
 ### 5.1 仕様
 
-- 性別が Female のときのみ表示
+- 性別が Female かつ 年齢18～55 のときのみ表示
 - 水分量計算のみに影響
 - 毎回説明を出さず、`title` で補足
 
@@ -227,6 +227,34 @@ public bool IsPregnant { get; set; } = false;
   }
 }
 ```
+## モダン/スマホでもカード上線を出す（＝@supports の打ち消しを上書き）
+
+「IEでは上線、モダンでは消す」にしていた影響でモダンカードの上線が消えたため、末尾で上書き。
+
+/* モダン/スマホでもカードの区切り線を出す（末尾で確実に上書き） */
+.main .card,
+.summary .card {
+  border-top: 1px solid #d6d6d6;
+  margin-top: 8px;
+}
+
+## 1カラム時にIE用の列仕切り（border/padding）が main に残り左列だけ細く見えるため強制解除
+
+/* 1カラム時：左（main）だけ狭く見えるのは、main側に残る余白/罫線が原因のことが多い */
+@media (max-width: 980px) {
+  .main {
+    border-right: 0 !important;
+    padding-right: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* 念のため左右も揃える */
+  .main, .summary {
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+  }
+}
+
 
 ---
 
@@ -236,6 +264,8 @@ public bool IsPregnant { get; set; } = false;
 - 横スクロール問題を解消
 - UI密度と可読性のバランスを維持
 - 計算ロジックへの影響なし
+- モダンでもカードの上線復帰
+- 1カラム時に左列が狭くなる問題を解消
 
 ---
 
