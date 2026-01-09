@@ -2,10 +2,10 @@
 @model IndexModel
 @using TNTCalculatorRazor.Domain.Enums
 
-    <div class="appbar">
-        <div class="brand">
-            <img src="~/img/TNTCalculatorSmall.png" class="brand-icon" alt="app icon" asp-append-version="true" />
-            <span class="brand-meta-inline">TNTCalculator Ver. @(Model.AppVersion) by tyama</span>
+<div class="appbar">
+    <div class="brand">
+        <img src="~/img/TNTCalculatorSmall.png" class="brand-icon" alt="app icon" asp-append-version="true" />
+        <span class="brand-meta-inline">TNTCalculator Ver. @(Model.AppVersion) by tyama</span>
         <a class="brand-link"
            href="/Help"
            onclick="openHelpWindow(event, this.href);">
@@ -20,16 +20,15 @@
                 院内マニュアル(EN-map)
             </a>
         }
-        </div>
     </div>
+</div>
 
 
 <form method="post">
     <input type="hidden" asp-for="Action" id="Action" />
-    <input asp-for="IsProteinCorrectionUserEdited" type="hidden" />
-   
+    <input asp-for="IsProteinCorrectionUserEdited" type="hidden" />  
     <div class="layout">
-
+ 
         <!-- ========================= -->
         <!-- 左：入力 -->
         <!-- ========================= -->
@@ -41,11 +40,12 @@
                 </div>
                 <button type="button" class="homehint-close" aria-label="閉じる">×</button>
             </div>
+
             <div class="card">
                 <div class="section-head">
                     <h3>基本入力</h3>
                     <div class="section-meta">
-                        （栄養：年齢・身長・体重・性別）/（推定CCr：年齢・体重・Cr・性別）
+                        （栄養:年齢･身長･体重･性別）/（推定CCr:年齢･体重･Cr･性別）
                     </div>
                 </div>
 
@@ -55,14 +55,13 @@
                 }
 
                 <div class="fields">
-
                     <div class="field field-compact">
                         <div class="label">年齢</div>
                         <div class="control">
                             <input asp-for="Age" type="number" step="1" inputmode="numeric"
-                                   onkeydown="submitOnEnter(event,'anthro')" />
+                                   onkeydown="submitOnEnter(event,'anthro')"
+                                   onblur="tntSubmitOnBlurSmart(this.form);" />
                             <span class="unit">歳</span>
-
                             @if (ViewData.ModelState.TryGetValue("Age", out var entryAge) && entryAge.Errors.Count > 0)
                             {
                                 <div class="field-error text-danger">
@@ -76,7 +75,8 @@
                         <div class="label">身長</div>
                         <div class="control">
                             <input asp-for="Height" type="number" step="0.1" inputmode="decimal"
-                                   onkeydown="submitOnEnter(event,'anthro')" />
+                                   onkeydown="submitOnEnter(event,'anthro')"
+                                   onblur="tntSubmitOnBlurSmart(this.form);" />
                             <span class="unit">cm</span>
 
                             @if (ViewData.ModelState.TryGetValue("Height", out var entryHeight) && entryHeight.Errors.Count > 0)
@@ -87,7 +87,6 @@
                             }
                         </div>
                     </div>
-
 
                     <div class="field field-compact">
                         <div class="label">体重</div>
@@ -107,8 +106,6 @@
                         </div>
                     </div>
 
-
-
                     <div class="field field-compact">
                         <div class="label">Cr</div>
                         <div class="control">
@@ -121,8 +118,6 @@
                             <span class="unit">mg/dL</span>
                         </div>
                     </div>
-
-
 
                     <div class="field field-compact">
                         <div class="label">性別</div>
@@ -153,7 +148,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
 
@@ -173,9 +167,7 @@
             </div>
 
             <div class="card">
-                
                 <div class="fields">
-
                     <div class="field field-compact">
                         <div class="label">活動係数</div>
                         <div class="control">
@@ -185,7 +177,6 @@
                             </select>
                         </div>
                     </div>
-
                     <div class="field field-compact">
                         <div class="label">ストレス係数</div>
                         <div class="control">
@@ -296,7 +287,6 @@
                     </div>
                 </details>
             </div>
-
         </div>
         
         <!-- ========================= -->
@@ -335,8 +325,10 @@
                             @if (Model.CcrCorrected.HasValue)
                             {
                                 <strong>@Model.CcrCorrected.Value.ToString("F1")</strong>
+                                <span class="ccr-tail">
                                 <span class="unit">mL/min</span>
                                 <span class="pill mini">補正</span>
+                            </span>
                             }
                             else if (Model.CcrActual.HasValue)
                             {
@@ -349,7 +341,6 @@
                             }
                         </div>
                     </div>
-
                 </div>
             </div>
 
@@ -364,40 +355,34 @@
                     <div>
                         <!-- "kv kv-tight" 2行表示から"kv kv-need"1行表示に変更 -->
                         <dl class="kv kv-need">
-            
-
                             <dt>基礎代謝量</dt>
+                            <dd>
+                                <span class="bmr-value">
+                                    @(Model.BmrKcal?.ToString() ?? "-") kcal
+                                </span>
 
-         <dd>
-            <span class="bmr-value">
-                @(Model.BmrKcal?.ToString() ?? "-") kcal
-            </span>
+                                @* pill は dd 側へ移動（IE段ズレ対策、ストレス合計と同じ構造） *@
+                                <div class="pills bmr-pills" style="margin-top:0px;">
+                                    @* 算出法 pill：計算前も表示 *@
+                                    <span class="pill mini trunc" title="@Model.BmrFormulaDisplayLong">
+                                        @(!string.IsNullOrWhiteSpace(Model.BmrFormulaDisplay) ? Model.BmrFormulaDisplay : "算出法")
+                                    </span>
 
-            @* pill は dd 側へ移動（IE段ズレ対策、ストレス合計と同じ構造） *@
-               <div class="pills bmr-pills" style="margin-top:0px;">
-                    @* 算出法 pill：計算前も表示 *@
-                    <span class="pill mini trunc" title="@Model.BmrFormulaDisplayLong">
-                    @(!string.IsNullOrWhiteSpace(Model.BmrFormulaDisplay) ? Model.BmrFormulaDisplay : "算出法")
-                    </span>
-
-                    @* 体重 pill：計算前は「使用体重」、計算後は「実測50.0/標準50.0/調整50.0」 *@
-                    @if (Model.BmrWeightBasis.HasValue && Model.BmrWeightUsed.HasValue)
-                    {
-                        <span class="pill mini" title="@Model.BmrWeightBasis.Value.ToLongName()">
-                            @( $"{Model.BmrWeightBasis.Value.ToKindName()}{Model.BmrWeightUsed.Value:F1}kg" )
-                        </span>
-                    }
-                    else
-                    {
-                        <span class="pill mini" title="BMR算出に使用する体重（計算後に 実測/標準/調整 が確定します）">
-                            使用体重
-                        </span>
-                    }
-                </div>
-        </dd>
-
-
-                            
+                                    @* 体重 pill：計算前は「使用体重」、計算後は「実測50.0/標準50.0/調整50.0」 *@
+                                    @if (Model.BmrWeightBasis.HasValue && Model.BmrWeightUsed.HasValue)
+                                    {
+                                        <span class="pill mini" title="@Model.BmrWeightBasis.Value.ToLongName()">
+                                            @( $"{Model.BmrWeightBasis.Value.ToKindName()}{Model.BmrWeightUsed.Value:F1}kg" )
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="pill mini" title="BMR算出に使用する体重（計算後に 実測/標準/調整 が確定します）">
+                                            使用体重
+                                        </span>
+                                    }
+                                </div>
+                            </dd>
                             <dt>BMI</dt>
                             <dd>@(Model.BodyIndex != null ? Model.BodyIndex.Bmi.ToString("F1") : "-")</dd>
 
@@ -410,16 +395,15 @@
                             <dt>体表面積</dt>
                             <dd>@(Model.BodySurfaceArea?.ToString("F3") ?? "-") m²</dd>
 
-                                <dt>推定CCr</dt>
-                                <dd>
-                                    @if (Model.CcrActual.HasValue)
-                                    {
-                                        @* 主役：補正後（あれば補正後、なければ補正前） *@
-                                        var ccrMain = Model.CcrCorrected ?? Model.CcrActual;
+                            <dt>推定CCr</dt>
+                            <dd>
+                            @if (Model.CcrActual.HasValue)
+                            {
+                                @* 主役：補正後（あれば補正後、なければ補正前） *@
+                                var ccrMain = Model.CcrCorrected ?? Model.CcrActual;
 
-                                        <strong>@ccrMain.Value.ToString("F1")</strong>
-                                        <span class="unit">mL/min</span>
-
+                                <strong>@ccrMain.Value.ToString("F1")</strong>
+                                <span class="unit">mL/min</span>
                                         @* 参照：補正がある場合のみ、補正前を pill で表示 *@
                                         @if (Model.CcrCorrected.HasValue)
                                         {
@@ -435,14 +419,12 @@
                                                 @Model.CcrNote
                                             </div>
                                         }
-                                    }
-                                    else
-                                    {
-                                        <span class="muted">-</span>
-                                    }
-                                </dd>
-
-
+                            }
+                            else
+                            {
+                                <span class="muted">-</span>
+                            }
+                            </dd>
                         </dl>
                     </div>
 
@@ -492,9 +474,6 @@
                                     <span class="pill mini" style="margin-left:6px;">発熱</span>
                                 }
                             </dd>
-
-                            
-
                         </dl>
                         @if (Model.IsHemodialysis)
                         {
@@ -504,7 +483,6 @@
                         {
                             <div class="muted small">※肝不全用アミノ酸製剤の併用を検討</div>
                         }
-
                     </div>
                 </div>
 
@@ -520,47 +498,47 @@
                         </ul>
                         @* 疾患別の目安：選択した疾患のときだけ *@
                         @if (Model.SelectedDisease != DiseaseType.None)
-                            {
-                                <div style="margin-top:10px;">
-                                    <div class="muted" style="margin-bottom:6px;">疾患別の目安（参考）</div>
+                        {
+                            <div style="margin-top:10px;">
+                                <div class="muted" style="margin-bottom:6px;">疾患別の目安（参考）</div>
 
-                                    @switch (Model.SelectedDisease)
-                                    {
-                                        case DiseaseType.Diabetes:
-                                            <ul style="margin:0; padding-left:18px;">
-                                                <li>軽い労作：25kcal/標準体重</li>
-                                                <li>普通労作：30kcal/標準体重</li>
-                                                <li>重い労作：35kcal/標準体重</li>
-                                            </ul>
-                                            break;
+                                @switch (Model.SelectedDisease)
+                                {
+                                    case DiseaseType.Diabetes:
+                                        <ul style="margin:0; padding-left:18px;">
+                                            <li>軽い労作：25kcal/標準体重</li>
+                                            <li>普通労作：30kcal/標準体重</li>
+                                            <li>重い労作：35kcal/標準体重</li>
+                                        </ul>
+                                        break;
 
-                                        case DiseaseType.RenalFailure:
-                                            <ul style="margin:0; padding-left:18px;">
-                                                <li>エネルギー：25～35kcal/標準体重</li>
-                                                <li><b>蛋白（目安）</b>：CKD1-2 過剰摂取を避ける／CKD3a 0.8～1.0 g/標準体重</li>
-                                                <li>CKD3b-5：0.6～0.8 g/標準体重</li>
-                                            </ul>
-                                            break;
+                                    case DiseaseType.RenalFailure:
+                                        <ul style="margin:0; padding-left:18px;">
+                                            <li>エネルギー：25～35kcal/標準体重</li>
+                                            <li><b>蛋白（目安）</b>：CKD1-2 過剰摂取を避ける／CKD3a 0.8～1.0 g/標準体重</li>
+                                            <li>CKD3b-5：0.6～0.8 g/標準体重</li>
+                                        </ul>
+                                        break;
 
-                                        case DiseaseType.Hemodialysis:
-                                            <ul style="margin:0; padding-left:18px;">
-                                                <li>エネルギー：30～35kcal/標準体重</li>
-                                                <li>水分：15mL/kg は目安（ドライウェイト・体重推移で判断）</li>
-                                                <li><b>蛋白（目安）</b>：0.9～1.2 g/標準体重</li>
-                                            </ul>
-                                            break;
+                                    case DiseaseType.Hemodialysis:
+                                        <ul style="margin:0; padding-left:18px;">
+                                            <li>エネルギー：30～35kcal/標準体重</li>
+                                            <li>水分：15mL/kg は目安（ドライウェイト・体重推移で判断）</li>
+                                            <li><b>蛋白（目安）</b>：0.9～1.2 g/標準体重</li>
+                                        </ul>
+                                        break;
 
-                                        case DiseaseType.LiverCirrhosis:
-                                            <ul style="margin:0; padding-left:18px;">
-                                                <li>耐糖能異常なし：30～40kcal/標準体重</li>
-                                                <li>耐糖能異常あり：25～30kcal/標準体重</li>
-                                                <li><b>蛋白（目安）</b>：不耐なし 1.0～1.5 g/標準体重</li>
-                                                <li>不耐あり 0.5～0.7 g/標準体重＋肝不全用栄養</li>
-                                            </ul>
-                                            break;
-                                    }
-                                </div>
-                            }
+                                    case DiseaseType.LiverCirrhosis:
+                                        <ul style="margin:0; padding-left:18px;">
+                                            <li>耐糖能異常なし：30～40kcal/標準体重</li>
+                                            <li>耐糖能異常あり：25～30kcal/標準体重</li>
+                                            <li><b>蛋白（目安）</b>：不耐なし 1.0～1.5 g/標準体重</li>
+                                            <li>不耐あり 0.5～0.7 g/標準体重＋肝不全用栄養</li>
+                                        </ul>
+                                        break;
+                                }
+                            </div>
+                        }
                         @* 小児（動的に注意） *@
                         @if (Model.Age.HasValue && Model.Age.Value < 18)
                         {
@@ -570,7 +548,7 @@
                         }
 
                     </div>
-                 </details>
+                </details>
             </div>
             </details>
 
@@ -618,44 +596,38 @@
                                 投与カロリー：<strong>@(Model.EnteralEnergy?.ToString("F0") ?? "-")</strong> kcal
                             </p>
                         </div>
-
-                    
-                  
-                        
-
-                            <div class="enteral-box">
-                                <h4>割付候補</h4>
-                                <ul class="compact-list">
-                                    @foreach (var plan in Model.EnteralPackagePlans)
-                                    {
-                                        <li>@IndexModel.FormatPlan(plan)</li>
-                                    }
-                                </ul>
-                            </div>
-                            </div>
-
-                        <div class="enteral-bottom">
-                            <h4>成分（投与量ベース）</h4>
-                            <dl class="kv kv-2col">
-                                <dt>蛋白質</dt>
-                                <dd>@(Model.EnteralProtein?.ToString("F1") ?? "-") g</dd>
-                                <dt>脂質</dt>
-                                <dd>@(Model.EnteralFat?.ToString("F1") ?? "-") g</dd>
-                                <dt>糖質</dt>
-                                <dd>@(Model.EnteralCarb?.ToString("F1") ?? "-") g</dd>
-                                <dt>食塩</dt>
-                                <dd>@(Model.EnteralSalt?.ToString("F2") ?? "-") g</dd>
-                                <dt>ビタミンK</dt>
-                                <dd>@(Model.EnteralVitaminK?.ToString("F1") ?? "-") µg</dd>
-                                <dt>水分量</dt>
-                                <dd>@(Model.EnteralWater?.ToString("F0") ?? "-") mL</dd>
-                            </dl>
+                        <div class="enteral-box">
+                            <h4>割付候補</h4>
+                            <ul class="compact-list">
+                                @foreach (var plan in Model.EnteralPackagePlans)
+                                {
+                                    <li>@IndexModel.FormatPlan(plan)</li>
+                                }
+                            </ul>
                         </div>
-                
+                    </div>
+
+                    <div class="enteral-bottom">
+                        <h4>成分（投与量ベース）</h4>
+                        <dl class="kv kv-2col">
+                            <dt>蛋白質</dt>
+                            <dd>@(Model.EnteralProtein?.ToString("F1") ?? "-") g</dd>
+                            <dt>脂質</dt>
+                            <dd>@(Model.EnteralFat?.ToString("F1") ?? "-") g</dd>
+                            <dt>糖質</dt>
+                            <dd>@(Model.EnteralCarb?.ToString("F1") ?? "-") g</dd>
+                            <dt>食塩</dt>
+                            <dd>@(Model.EnteralSalt?.ToString("F2") ?? "-") g</dd>
+                            <dt>ビタミンK</dt>
+                            <dd>@(Model.EnteralVitaminK?.ToString("F1") ?? "-") µg</dd>
+                            <dt>水分量</dt>
+                            <dd>@(Model.EnteralWater?.ToString("F0") ?? "-") mL</dd>
+                        </dl>
+                    </div>
+
                     </details>
-                   
                 }
-</div>
+            </div>
             <div class="card">
                 <details>
                     <summary>デバッグ（開発中）</summary>
@@ -678,11 +650,9 @@
                     </pre>
                 </details>
             </div>
+        </div>
 
-        
-    </div>
-
-    <!-- EnterでSubmit -->
+        <!-- EnterでSubmit -->
         <script>
             // Enterで送信した直後のblurによる二重送信を防ぐフラグ
             var tntSkipNextBlurSubmit = false;
@@ -738,67 +708,108 @@
         </script>
 
        
-    <script>
-        function openHelpWindow(e, url) {
-          e.preventDefault(); // 既定遷移（=二重オープン）を止める
+        <script>
+             // スマートblur submit(計算後の数値修正でonblurを発生）
+            function _trim(v) {
+              return v ? v.replace(/^\s+|\s+$/g, '') : '';
+            }
 
-          var name = "TNT_Help";
-          var features = "width=900,height=800,resizable=yes,scrollbars=yes";
+            function tntSubmitOnBlurSmart(form) {
+              var age = document.getElementById('Age');
+              var h   = document.getElementById('Height');
+              var w   = document.getElementById('Weight');
+              var cr  = document.getElementById('SerumCreatinine');
+              var act = document.getElementById('Action');
 
-          var w = window.open(url, name, features);
+              var heightStr = _trim(h && h.value);
+              var weightStr = _trim(w && w.value);
+              var crStr     = _trim(cr && cr.value);
 
-          // ポップアップがブロックされたら、新しいタブで開く（フォールバック）
-          if (!w) {
-            window.open(url, "_blank", "noopener");
-            return;
-          }
+              // どちらの計算を走らせるべきか決める（renal優先）
+              var doRenal  = (weightStr !== '' && crStr !== '');
+              var doAnthro = (weightStr !== '' && heightStr !== '');
 
-          try { w.focus(); } catch (e) {}
-        }
-    </script>
+              if (!doRenal && !doAnthro) return;
 
-    <!-- スマホ時：初期表示調整（details折りたたみ + 初回案内） -->
-    <script>
-        (function () {
-              var isMobile = false;
+              // blur直後に別inputへ移動中だと submit がキーボードを閉じるので、
+              // いったん次のfocusを待って、入力継続中なら submit しない（後続の入力欄側に任せる）
+              setTimeout(function () {
+                var ae = document.activeElement;
+                var id = ae && ae.id ? ae.id : '';
 
-              if (window.matchMedia) {
-                isMobile = window.matchMedia("(max-width: 980px)").matches;
-              } else {
-                var w = document.documentElement.clientWidth || document.body.clientWidth;
-                isMobile = (w <= 980);
-              }
+                // 入力を続けている（別フィールドを触った）なら送信しない
+                if (id === 'Age' || id === 'Height' || id === 'Weight' || id === 'SerumCreatinine') {
+                  return;
+                }
 
-              if (!isMobile) return;
+                if (act) act.value = doRenal ? 'renal' : 'anthro';
+                form.submit();
+              }, 0);
+            }
+        </script>
 
-              // detailsのopenを外す(初期で折りたたむ)
-              var list = document.querySelectorAll(".enteral-details, .result-details");
-              for (var i = 0; i < list.length; i++) {
-                list[i].removeAttribute("open");
-              }
+        <script>
+            // ヘルプウィンドウを開く
+            function openHelpWindow(e, url) {
+                e.preventDefault(); // 既定遷移（=二重オープン）を止める
 
-              // 初回だけホーム画面追加の案内を表示（×で閉じたら二度と出さない）
-              var key = "tnt_homehint_dismissed_v1";
-              try {
-                if (window.localStorage && localStorage.getItem(key) === "1") return;
-              } catch (e) {}
+            var name = "TNT_Help";
+            var features = "width=900,height=800,resizable=yes,scrollbars=yes";
 
-              var el = document.getElementById("homehint");
-              if (!el) return;
+            var w = window.open(url, name, features);
 
-              el.style.display = "flex";
+            // ポップアップがブロックされたら、新しいタブで開く（フォールバック）
+            if (!w) {
+                window.open(url, "_blank", "noopener");
+                return;
+            }
 
-              var btn = el.querySelector(".homehint-close");
-              if (btn) {
-                btn.onclick = function () {
-                  try {
-                    if (window.localStorage) localStorage.setItem(key, "1");
-                  } catch (e) {}
+            try { w.focus(); } catch (e) {}
+            }
+        </script>
 
-                  if (el && el.parentNode) el.parentNode.removeChild(el);
-                  return false;
-                };
-              }
+        <!-- スマホ時：初期表示調整（details折りたたみ + 初回案内） -->
+        <script>
+            (function () {
+                var isMobile = false;
+
+                if (window.matchMedia) {
+                    isMobile = window.matchMedia("(max-width: 980px)").matches;
+                } else {
+                    var w = document.documentElement.clientWidth || document.body.clientWidth;
+                    isMobile = (w <= 980);
+                }
+
+                if (!isMobile) return;
+
+                // detailsのopenを外す(初期で折りたたむ)
+                var list = document.querySelectorAll(".enteral-details, .result-details");
+                for (var i = 0; i < list.length; i++) {
+                    list[i].removeAttribute("open");
+                }
+
+                // 初回だけホーム画面追加の案内を表示（×で閉じたら二度と出さない）
+                var key = "tnt_homehint_dismissed_v1";
+                try {
+                    if (window.localStorage && localStorage.getItem(key) === "1") return;
+                } catch (e) {}
+
+                var el = document.getElementById("homehint");
+                if (!el) return;
+
+                el.style.display = "flex";
+
+                var btn = el.querySelector(".homehint-close");
+                if (btn) {
+                    btn.onclick = function () {
+                        try {
+                            if (window.localStorage) localStorage.setItem(key, "1");
+                        } catch (e) {}
+
+                    if (el && el.parentNode) el.parentNode.removeChild(el);
+                    return false;
+                    };
+                }
             })();
         </script>
 
@@ -840,20 +851,20 @@
             })();
         </script>
 
-     <!-- 入力欄のblurでActionセット -->
-     <script>
-         document.addEventListener("DOMContentLoaded", function () {
-              var form = document.querySelector("form");
-              if (!form) return;
+        <!-- 入力欄のblurでActionセット -->
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var form = document.querySelector("form");
+                if (!form) return;
 
-              var nodes = form.querySelectorAll("input[type='number'], input[type='text'], select");
-              for (var i = 0; i < nodes.length; i++) {
-                nodes[i].addEventListener("blur", function () {
-                  var action = document.getElementById("Action");
-                  if (action && !action.value) action.value = "calc";
-                });
-              }
+                var nodes = form.querySelectorAll("input[type='number'], input[type='text'], select");
+                for (var i = 0; i < nodes.length; i++) {
+                    nodes[i].addEventListener("blur", function () {
+                    var action = document.getElementById("Action");
+                    if (action && !action.value) action.value = "calc";
+                    });
+                }
             });
-     </script>
+        </script>
 
 </form>

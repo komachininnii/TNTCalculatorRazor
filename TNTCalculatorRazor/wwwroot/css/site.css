@@ -237,11 +237,11 @@ details summary {
     padding: 1px 6px;
 }
 
-/*
-.hero3-value .pill.mini {
-    vertical-align: middle;
+/* 要点欄のCCr数値が長いとき「mL/min [補正]」を1行に */
+.ccr-tail {
+    white-space: nowrap;
 }
-*/
+
 
 /* ストレス合計・必要エネルギーの折り返し調整 */
 .kv dd .mainline {
