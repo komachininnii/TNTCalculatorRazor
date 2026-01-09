@@ -94,7 +94,8 @@
                         <div class="control">
                             <input asp-for="Weight" type="number" step="0.1" inputmode="decimal"
                                    onkeydown="submitOnEnter(event,'anthro')"
-                                   onblur="document.getElementById('Action').value='anthro'; this.form.submit();" />
+                                   onblur="tntSubmitAnthroOnBlurIfHeightPresent(this.form);" />
+
                             <span class="unit">kg</span>
 
                             @if (ViewData.ModelState.TryGetValue("Weight", out var entry) && entry.Errors.Count > 0)
@@ -335,6 +336,7 @@
                             {
                                 <strong>@Model.CcrCorrected.Value.ToString("F1")</strong>
                                 <span class="unit">mL/min</span>
+                                <span class="pill mini">補正</span>
                             }
                             else if (Model.CcrActual.HasValue)
                             {
@@ -347,6 +349,7 @@
                             }
                         </div>
                     </div>
+
                 </div>
             </div>
 
@@ -720,8 +723,21 @@
                 return false;
               }
             }
+            // 体重用：身長が入力されている場合のみ、blurでanthro送信
+            function tntSubmitAnthroOnBlurIfHeightPresent(form) {
+              var h = document.getElementById('Height');
+              var heightStr = (h && h.value) ? h.value.replace(/^\s+|\s+$/g, '') : '';
+
+              // 身長未入力なら submit しない（CCr入力フローを邪魔しない）
+              if (!heightStr) return;
+
+              var action = document.getElementById('Action');
+              if (action) action.value = 'anthro';
+              form.submit();
+            }
         </script>
 
+       
     <script>
         function openHelpWindow(e, url) {
           e.preventDefault(); // 既定遷移（=二重オープン）を止める
