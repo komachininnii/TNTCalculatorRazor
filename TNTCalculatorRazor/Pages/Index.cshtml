@@ -93,8 +93,7 @@
                         <div class="control">
                             <input asp-for="Weight" type="number" step="0.1" inputmode="decimal"
                                    onkeydown="submitOnEnter(event,'anthro')"
-                                   onblur="tntSubmitAnthroOnBlurIfHeightPresent(this.form);" />
-
+                                   onblur="tntSubmitOnBlurSmart(this.form);" />
                             <span class="unit">kg</span>
 
                             @if (ViewData.ModelState.TryGetValue("Weight", out var entry) && entry.Errors.Count > 0)
@@ -693,23 +692,10 @@
                 return false;
               }
             }
-            // 体重用：身長が入力されている場合のみ、blurでanthro送信
-            function tntSubmitAnthroOnBlurIfHeightPresent(form) {
-              var h = document.getElementById('Height');
-              var heightStr = (h && h.value) ? h.value.replace(/^\s+|\s+$/g, '') : '';
-
-              // 身長未入力なら submit しない（CCr入力フローを邪魔しない）
-              if (!heightStr) return;
-
-              var action = document.getElementById('Action');
-              if (action) action.value = 'anthro';
-              form.submit();
-            }
         </script>
-
        
         <script>
-             // スマートblur submit(計算後の数値修正でonblurを発生）
+             // スマートblur submit(onblur制御）
             function _trim(v) {
               return v ? v.replace(/^\s+|\s+$/g, '') : '';
             }
