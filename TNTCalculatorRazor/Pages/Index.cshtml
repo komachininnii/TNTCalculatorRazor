@@ -45,7 +45,7 @@
                 <div class="section-head">
                     <h3>基本入力</h3>
                     <div class="section-meta">
-                        （栄養:年齢･身長･体重･性別）/（推定CCr:年齢･体重･Cr･性別）
+                        （栄養：年齢･身長･体重･性別）/（推定CCr：年齢･体重･Cr･性別）
                     </div>
                 </div>
 
@@ -270,7 +270,7 @@
 
                 <div class="hr"></div>
             
-                <details>
+                <details class="fold">
                     <summary>エネルギー候補（参考）</summary>
                     <div class="small" style="margin-top:10px;">
                         <dl class="kv kv-2col-energy">
@@ -295,25 +295,50 @@
 
             <!-- 追加：右カラム先頭（スマホで先に読む3点） -->
             <div class="card summary-hero">
-                <h3>要点</h3>
+                <h3>結果（要点）</h3>
 
                 <div class="hero3">
                     <div class="hero3-item">
                         <div class="hero3-label">蛋白</div>
                         <div class="hero3-value">
-                            <strong>@(Model.ProteinDisplayText ?? "-")</strong>
-                            <span class="unit">g</span>
+                            @if (!string.IsNullOrEmpty(Model.ProteinDisplayText))
+                            {
+                                <strong>@Model.ProteinDisplayText</strong>
+                                <span class="value-tail">
+                                    <span class="unit">g</span>
+                                    @if (Model.SelectedProteinCorrection != ProteinCorrectionType.None)
+                                    {
+                                        <span class="pill mini">補正</span>
+                                    }
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="muted">-</span>
+                                <span class="unit">g</span>
+                            }
+                            
                         </div>
                     </div>
 
                     <div class="hero3-item">
                         <div class="hero3-label">水分</div>
                         <div class="hero3-value">
-                            <strong>@(Model.WaterDisplay?.ToString() ?? "-")</strong>
-                            <span class="unit">mL</span>
-                            @if (Model.WaterFeverCorrected)
+                            @if (Model.WaterDisplay.HasValue)
                             {
-                                <span class="pill mini" style="margin-left:6px;">発熱</span>
+                                <strong>@Model.WaterDisplay.Value</strong>
+                                <span class="value-tail">
+                                    <span class="unit">mL</span>
+                                    @if (Model.WaterFeverCorrected)
+                                    {
+                                        <span class="pill mini">発熱</span>
+                                    }
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="muted">-</span>
+                                <span class="unit">mL</span>
                             }
                         </div>
                     </div>
@@ -324,10 +349,10 @@
                             @if (Model.CcrCorrected.HasValue)
                             {
                                 <strong>@Model.CcrCorrected.Value.ToString("F1")</strong>
-                                <span class="ccr-tail">
-                                <span class="unit">mL/min</span>
-                                <span class="pill mini">補正</span>
-                            </span>
+                                <span class="value-tail">
+                                    <span class="unit">mL/min</span>
+                                    <span class="pill mini">補正</span>
+                                </span>
                             }
                             else if (Model.CcrActual.HasValue)
                             {
@@ -337,18 +362,19 @@
                             else
                             {
                                 <span class="muted">-</span>
+                                <span class="unit">mL/min</span>
                             }
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 以下、既存の結果（参照）カードや経腸栄養カードが続く -->
-            <details class="result-details" open>
-                <summary>結果（参照）</summary>
+            <!-- 以下、既存の結果（詳細）カードや経腸栄養カードが続く -->
+            <details class="fold result-details" open>
+                <summary>結果（詳細）</summary>
 
             <div class="card result-card">
-                <h3>結果（参考）</h3>
+                <h3>結果</h3>
 
                 <div class="two-col">
                     <div>
@@ -422,6 +448,7 @@
                             else
                             {
                                 <span class="muted">-</span>
+                                        <span class="unit">mL/min</span>
                             }
                             </dd>
                         </dl>
@@ -487,7 +514,7 @@
 
                 <div class="hr"></div>
                 
-                <details>
+                <details class="fold">
                     <summary>補足（考え方・注意点）</summary>
                     <div class="small" style="margin-top:10px;">
                         <ul style="margin:0; padding-left:18px;">
@@ -584,7 +611,7 @@
                 @if (Model.EnteralVolume.HasValue)
                 {
                     <!-- 追加：スマホで折りたたむ領域 -->
-                    <details class="enteral-details" open>
+                    <details class="fold enteral-details" open>
                         <summary>成分・割付候補</summary>
 
                     <div class="enteral-top">
@@ -608,7 +635,7 @@
 
                     <div class="enteral-bottom">
                         <h4>成分（投与量ベース）</h4>
-                        <dl class="kv kv-2col">
+                       <dl class="kv kv-2col">
                             <dt>蛋白質</dt>
                             <dd>@(Model.EnteralProtein?.ToString("F1") ?? "-") g</dd>
                             <dt>脂質</dt>
@@ -628,7 +655,7 @@
                 }
             </div>
             <div class="card">
-                <details>
+                <details class="fold">
                     <summary>デバッグ（開発中）</summary>
                     <pre class="small" style="white-space:pre-wrap;margin-top:10px;">
                     Action                : @Model.Action

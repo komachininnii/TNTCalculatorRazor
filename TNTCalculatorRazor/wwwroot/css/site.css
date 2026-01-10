@@ -237,8 +237,8 @@ details summary {
     padding: 1px 6px;
 }
 
-/* 要点欄のCCr数値が長いとき「mL/min [補正]」を1行に */
-.ccr-tail {
+/* 要点欄の単位とpillを1行に */
+.value-tail {
     white-space: nowrap;
 }
 
@@ -328,28 +328,6 @@ details summary {
     }
 }
 
-/* dt/ddペアを2列にする（経腸栄養剤成分用） */
-.kv.kv-2col {
-    display: grid;
-    grid-template-columns: 3em 1fr 3em 1fr; /* dt dd dt dd */
-    column-gap: 10px;
-    row-gap: 6px;
-}
-
-    .kv.kv-2col dt {
-        margin: 0;
-    }
-
-    .kv.kv-2col dd {
-        margin: 0;
-        min-width: 0;
-    }
-/* 狭い画面では1列に戻す */
-@media (max-width: 520px) {
-    .kv.kv-2col {
-        grid-template-columns: 8.5em 1fr;
-    }
-}
 
 /* 経腸栄養セクション：計算結果＋割付候補 */
 .enteral-top {
@@ -1072,15 +1050,15 @@ details summary {
         clear: both;
     }
 
-/* === モダンだけ grid に戻す === */
+/* === モダンだけ grid に戻す（float解除もここで行う） === */
 @supports (display: grid) {
     .kv.kv-2col {
         display: grid;
-        grid-template-columns: 3em 1fr 3em 1fr; /* ←あなたの既存設定を尊重 */
+        grid-template-columns: 3em 1fr 3em 1fr; /* PCは2列（dt dd dt dd） */
         column-gap: 10px;
         row-gap: 6px;
     }
-
+        /* IE11フォールバックの解除（重要） */
         .kv.kv-2col dt,
         .kv.kv-2col dd {
             float: none;
@@ -1091,13 +1069,9 @@ details summary {
             min-width: 0;
         }
 
-        .kv.kv-2col dt,
         .kv.kv-2col dd {
-            min-width: 0; /* ← これが無いとgrid内で変に潰れて1文字改行が起きやすい */
-        }
-
-        .kv.kv-2col dd {
-            white-space: nowrap; /* 数値＋単位を守る（まずはこれで改善することが多い） */
+            min-width: 0;
+            white-space: nowrap; /* これは残してOK。不要なら削除可 */
         }
 
         .kv.kv-2col::after {
@@ -1105,7 +1079,14 @@ details summary {
             display: none;
             clear: none;
         }
+    /* スマホは1列に戻す（これを @supports の中に置くのがポイント） */
+    @media (max-width: 520px) {
+        .kv.kv-2col {
+            grid-template-columns: 8.5em 1fr;
+        }
+    }
 }
+
 .enteral-bottom {
     margin-top: 10px;
 }
@@ -1317,4 +1298,25 @@ details summary {
         padding-left: 0 !important;
         margin-left: 0 !important;
     }
+}
+
+details.fold > summary {
+    list-style: none; /* Firefox */
+    cursor: pointer;
+}
+
+    details.fold > summary::-webkit-details-marker {
+        display: none; /* Chrome/Safari */
+    }
+
+    details.fold > summary::before {
+        content: "▶";
+        display: inline-block;
+        margin-right: 6px;
+        transform: rotate(0deg);
+        transition: transform 0.15s ease;
+    }
+
+details.fold[open] > summary::before {
+    transform: rotate(90deg);
 }
