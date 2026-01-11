@@ -26,7 +26,7 @@
 
 <form method="post">
     <input type="hidden" asp-for="Action" id="Action" />
-    <input asp-for="IsProteinCorrectionUserEdited" type="hidden" />  
+    <input asp-for="IsProteinCorrectionUserEdited" type="hidden" id="IsProteinCorrectionUserEdited" />
     <div class="layout">
  
         <!-- ========================= -->
@@ -230,7 +230,12 @@
                         <div class="control">
                             <select asp-for="SelectedProteinCorrection"
                                     asp-items="Html.GetEnumSelectList<ProteinCorrectionType>()"
-                                    onchange="document.getElementById('Action').value='protein'; this.form.submit();">
+                                    onchange="
+                                        var v = this.value;
+                                        document.getElementById('IsProteinCorrectionUserEdited').value = (v && v !== 'None') ? 'true' : 'false';
+                                        document.getElementById('Action').value = 'protein';
+                                        this.form.submit();
+                                    ">
                             </select>
                         </div>
                     </div>
@@ -734,12 +739,14 @@
                     </details>
                 }
             </div>
-            @*
+            
             <div class="card">
                 <details class="fold">
                     <summary>デバッグ（開発中）</summary>
                     <pre class="small" style="white-space:pre-wrap;margin-top:10px;">
                     Action                : @Model.Action
+                    IsProteinCorrectionUserEdited: @Model.IsProteinCorrectionUserEdited
+                    SelectedProteinCorrection: @Model.SelectedProteinCorrection
                     Age/Height/Weight     : @Model.Age / @Model.Height / @Model.Weight
                     Gender                : @Model.Gender
                     Disease               : @Model.SelectedDisease
@@ -757,7 +764,7 @@
                     </pre>
                 </details>
             </div>
-            *@
+            
         </div>
     </div>
 </form>

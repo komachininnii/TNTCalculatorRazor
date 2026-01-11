@@ -299,7 +299,15 @@ public class IndexModel : PageModel
             IsHepaticEncephalopathy = false;
             ClearModelState(nameof(IsHepaticEncephalopathy));
         }
-        
+
+        // ★ 蛋白補正：None(なし)に戻したら自動追従へ復帰させる
+        // （proteinアクションのときだけ、手動編集フラグを整合させる）
+        if (act == "protein")
+        {
+            IsProteinCorrectionUserEdited = (SelectedProteinCorrection != ProteinCorrectionType.None);
+            ClearModelState(nameof(IsProteinCorrectionUserEdited));
+        }
+
         // 3) 蛋白補正のデフォルト（年齢が入っているときだけ）
         //    - 疾患/身体入力が変わった時は、手動編集していない限りデフォルトへ追従
         //    - 肝硬変＋肝性脳症チェックONは 0.5 を強制（安全側）
