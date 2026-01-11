@@ -31,17 +31,20 @@ function tntLimitNumber(el) {
     var maxDec = parseInt(el.getAttribute('data-maxdec') || '', 10);
     var allowSign = (el.getAttribute('data-sign') === '1');
 
-    var v = (el.value || '').toString();
+    var raw = (el.value || '').toString();
+
+    // 「入力中の末尾 '.'」は保持したい（例: 12. と打った直後）
+    var keepTrailingDot = raw.endsWith('.');
 
     // 1) 先頭符号
     var sign = '';
-    if (allowSign && v.charAt(0) === '-') {
+    if (allowSign && raw.charAt(0) === '-') {
         sign = '-';
-        v = v.slice(1);
+        raw = raw.slice(1);
     }
 
     // 2) 数字と小数点以外を除去（e/E/+/- も消す）
-    v = v.replace(/[^\d.]/g, '');
+    var v = raw.replace(/[^\d.]/g, '');
 
     // 3) 小数点は最初の1個だけ残す
     var firstDot = v.indexOf('.');
@@ -49,34 +52,50 @@ function tntLimitNumber(el) {
         v = v.slice(0, firstDot + 1) + v.slice(firstDot + 1).replace(/\./g, '');
     }
 
-    // 4) 整数部/小数部に分割
+    // 4) 先頭 '.' は '0.' に正規化（連打/誤入力耐性UP）
+    if (v.startsWith('.')) {
+        v = '0' + v;
+        firstDot = v.indexOf('.');
+    }
+
+    // 5) 整数部/小数部に分割
     var parts = v.split('.');
     var intPart = parts[0] || '';
     var decPart = (parts.length > 1) ? (parts[1] || '') : '';
 
-    // 5) 先頭ゼロは「0」「0.xxx」以外は削る（任意だが入力が安定）
-    // 例: 00012 -> 12
-    intPart = intPart.replace(/^0+(?=\d)/, '');
+    // 6) 先頭ゼロ整理（0.xxx は残す）
+    // 例: 00012 -> 12, 000.5 -> 0.5
+    if (intPart !== '0') {
+        intPart = intPart.replace(/^0+(?=\d)/, '');
+    }
 
-    // 6) 桁制限
+    // 7) 桁制限
     if (!isNaN(maxInt) && maxInt > 0 && intPart.length > maxInt) {
         intPart = intPart.slice(0, maxInt);
     }
     if (!isNaN(maxDec) && maxDec >= 0) {
         if (maxDec === 0) {
             decPart = '';
+            keepTrailingDot = false; // 小数不可なら末尾ドットも捨てる
         } else if (decPart.length > maxDec) {
             decPart = decPart.slice(0, maxDec);
         }
     }
 
-    // 7) 再構成（末尾の '.' は許す：入力中のストレス軽減）
+    // 8) 再構成
     var out = sign + intPart;
-    if (firstDot !== -1) {
+    if (firstDot !== -1 || keepTrailingDot) {
+        // 小数点は入力中も保持したい
         out += '.';
         out += decPart;
     }
 
-    el.value = out;
+    // 9) 値更新（変化がある時だけ）＋caretを末尾へ
+    if (el.value !== out) {
+        el.value = out;
+        try {
+            // type=number でも多くのブラウザで効く（効かなければ無視されるだけ）
+            el.setSelectionRange(out.length, out.length);
+        } catch (e) { }
+    }
 }
-
