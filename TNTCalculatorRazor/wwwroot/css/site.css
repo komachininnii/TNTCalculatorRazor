@@ -237,9 +237,11 @@ details summary {
     padding: 1px 6px;
 }
 
-/* 要点欄の単位とpillを1行に */
+/* 要点欄の pill を“塊”として扱う */
 .value-tail {
+    display: inline-block;
     white-space: nowrap;
+    margin-left: .35em; /* 任意：数値との間隔 */
 }
 
 
@@ -424,31 +426,6 @@ details summary {
         display: block;
         clear: both;
     }
-
-/* === IE11向け：要点( hero3 ) を横並びにする（grid非対応のためflex） === */
-.hero3 {
-    display: flex;
-    flex-wrap: wrap; /* 狭ければ折り返す */
-    gap: 8px; /* IE11はgap非対応なので後で代替も書く */
-}
-
-    /* IE11は gap が効かないので代替（子に余白） */
-    .hero3 > .hero3-item {
-        margin-right: 8px;
-        margin-bottom: 8px;
-    }
-
-    /* 3つをできるだけ横並びに（余裕があれば3列、なければ2→1へ） */
-    .hero3 > .hero3-item {
-        flex: 1 1 30%;
-        min-width: 150px; /* 好みで調整（140〜180くらい） */
-    }
-
-        /* 右端の余白を抑える（任意） */
-        .hero3 > .hero3-item:last-child {
-            margin-right: 0;
-        }
-
 
 /* === モダンだけ grid に戻す（院外Edge/スマホ維持） === */
 @supports (display: grid) {
@@ -658,7 +635,114 @@ details summary {
                 font-size: 1rem;
             }
     }
+    
     /* 右カラム先頭「要点」3点レイアウト */
+    /* === 共通/IE11向け：要点( hero3 ) はflex === */
+    .hero3 {
+        display: flex;
+        flex-wrap: wrap; /* 狭ければ折り返す */
+        margin-top: 8px;
+}
+
+    /* IE11は gap 非対応なので代替（子に余白） */
+    .hero3 > .hero3-item {
+        margin-right: 8px;
+        margin-bottom: 8px;
+        flex: 1 1 30%;
+        min-width: 150px; /* 140〜180で好み */
+    }
+
+        .hero3 > .hero3-item:last-child {
+            margin-right: 0;
+        }
+
+    .hero3-label {
+        font-size: 0.78rem;
+        opacity: 0.75;
+        margin-bottom: 4px;
+        line-height: 1.1;
+    }
+
+    /* 要点ラベル内の単位（(g) (mL) (mL/min)） */
+    .label-unit {
+        font-size: 0.85em;
+        opacity: 0.8;
+        margin-left: .15em;
+        white-space: nowrap; /* (mL/min) が割れない */
+    }
+
+    .hero3-value {
+        display: flex;
+        align-items: baseline;
+        gap: 6px; /* IE11では効かないが害はない */
+        flex-wrap: wrap;
+        line-height: 1.1;
+        min-width: 0; /* ★狭い時のはみ出し保険 */
+        white-space: normal; /* ★nowrap打ち消し保険 */
+    }
+
+    .hero3-value strong {
+        font-size: 1.22em;
+        white-space: nowrap; /* ★数値は分断しない */
+    }
+
+    /*
+    .hero3 .unit {
+        font-size: 0.85em;
+        opacity: 0.8;
+        white-space: nowrap;
+    }
+    */
+
+    /* ★単位+pillを“1塊”にして、入らなければ丸ごと次行へ */
+    .value-tail {
+        display: inline-flex; /* ★塊化 */
+        align-items: baseline;
+        gap: 6px;
+        white-space: nowrap; /* 塊の中は折らない */
+        flex: 0 0 auto;
+        margin-left: .35em;
+    }
+/* === モダンだけ：gridで自動列 === */
+@supports (display: grid) {
+    .hero3 {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+        gap: 8px;
+        margin-top: 8px;
+    }
+        /* grid時は IE用 margin を無効化 */
+        .hero3 > .hero3-item {
+            margin-right: 0;
+            margin-bottom: 0;
+            min-width: 0;
+        }
+}
+
+/* かなり狭い端末だけ少し圧縮（モダンのみ適用） */
+@media (max-width: 430px) {
+    @supports (display: grid) {
+        .hero3 {
+            gap: 6px;
+        }
+
+        .hero3-label {
+            margin-bottom: 2px;
+        }
+    }
+}
+
+    /*
+    @media (max-width: 520px) {
+        @supports (display: grid) {
+            .hero3 {
+                grid-template-columns: repeat(2, minmax(0,1fr));
+            }
+        }
+    }
+    */
+    
+    /*
     .hero3 {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
@@ -690,6 +774,8 @@ details summary {
         opacity: 0.8;
         white-space: nowrap;
     }
+    */
+
     /* 結果をボタンっぽく　*/
     .result-details > summary {
         cursor: pointer;
@@ -701,6 +787,7 @@ details summary {
         .result-details > summary::-webkit-details-marker {
             display: none;
         }
+
     /* PCでは常時表示（折りたたみ不要）  */
     @media (min-width: 981px) {
         .result-details > summary {
@@ -1311,4 +1398,14 @@ details summary {
 
 .navbar-brand {
     margin-right: 16px;
+}
+
+/* スマホでは「エネルギー候補（参考）」を完全に非表示 */
+@media (max-width: 720px) {
+    details.fold.energy-candidates {
+        display: none;
+    }
+    .card-energy .hr {
+        display: none;
+    }
 }

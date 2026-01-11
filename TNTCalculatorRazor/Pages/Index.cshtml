@@ -243,7 +243,7 @@
                 </div>
             </div>
 
-            <div class="card">
+            <div class="card card-energy">
                 <h3>必要エネルギー</h3>
 
                 <div class="fields">
@@ -275,7 +275,7 @@
 
                 <div class="hr"></div>
             
-                <details class="fold">
+                <details class="fold energy-candidates">
                     <summary>エネルギー候補（参考）</summary>
                     <div class="small" style="margin-top:10px;">
                         <dl class="kv kv-2col-energy">
@@ -301,76 +301,70 @@
             <!-- 追加：右カラム先頭（スマホで先に読む3点） -->
             <div class="card summary-hero">
                 <h3>結果（要点）</h3>
-
+                
                 <div class="hero3">
+
                     <div class="hero3-item">
-                        <div class="hero3-label">蛋白</div>
+                        <div class="hero3-label">蛋白<span class="label-unit">(g)</span></div>
                         <div class="hero3-value">
                             @if (!string.IsNullOrEmpty(Model.ProteinDisplayText))
                             {
                                 <strong>@Model.ProteinDisplayText</strong>
-                                <span class="value-tail">
-                                    <span class="unit">g</span>
-                                    @if (Model.SelectedProteinCorrection != ProteinCorrectionType.None)
-                                    {
+                                @if (Model.SelectedProteinCorrection != ProteinCorrectionType.None)
+                                {
+                                    <span class="value-tail">
                                         <span class="pill mini">補正</span>
-                                    }
-                                </span>
+                                    </span>
+                                }
                             }
                             else
                             {
                                 <span class="muted">-</span>
-                                <span class="unit">g</span>
                             }
-                            
                         </div>
                     </div>
 
                     <div class="hero3-item">
-                        <div class="hero3-label">水分</div>
+                        <div class="hero3-label">水分<span class="label-unit">(mL)</span></div>
                         <div class="hero3-value">
                             @if (Model.WaterDisplay.HasValue)
                             {
                                 <strong>@Model.WaterDisplay.Value</strong>
-                                <span class="value-tail">
-                                    <span class="unit">mL</span>
-                                    @if (Model.WaterFeverCorrected)
-                                    {
+                                @if (Model.WaterFeverCorrected)
+                                {
+                                    <span class="value-tail">
                                         <span class="pill mini">発熱</span>
-                                    }
-                                </span>
+                                    </span>
+                                }
                             }
                             else
                             {
                                 <span class="muted">-</span>
-                                <span class="unit">mL</span>
                             }
                         </div>
                     </div>
 
                     <div class="hero3-item">
-                        <div class="hero3-label">推定CCr</div>
+                        <div class="hero3-label">推定CCr<span class="label-unit">(mL/min)</span></div>
                         <div class="hero3-value">
                             @if (Model.CcrCorrected.HasValue)
                             {
                                 <strong>@Model.CcrCorrected.Value.ToString("F1")</strong>
                                 <span class="value-tail">
-                                    <span class="unit">mL/min</span>
                                     <span class="pill mini">補正</span>
                                 </span>
                             }
                             else if (Model.CcrActual.HasValue)
                             {
                                 <strong>@Model.CcrActual.Value.ToString("F1")</strong>
-                                <span class="unit">mL/min</span>
                             }
                             else
                             {
                                 <span class="muted">-</span>
-                                <span class="unit">mL/min</span>
                             }
                         </div>
                     </div>
+
                 </div>
             </div>
 
@@ -739,7 +733,7 @@
                     </details>
                 }
             </div>
-            
+            @*
             <div class="card">
                 <details class="fold">
                     <summary>デバッグ（開発中）</summary>
@@ -764,7 +758,7 @@
                     </pre>
                 </details>
             </div>
-            
+            *@
         </div>
     </div>
 </form>
