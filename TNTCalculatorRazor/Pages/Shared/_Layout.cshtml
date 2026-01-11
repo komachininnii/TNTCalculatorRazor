@@ -1,4 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@using System.Reflection
+@{
+    var asm = Assembly.GetExecutingAssembly();
+    var info = asm.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+    var appVersion = string.IsNullOrWhiteSpace(info) ? "" : info.Split('+')[0];
+}
+
+<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="utf-8" />
@@ -14,10 +21,11 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/TNTCalculatorRazor.styles.css" asp-append-version="true" />
+    <script src="~/js/site.js" asp-append-version="true"></script>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 appbar-header">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-page="/Index">TNTCalculatorRazor</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -43,9 +51,44 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - TNTCalculatorRazor - <a asp-area="" asp-page="/Privacy">Privacy</a>
+    @using Microsoft.Extensions.Options
+    @using TNTCalculatorRazor.Domain.Models
+    @inject IOptions<InternalManualOptions> ManualOptions
+
+    <footer class="appbar appbar-footer text-muted" aria-label="App footer">
+        <div class="container brand">
+            <img src="~/img/TNTCalculatorSmall.png"
+                 class="brand-icon"
+                 alt="app icon"
+                 asp-append-version="true" />
+
+            <span class="brand-meta-inline">TNTCalculator Ver. @appVersion by tyama</span>
+
+            <a class="brand-link"
+               href="/Help"
+               onclick="openHelpWindow(event, this.href);">
+                公式一覧
+            </a>
+
+            @{
+                var m = ManualOptions.Value;
+                var showInternal = m.Enabled && !string.IsNullOrWhiteSpace(m.Url);
+            }
+            @if (showInternal)
+            {
+                <a class="brand-link"
+                   href="@m.Url"
+                   target="_blank"
+                   rel="noopener">
+                    院内マニュアル(EN-map)
+                </a>
+            }
+
+            <span class="footer-spacer"></span>
+
+            @*<span>&copy; 2025 - TNTCalculatorRazor - <a asp-area="" asp-page="/Privacy">Privacy</a></span>*@
+            <span class="footer-spacer"></span>
+            <a class="footer-privacy" asp-area="" asp-page="/Privacy">Privacy</a>
         </div>
     </footer>
 

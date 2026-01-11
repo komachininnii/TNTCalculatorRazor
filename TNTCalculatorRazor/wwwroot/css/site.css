@@ -1409,3 +1409,76 @@ details summary {
         display: none;
     }
 }
+/* === アプリバー：フッター部分 === */
+.appbar-footer {
+    padding: 8px 0;
+    border-top: 1px solid rgba(0,0,0,.12);
+    margin-top: 12px;
+}
+
+    .appbar-footer .brand {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 12px;
+        align-items: center;
+    }
+
+.footer-spacer {
+    flex: 1 1 auto;
+}
+
+@media (max-width: 520px) {
+    .appbar-footer .brand-meta-inline {
+        flex: 1 1 100%;
+    }
+
+    .footer-spacer {
+        display: none;
+    }
+}
+
+/* IE11(IEモード含む)対策: flex-gap非対応 + spacer暴れ対策 */
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+
+    /* gapが無いので余白はマージンで作る */
+    .appbar-footer .brand {
+        display: block; /* flexをやめて確実に折り返す */
+    }
+
+    .appbar-footer .footer-spacer {
+        display: none; /* 右寄せを無効化 */
+    }
+
+    /* 1行目：ロゴ～リンク類を横並び */
+    .appbar-footer .brand > * {
+        display: inline-block;
+        margin-right: 10px;
+        margin-bottom: 6px; /* wrap時の縦間隔 */
+        vertical-align: middle;
+    }
+
+    /* 2行目：コピーライトは必ずブロックで独立 */
+    .appbar-footer .footer-copy {
+        display: block;
+        margin: 4px 0 0 0;
+        white-space: normal;
+    }
+
+        /* footer-copy内のリンクだけは余白不要 */
+        .appbar-footer .footer-copy a {
+            margin-right: 0;
+        }
+}
+/* === アプリバー：ヘッダー部分（スマホで非表示） === */
+@media (max-width: 720px) {
+    .appbar-header {
+        display: none;
+    }
+
+    body {
+        padding-top: 0;
+    }
+}
+.footer-privacy {
+    white-space: nowrap;
+}

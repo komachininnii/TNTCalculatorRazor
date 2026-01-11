@@ -1,7 +1,7 @@
 ﻿@page
 @model IndexModel
 @using TNTCalculatorRazor.Domain.Enums
-
+@*
 <div class="appbar">
     <div class="brand">
         <img src="~/img/TNTCalculatorSmall.png" class="brand-icon" alt="app icon" asp-append-version="true" />
@@ -22,7 +22,7 @@
         }
     </div>
 </div>
-
+*@
 
 <form method="post">
     <input type="hidden" asp-for="Action" id="Action" />
@@ -844,7 +844,7 @@
         }, 0);
     }
 </script>
-
+@*
 <script>
     // ヘルプウィンドウを開く
     function openHelpWindow(e, url) {
@@ -864,7 +864,7 @@
         try { w.focus(); } catch (e) {}
     }
 </script>
-
+*@
 <!-- スマホ時：初期表示調整（details折りたたみ + 初回案内） -->
 <script>
     (function () {
