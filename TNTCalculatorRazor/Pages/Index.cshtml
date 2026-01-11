@@ -382,10 +382,16 @@
                         <dl class="kv kv-need">
                             <dt>基礎代謝量</dt>
                             <dd>
-                                <span class="bmr-value">
-                                    @(Model.BmrKcal?.ToString() ?? "-") kcal
-                                </span>
-
+                            @if (Model.BmrKcal.HasValue)
+                            {
+                                <strong>@Model.BmrKcal.Value.ToString()</strong>
+                                <span class="unit">kcal</span>
+                                }
+                                else
+                                {
+                                    <span class="muted">-</span>
+                                    <span class="unit">kcal</span>
+                                }
                                 @* pill は dd 側へ移動（IE段ズレ対策、ストレス合計と同じ構造） *@
                                 <div class="pills bmr-pills" style="margin-top:0px;">
                                     @* 算出法 pill：計算前も表示 *@
@@ -408,17 +414,60 @@
                                     }
                                 </div>
                             </dd>
+
                             <dt>BMI</dt>
-                            <dd>@(Model.BodyIndex != null ? Model.BodyIndex.Bmi.ToString("F1") : "-")</dd>
+                            <dd>
+                                @if (Model.BodyIndex != null)
+                                {
+                                    <strong>@Model.BodyIndex.Bmi.ToString("F1")</strong>
+                                }
+                                else
+                                {
+                                    <span class="muted">-</span>
+                                }
+                            </dd>
 
                             <dt>標準体重</dt>
-                            <dd>@(Model.BodyIndex?.StandardWeight.ToString("F1") ?? "-") kg</dd>
+                            <dd>
+                                @if (Model.BodyIndex != null)
+                                {
+                                    <strong>@Model.BodyIndex.StandardWeight.ToString("F1")</strong>
+                                    <span class="unit">kg</span>
+                                }
+                                else
+                                {
+                                    <span class="muted">-</span>
+                                    <span class="unit">kg</span>
+                                }
+                            </dd>
 
                             <dt>肥満度</dt>
-                            <dd>@(Model.BodyIndex?.ObesityDegree?.ToString("F0") ?? "-") %</dd>
+                            <dd>
+                                @if (Model.BodyIndex?.ObesityDegree != null)
+                                {
+                                    <strong>@Model.BodyIndex.ObesityDegree.Value.ToString("F0")</strong>
+                                    <span class="unit">%</span>
+                                }
+                                else
+                                {
+                                    <span class="muted">-</span>
+                                    <span class="unit">%</span>
+                                }
+                            </dd>
 
                             <dt>体表面積</dt>
-                            <dd>@(Model.BodySurfaceArea?.ToString("F3") ?? "-") m²</dd>
+                            <dd>
+                                @if (Model.BodySurfaceArea.HasValue)
+                                {
+                                    <strong>@Model.BodySurfaceArea.Value.ToString("F3")</strong>
+                                    <span class="unit">m²</span>
+                                }
+                                else
+                                {
+                                    <span class="muted">-</span>
+                                    <span class="unit">m²</span>
+                                }
+                            </dd>
 
                             <dt>推定CCr</dt>
                             <dd>
@@ -471,12 +520,34 @@
                                 </div>
                             </dd>
                             *@
+
                             <dt>必要エネルギー</dt>
-                            <dd><strong>@(Model.EnergyFinal?.ToString() ?? "-")</strong> kcal</dd>
+                            <dd>
+                                @if (Model.EnergyFinal.HasValue)
+                                {
+                                    <strong>@Model.EnergyFinal.Value.ToString()</strong>
+                                    <span class="unit">kcal</span>
+                                }
+                                else
+                                {
+                                    <span class="muted">-</span>
+                                    <span class="unit">kcal</span>
+                                }
+                            </dd>
 
                             <dt>蛋白</dt>
                             <dd>
-                                <strong>@(Model.ProteinDisplayText ?? "-")</strong> g
+                                @if (!string.IsNullOrEmpty(Model.ProteinDisplayText))
+                                {
+                                    <strong>@Model.ProteinDisplayText</strong>
+                                    <span class="unit">g</span>
+                                }
+                                else
+                                {
+                                    <span class="muted">-</span>
+                                    <span class="unit">g</span>
+                                }
+                            
                                 @if (Model.SelectedProteinCorrection != ProteinCorrectionType.None)
                                 {
                                     <span class="pill mini" style="margin-left:6px;">
@@ -494,11 +565,20 @@
 
                             <dt>水分</dt>
                             <dd>
-                                <strong>@(Model.WaterDisplay?.ToString() ?? "-")</strong> mL
-                                @if (Model.WaterFeverCorrected)
-                                {
-                                    <span class="pill mini" style="margin-left:6px;">発熱</span>
-                                }
+                            @if (Model.WaterDisplay.HasValue)
+                            {
+                                <strong>@Model.WaterDisplay.Value.ToString()</strong>
+                                <span class="unit">mL</span>
+                            }
+                            else
+                            {
+                                <span class="muted">-</span>
+                                <span class="unit">mL</span>
+                            }
+                            @if (Model.WaterFeverCorrected)
+                            {
+                                <span class="pill mini" style="margin-left:6px;">発熱</span>
+                            }
                             </dd>
                         </dl>
                         @if (Model.IsHemodialysis)
@@ -654,6 +734,7 @@
                     </details>
                 }
             </div>
+            @*
             <div class="card">
                 <details class="fold">
                     <summary>デバッグ（開発中）</summary>
@@ -676,208 +757,208 @@
                     </pre>
                 </details>
             </div>
+            *@
         </div>
+    </div>
+</form>
 
-        <!-- EnterでSubmit -->
-        <script>
-            // Enterで送信した直後のblurによる二重送信を防ぐフラグ
-            var tntSkipNextBlurSubmit = false;
+<!-- EnterでSubmit -->
+<script>
+    // Enterで送信した直後のblurによる二重送信を防ぐフラグ
+    var tntSkipNextBlurSubmit = false;
 
-            function tntSubmitOnBlur(e, action) {
-              if (tntSkipNextBlurSubmit) {
-                tntSkipNextBlurSubmit = false;
+    function tntSubmitOnBlur(e, action) {
+        if (tntSkipNextBlurSubmit) {
+            tntSkipNextBlurSubmit = false;
                 return false;
-              }
+        }
 
-              var actionEl = document.getElementById("Action");
-              if (actionEl) actionEl.value = action;
+        var actionEl = document.getElementById("Action");
+        if (actionEl) actionEl.value = action;
 
-              var target = (e && (e.target || e.srcElement)) || null;
-              var form = target && target.form ? target.form : document.querySelector("form");
-              if (form) form.submit();
+        var target = (e && (e.target || e.srcElement)) || null;
+        var form = target && target.form ? target.form : document.querySelector("form");
+        if (form) form.submit();
+        return false;
+    }
 
-              return false;
-            }
+    function submitOnEnter(e, action) {
+        e = e || window.event;
+        var code = e.keyCode || e.which;
 
-            function submitOnEnter(e, action) {
-              e = e || window.event;
-              var code = e.keyCode || e.which;
+        if (code === 13) {
+            if (e.preventDefault) e.preventDefault();
+            e.returnValue = false;
 
-              if (code === 13) {
-                if (e.preventDefault) e.preventDefault();
-                e.returnValue = false;
+            tntSkipNextBlurSubmit = true; // ←これが肝
 
-                tntSkipNextBlurSubmit = true; // ←これが肝
+            var actionEl = document.getElementById("Action");
+            if (actionEl) actionEl.value = action;
 
-                var actionEl = document.getElementById("Action");
-                if (actionEl) actionEl.value = action;
+            var target = e.target || e.srcElement;
+            var form = target && target.form ? target.form : document.querySelector("form");
+            if (form) form.submit();
 
-                var target = e.target || e.srcElement;
-                var form = target && target.form ? target.form : document.querySelector("form");
-                if (form) form.submit();
-
-                return false;
-              }
-            }
-        </script>
+            return false;
+        }
+    }
+</script>
        
-        <script>
-             // スマートblur submit(onblur制御）
-            function _trim(v) {
-              return v ? v.replace(/^\s+|\s+$/g, '') : '';
-            }
+<script>
+    // スマートblur submit(onblur制御）
+    function _trim(v) {
+        return v ? v.replace(/^\s+|\s+$/g, '') : '';
+    }
 
-            function tntSubmitOnBlurSmart(form) {
-              var age = document.getElementById('Age');
-              var h   = document.getElementById('Height');
-              var w   = document.getElementById('Weight');
-              var cr  = document.getElementById('SerumCreatinine');
-              var act = document.getElementById('Action');
+    function tntSubmitOnBlurSmart(form) {
+        var age = document.getElementById('Age');
+        var h   = document.getElementById('Height');
+        var w   = document.getElementById('Weight');
+        var cr  = document.getElementById('SerumCreatinine');
+        var act = document.getElementById('Action');
 
-              var heightStr = _trim(h && h.value);
-              var weightStr = _trim(w && w.value);
-              var crStr     = _trim(cr && cr.value);
+        var heightStr = _trim(h && h.value);
+        var weightStr = _trim(w && w.value);
+        var crStr     = _trim(cr && cr.value);
 
-              // どちらの計算を走らせるべきか決める（renal優先）
-              var doRenal  = (weightStr !== '' && crStr !== '');
-              var doAnthro = (weightStr !== '' && heightStr !== '');
+        // どちらの計算を走らせるべきか決める（renal優先）
+        var doRenal  = (weightStr !== '' && crStr !== '');
+        var doAnthro = (weightStr !== '' && heightStr !== '');
 
-              if (!doRenal && !doAnthro) return;
+        if (!doRenal && !doAnthro) return;
 
-              // blur直後に別inputへ移動中だと submit がキーボードを閉じるので、
-              // いったん次のfocusを待って、入力継続中なら submit しない（後続の入力欄側に任せる）
-              setTimeout(function () {
-                var ae = document.activeElement;
-                var id = ae && ae.id ? ae.id : '';
+        // blur直後に別inputへ移動中だと submit がキーボードを閉じるので、
+        // いったん次のfocusを待って、入力継続中なら submit しない（後続の入力欄側に任せる）
+        setTimeout(function () {
+            var ae = document.activeElement;
+            var id = ae && ae.id ? ae.id : '';
 
-                // 入力を続けている（別フィールドを触った）なら送信しない
-                if (id === 'Age' || id === 'Height' || id === 'Weight' || id === 'SerumCreatinine') {
-                  return;
-                }
-
-                if (act) act.value = doRenal ? 'renal' : 'anthro';
-                form.submit();
-              }, 0);
-            }
-        </script>
-
-        <script>
-            // ヘルプウィンドウを開く
-            function openHelpWindow(e, url) {
-                e.preventDefault(); // 既定遷移（=二重オープン）を止める
-
-            var name = "TNT_Help";
-            var features = "width=900,height=800,resizable=yes,scrollbars=yes";
-
-            var w = window.open(url, name, features);
-
-            // ポップアップがブロックされたら、新しいタブで開く（フォールバック）
-            if (!w) {
-                window.open(url, "_blank", "noopener");
+            // 入力を続けている（別フィールドを触った）なら送信しない
+            if (id === 'Age' || id === 'Height' || id === 'Weight' || id === 'SerumCreatinine') {
                 return;
             }
 
-            try { w.focus(); } catch (e) {}
-            }
-        </script>
+            if (act) act.value = doRenal ? 'renal' : 'anthro';
+            form.submit();
+        }, 0);
+    }
+</script>
 
-        <!-- スマホ時：初期表示調整（details折りたたみ + 初回案内） -->
-        <script>
-            (function () {
-                var isMobile = false;
+<script>
+    // ヘルプウィンドウを開く
+    function openHelpWindow(e, url) {
+        e.preventDefault(); // 既定遷移（=二重オープン）を止める
 
-                if (window.matchMedia) {
-                    isMobile = window.matchMedia("(max-width: 980px)").matches;
-                } else {
-                    var w = document.documentElement.clientWidth || document.body.clientWidth;
-                    isMobile = (w <= 980);
-                }
+        var name = "TNT_Help";
+        var features = "width=900,height=800,resizable=yes,scrollbars=yes";
 
-                if (!isMobile) return;
+        var w = window.open(url, name, features);
 
-                // detailsのopenを外す(初期で折りたたむ)
-                var list = document.querySelectorAll(".enteral-details, .result-details");
-                for (var i = 0; i < list.length; i++) {
-                    list[i].removeAttribute("open");
-                }
+        // ポップアップがブロックされたら、新しいタブで開く（フォールバック）
+        if (!w) {
+            window.open(url, "_blank", "noopener");
+            return;
+        }
 
-                // 初回だけホーム画面追加の案内を表示（×で閉じたら二度と出さない）
-                var key = "tnt_homehint_dismissed_v1";
+        try { w.focus(); } catch (e) {}
+    }
+</script>
+
+<!-- スマホ時：初期表示調整（details折りたたみ + 初回案内） -->
+<script>
+    (function () {
+        var isMobile = false;
+
+        if (window.matchMedia) {
+            isMobile = window.matchMedia("(max-width: 980px)").matches;
+        } else {
+            var w = document.documentElement.clientWidth || document.body.clientWidth;
+            isMobile = (w <= 980);
+        }
+
+        if (!isMobile) return;
+
+        // detailsのopenを外す(初期で折りたたむ)
+        var list = document.querySelectorAll(".enteral-details, .result-details");
+        for (var i = 0; i < list.length; i++) {
+            list[i].removeAttribute("open");
+        }
+
+        // 初回だけホーム画面追加の案内を表示（×で閉じたら二度と出さない）
+        var key = "tnt_homehint_dismissed_v1";
+        try {
+            if (window.localStorage && localStorage.getItem(key) === "1") return;
+        } catch (e) {}
+
+        var el = document.getElementById("homehint");
+        if (!el) return;
+
+        el.style.display = "flex";
+
+        var btn = el.querySelector(".homehint-close");
+        if (btn) {
+            btn.onclick = function () {
                 try {
-                    if (window.localStorage && localStorage.getItem(key) === "1") return;
+                    if (window.localStorage) localStorage.setItem(key, "1");
                 } catch (e) {}
 
-                var el = document.getElementById("homehint");
-                if (!el) return;
+                if (el && el.parentNode) el.parentNode.removeChild(el);
+                return false;
+            };
+        }
+    })();
+</script>
 
-                el.style.display = "flex";
+<!-- IEで<details>全開を止める：summaryクリックを自前で入れる -->
+<script>
+    (function () {
+        var test = document.createElement("details");
+        if ("open" in test) return; // 対応ブラウザは何もしない
 
-                var btn = el.querySelector(".homehint-close");
-                if (btn) {
-                    btn.onclick = function () {
-                        try {
-                            if (window.localStorage) localStorage.setItem(key, "1");
-                        } catch (e) {}
+        var details = document.getElementsByTagName("details");
 
-                    if (el && el.parentNode) el.parentNode.removeChild(el);
-                    return false;
-                    };
-                }
-            })();
-        </script>
+        for (var i = 0; i < details.length; i++) {
+            (function (d) {
+                var summary = d.getElementsByTagName("summary")[0];
+                if (!summary) return;
 
-        <!-- IEで<details>全開を止める：summaryクリックを自前で入れる -->
-        <script>
-            (function () {
-              var test = document.createElement("details");
-              if ("open" in test) return; // 対応ブラウザは何もしない
-
-              var details = document.getElementsByTagName("details");
-
-              for (var i = 0; i < details.length; i++) {
-                (function (d) {
-                  var summary = d.getElementsByTagName("summary")[0];
-                  if (!summary) return;
-
-                  function apply(open) {
+                function apply(open) {
                     if (open) d.setAttribute("open", "open");
                     else d.removeAttribute("open");
 
                     for (var j = 0; j < d.children.length; j++) {
-                      var child = d.children[j];
-                      if (child.tagName && child.tagName.toLowerCase() === "summary") continue;
-                      child.style.display = open ? "" : "none";
+                        var child = d.children[j];
+                        if (child.tagName && child.tagName.toLowerCase() === "summary") continue;
+                        child.style.display = open ? "" : "none";
                     }
-                  }
+                }
 
-                  var isOpen = d.getAttribute("open") !== null;
-                  apply(isOpen);
+                var isOpen = d.getAttribute("open") !== null;
+                apply(isOpen);
 
-                  summary.onclick = function (e) {
+                summary.onclick = function (e) {
                     if (e && e.preventDefault) e.preventDefault();
                     isOpen = !isOpen;
                     apply(isOpen);
                     return false;
-                  };
-                })(details[i]);
-              }
-            })();
-        </script>
+                };
+            })(details[i]);
+        }
+    })();
+</script>
 
-        <!-- 入力欄のblurでActionセット -->
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                var form = document.querySelector("form");
-                if (!form) return;
+<!-- 入力欄のblurでActionセット -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var form = document.querySelector("form");
+        if (!form) return;
 
-                var nodes = form.querySelectorAll("input[type='number'], input[type='text'], select");
-                for (var i = 0; i < nodes.length; i++) {
-                    nodes[i].addEventListener("blur", function () {
-                    var action = document.getElementById("Action");
-                    if (action && !action.value) action.value = "calc";
-                    });
-                }
+        var nodes = form.querySelectorAll("input[type='number'], input[type='text'], select");
+        for (var i = 0; i < nodes.length; i++) {
+            nodes[i].addEventListener("blur", function () {
+                var action = document.getElementById("Action");
+                if (action && !action.value) action.value = "calc";
             });
-        </script>
-
-</form>
+        }
+    });
+</script>
