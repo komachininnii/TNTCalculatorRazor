@@ -1,7 +1,7 @@
 ﻿@page
 @model IndexModel
 @using TNTCalculatorRazor.Domain.Enums
-@*
+@* フッターに移動
 <div class="appbar">
     <div class="brand">
         <img src="~/img/TNTCalculatorSmall.png" class="brand-icon" alt="app icon" asp-append-version="true" />
@@ -59,6 +59,8 @@
                         <div class="label">年齢</div>
                         <div class="control">
                             <input asp-for="Age" type="number" step="1" inputmode="numeric"
+                                   data-maxint="3" data-maxdec="0"
+                                   oninput="tntLimitNumber(this)"
                                    onkeydown="submitOnEnter(event,'anthro')"
                                    onblur="tntSubmitOnBlurSmart(this.form);" />
                             <span class="unit">歳</span>
@@ -75,6 +77,8 @@
                         <div class="label">身長</div>
                         <div class="control">
                             <input asp-for="Height" type="number" step="0.1" inputmode="decimal"
+                                   data-maxint="3" data-maxdec="1"
+                                   oninput="tntLimitNumber(this)"
                                    onkeydown="submitOnEnter(event,'anthro')"
                                    onblur="tntSubmitOnBlurSmart(this.form);" />
                             <span class="unit">cm</span>
@@ -92,6 +96,8 @@
                         <div class="label">体重</div>
                         <div class="control">
                             <input asp-for="Weight" type="number" step="0.1" inputmode="decimal"
+                                   data-maxint="3" data-maxdec="1"
+                                   oninput="tntLimitNumber(this)"
                                    onkeydown="submitOnEnter(event,'anthro')"
                                    onblur="tntSubmitOnBlurSmart(this.form);" />
                             <span class="unit">kg</span>
@@ -110,10 +116,11 @@
                         <div class="control">
                             <input asp-for="SerumCreatinine"
                                    type="number" step="0.01" inputmode="decimal"
+                                   data-maxint="2" data-maxdec="2"
+                                   oninput="tntLimitNumber(this)"
                                    onchange="document.getElementById('Action').value='renal'; this.form.submit();"
                                    onblur="tntSubmitOnBlur(event,'renal')"
                                    onkeydown="submitOnEnter(event,'renal')" />
-
                             <span class="unit">mg/dL</span>
                         </div>
                     </div>
@@ -262,6 +269,8 @@
                         <div class="control">
                             <input asp-for="EnergyOrderValue"
                                    type="number" step="1" inputmode="numeric"
+                                   data-maxint="4" data-maxdec="0"
+                                   oninput="tntLimitNumber(this)"
                                    onchange="document.getElementById('Action').value='energy'; this.form.submit();"
                                    onkeydown="submitOnEnter(event,'energy')" />
                             <span class="unit">kcal/day</span>
@@ -505,7 +514,7 @@
                     <div>
                         <h4>必要量</h4>
                         <dl class="kv kv-need">
-                            @*
+                            @* 悪目立ちしすぎて削除対象
                             <dt>ストレス合計</dt>
                             <dd>
                                 <div class="need-line">
@@ -678,6 +687,8 @@
                         <div class="control">
                             <input asp-for="EnteralVolumeInput"
                                    type="number" step="1" inputmode="numeric"
+                                   data-maxint="4" data-maxdec="0"
+                                   oninput="tntLimitNumber(this)"
                                    onchange="document.getElementById('Action').value='volume'; this.form.submit();"
                                    onkeydown="submitOnEnter(event,'volume')" />
                             <span class="unit">mL</span>
@@ -844,7 +855,8 @@
         }, 0);
     }
 </script>
-@*
+
+@* site.jsに移動
 <script>
     // ヘルプウィンドウを開く
     function openHelpWindow(e, url) {
@@ -865,6 +877,7 @@
     }
 </script>
 *@
+
 <!-- スマホ時：初期表示調整（details折りたたみ + 初回案内） -->
 <script>
     (function () {
