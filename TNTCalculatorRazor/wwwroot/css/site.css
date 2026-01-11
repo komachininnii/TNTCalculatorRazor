@@ -1409,7 +1409,18 @@ details summary {
         display: none;
     }
 }
-/* === アプリバー：フッター部分 === */
+/* スマホ時はヘッダーを消す */
+@media (max-width: 720px) {
+    .appbar-header {
+        display: none;
+    }
+
+    body {
+        padding-top: 0;
+    }
+}
+
+/* フッター設定 */
 .appbar-footer {
     padding: 8px 0;
     border-top: 1px solid rgba(0,0,0,.12);
@@ -1427,15 +1438,42 @@ details summary {
     flex: 1 1 auto;
 }
 
+/* スマホ表示時のフッター設定 */
 @media (max-width: 520px) {
+    
+    .appbar-footer .brand {
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        gap: 6px 10px;
+        min-width: 0; /* ←保険 */
+    }
+    /* ここで100%幅を取らせない（＝強制改行をやめる） */
     .appbar-footer .brand-meta-inline {
-        flex: 1 1 100%;
+        flex: 0 1 auto; /* ←重要 */
+        min-width: 0; /* ←省略すると一部環境で謎はみ出し */
+        white-space: nowrap;
     }
 
+    /* 余白がある限り1行に粘る */
+    .appbar-footer .brand {
+        flex-wrap: nowrap; /* ←重要 */
+        justify-content: space-between;
+        gap: 6px 10px; /* 少し詰める（任意） */
+    }
+
+    /* 右寄せのため spacer は消さない（Edgeでは有効活用できる） */
     .footer-spacer {
-        display: none;
+        display: block;
+        flex: 1 1 auto;
+    }
+
+    /* リンクは折り返さない（すでにprivacyはnowrap済み） */
+    .appbar-footer .brand-link,
+    .footer-privacy {
+        white-space: nowrap;
     }
 }
+
 
 /* IE11(IEモード含む)対策: flex-gap非対応 + spacer暴れ対策 */
 @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
@@ -1469,16 +1507,18 @@ details summary {
             margin-right: 0;
         }
 }
-/* === アプリバー：ヘッダー部分（スマホで非表示） === */
-@media (max-width: 720px) {
-    .appbar-header {
-        display: none;
-    }
 
-    body {
-        padding-top: 0;
-    }
-}
+/* フッターのプライバシーポリシーリンクを折り返さない */
 .footer-privacy {
     white-space: nowrap;
 }
+
+/*スマホでバージョン情報を非表示にする場合 */
+/* スマホでバージョン情報と「〜による」を非表示に */
+/*
+@media (max-width: 720px) {
+    .brand-ver, .brand-by {
+        display: none;
+    }
+}
+*/   
