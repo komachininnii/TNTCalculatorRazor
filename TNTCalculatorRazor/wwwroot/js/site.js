@@ -339,6 +339,8 @@ function tntLimitNumber(el) {
         tntInitMobileDetailsAndHint();
         // 2) 次に IE11なら “現在のopen属性状態” を表示に反映し、summaryで開閉できるようにする
         tntInitDetailsPolyfillForIE();
+        // 3) 最後に tnt-ready クラスを追加（CSSで非表示解除に使う）
+        document.documentElement.className += " tnt-ready";
     });
 
 })();

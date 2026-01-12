@@ -1521,4 +1521,12 @@ details summary {
         display: none;
     }
 }
-*/   
+*/
+
+/* スマホ：result-details / enteral-details の “一瞬openで描画” を隠してからJSで表示 */
+@media (max-width: 980px) {
+    html:not(.tnt-ready) details.result-details,
+    html:not(.tnt-ready) details.enteral-details {
+        visibility: hidden;
+    }
+}
