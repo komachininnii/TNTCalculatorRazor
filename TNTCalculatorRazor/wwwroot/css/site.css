@@ -1475,38 +1475,58 @@ details summary {
 }
 
 
-/* IE11(IEモード含む)対策: flex-gap非対応 + spacer暴れ対策 */
+/* IE11(IEモード含む)対策: フッター */
 @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
 
-    /* gapが無いので余白はマージンで作る */
-    .appbar-footer .brand {
-        display: block; /* flexをやめて確実に折り返す */
+    .appbar-footer {
+        overflow-x: hidden; /* 横スクロール封じ込め */
     }
 
-    .appbar-footer .footer-spacer {
-        display: none; /* 右寄せを無効化 */
-    }
-
-    /* 1行目：ロゴ～リンク類を横並び */
-    .appbar-footer .brand > * {
-        display: inline-block;
-        margin-right: 10px;
-        margin-bottom: 6px; /* wrap時の縦間隔 */
-        vertical-align: middle;
-    }
-
-    /* 2行目：コピーライトは必ずブロックで独立 */
-    .appbar-footer .footer-copy {
-        display: block;
-        margin: 4px 0 0 0;
-        white-space: normal;
-    }
-
-        /* footer-copy内のリンクだけは余白不要 */
-        .appbar-footer .footer-copy a {
-            margin-right: 0;
+        .appbar-footer .brand {
+            display: block; /* flexをやめて確実に折り返す */
+            box-sizing: border-box;
+            max-width: 100%;
         }
+
+        .appbar-footer .footer-spacer {
+            display: none;
+        }
+
+        /* 1行目：ロゴ～リンク類を横並び */
+        .appbar-footer .brand > * {
+            display: inline-block;
+            margin-right: 10px;
+            margin-bottom: 6px;
+            vertical-align: middle;
+        }
+
+            .appbar-footer .brand > *:last-child {
+                margin-right: 0;
+            }
+
+        /* 画像保険 */
+        .appbar-footer img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* アイコンの左余白（今回の目的） */
+        .appbar-footer .brand-icon {
+            margin-left: 8px;
+        }
+
+        /* 2行目：コピーライト */
+        .appbar-footer .footer-copy {
+            display: block;
+            margin: 4px 0 0 0;
+            white-space: normal;
+        }
+
+            .appbar-footer .footer-copy a {
+                margin-right: 0;
+            }
 }
+
 
 /* フッターのプライバシーポリシーリンクを折り返さない */
 .footer-privacy {
