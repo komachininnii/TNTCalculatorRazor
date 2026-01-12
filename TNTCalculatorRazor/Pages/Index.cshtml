@@ -24,7 +24,7 @@
 </div>
 *@
 
-<form method="post">
+<form method="post" data-tnt-form>
     <input type="hidden" asp-for="Action" id="Action" />
     <input asp-for="IsProteinCorrectionUserEdited" type="hidden" id="IsProteinCorrectionUserEdited" />
     <div class="layout">
@@ -60,9 +60,8 @@
                         <div class="control">
                             <input asp-for="Age" type="number" step="1" inputmode="numeric"
                                    data-maxint="3" data-maxdec="0"
-                                   oninput="tntLimitNumber(this)"
-                                   onkeydown="submitOnEnter(event,'anthro')"
-                                   onblur="tntSubmitOnBlurSmart(this.form);" />
+                                   data-enter-action="anthro"
+                                   data-smart-blur="1" />
                             <span class="unit">歳</span>
                             @if (ViewData.ModelState.TryGetValue("Age", out var entryAge) && entryAge.Errors.Count > 0)
                             {
@@ -78,9 +77,8 @@
                         <div class="control">
                             <input asp-for="Height" type="number" step="0.1" inputmode="decimal"
                                    data-maxint="3" data-maxdec="1"
-                                   oninput="tntLimitNumber(this)"
-                                   onkeydown="submitOnEnter(event,'anthro')"
-                                   onblur="tntSubmitOnBlurSmart(this.form);" />
+                                   data-enter-action="anthro"
+                                   data-smart-blur="1" />
                             <span class="unit">cm</span>
 
                             @if (ViewData.ModelState.TryGetValue("Height", out var entryHeight) && entryHeight.Errors.Count > 0)
@@ -97,9 +95,8 @@
                         <div class="control">
                             <input asp-for="Weight" type="number" step="0.1" inputmode="decimal"
                                    data-maxint="3" data-maxdec="1"
-                                   oninput="tntLimitNumber(this)"
-                                   onkeydown="submitOnEnter(event,'anthro')"
-                                   onblur="tntSubmitOnBlurSmart(this.form);" />
+                                   data-enter-action="anthro"
+                                   data-smart-blur="1" />
                             <span class="unit">kg</span>
 
                             @if (ViewData.ModelState.TryGetValue("Weight", out var entry) && entry.Errors.Count > 0)
@@ -117,10 +114,9 @@
                             <input asp-for="SerumCreatinine"
                                    type="number" step="0.01" inputmode="decimal"
                                    data-maxint="2" data-maxdec="2"
-                                   oninput="tntLimitNumber(this)"
-                                   onchange="document.getElementById('Action').value='renal'; this.form.submit();"
-                                   onblur="tntSubmitOnBlur(event,'renal')"
-                                   onkeydown="submitOnEnter(event,'renal')" />
+                                   data-change-action="renal"
+                                   data-enter-action="renal"
+                                   data-smart-blur="1" />
                             <span class="unit">mg/dL</span>
                         </div>
                     </div>
@@ -270,9 +266,8 @@
                             <input asp-for="EnergyOrderValue"
                                    type="number" step="1" inputmode="numeric"
                                    data-maxint="4" data-maxdec="0"
-                                   oninput="tntLimitNumber(this)"
-                                   onchange="document.getElementById('Action').value='energy'; this.form.submit();"
-                                   onkeydown="submitOnEnter(event,'energy')" />
+                                   data-change-action="energy"
+                                   data-enter-action="energy" />
                             <span class="unit">kcal/day</span>
                             @if (Model.IsEnergyUserEdited)
                             {
@@ -688,9 +683,8 @@
                             <input asp-for="EnteralVolumeInput"
                                    type="number" step="1" inputmode="numeric"
                                    data-maxint="4" data-maxdec="0"
-                                   oninput="tntLimitNumber(this)"
-                                   onchange="document.getElementById('Action').value='volume'; this.form.submit();"
-                                   onkeydown="submitOnEnter(event,'volume')" />
+                                   data-change-action="volume"
+                                   data-enter-action="volume" />
                             <span class="unit">mL</span>
                             <span class="muted small">※手入力可(kcal同期)</span>
                         </div>
@@ -774,6 +768,8 @@
     </div>
 </form>
 
+
+@* site.jsに移動
 <!-- EnterでSubmit -->
 <script>
     // Enterで送信した直後のblurによる二重送信を防ぐフラグ
@@ -856,7 +852,6 @@
     }
 </script>
 
-@* site.jsに移動
 <script>
     // ヘルプウィンドウを開く
     function openHelpWindow(e, url) {
@@ -876,8 +871,8 @@
         try { w.focus(); } catch (e) {}
     }
 </script>
-*@
 
+@*
 <!-- スマホ時：初期表示調整（details折りたたみ + 初回案内） -->
 <script>
     (function () {
@@ -976,3 +971,4 @@
         }
     });
 </script>
+*@

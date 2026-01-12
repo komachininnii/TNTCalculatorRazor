@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/TNTCalculatorRazor.styles.css" asp-append-version="true" />
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <!-- <script src="~/js/site.js" asp-append-version="true"></script> ★二重読み込みのため削除 -->
 </head>
 <body>
     <header>
@@ -64,15 +64,14 @@
 
             @*<span class="brand-meta-inline">TNTCalculator Ver. @appVersion by tyama</span>*@
             <span class="brand-meta-inline">
-                    <span class="brand-name">TNTCalculator</span>
-                    <span class="brand-ver">Ver. @appVersion</span>
-                    <span class="brand-by">by tyama</span>
-                </span>
+                <span class="brand-name">TNTCalculator</span>
+                <span class="brand-ver">Ver. @appVersion</span>
+                <span class="brand-by">by tyama</span>
             </span>
 
             <a class="brand-link"
                href="/Help"
-               onclick="openHelpWindow(event, this.href);">
+               data-help-window>
                 公式一覧
             </a>
 
