@@ -139,19 +139,7 @@ body {
     background: #fafafa;
 }
 
-/* 右カラムを少し見やすく */
-/* ★二重定義のためコメントアウト
-.summary {
-    position: sticky;
-    top: 12px;
-}
 
-@media (max-width: 980px) {
-    .summary {
-        position: static;
-    }
-}
-*/
 details > summary {
     cursor: pointer;
 }
@@ -683,14 +671,7 @@ details summary {
         white-space: nowrap; /* ★数値は分断しない */
     }
 
-    /*
-    .hero3 .unit {
-        font-size: 0.85em;
-        opacity: 0.8;
-        white-space: nowrap;
-    }
-    */
-
+    
     /* ★単位+pillを“1塊”にして、入らなければ丸ごと次行へ */
     .value-tail {
         display: inline-flex; /* ★塊化 */
@@ -729,49 +710,6 @@ details summary {
     }
 }
 
-    /*
-    @media (max-width: 520px) {
-        @supports (display: grid) {
-            .hero3 {
-                grid-template-columns: repeat(2, minmax(0,1fr));
-            }
-        }
-    }
-    */
-    
-    /*
-    .hero3 {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 8px;
-        margin-top: 8px;
-    }
-
-    .hero3-label {
-        font-size: 0.78rem;
-        opacity: 0.75;
-        margin-bottom: 4px;
-        line-height: 1.1;
-    }
-
-    .hero3-value {
-        display: flex;
-        align-items: baseline;
-        gap: 6px;
-        flex-wrap: wrap;
-        line-height: 1.1;
-    }
-
-        .hero3-value strong {
-            font-size: 1.22em;
-        }
-
-    .hero3 .unit {
-        font-size: 0.85em;
-        opacity: 0.8;
-        white-space: nowrap;
-    }
-    */
 
     /* 結果をボタンっぽく　*/
     .result-details > summary {
@@ -1247,7 +1185,7 @@ details summary {
         }
     }
     /* =========================
-   IE用：カード間の仕切り
+    IE用：カード間の仕切り
    （モダン側は @supports で無効化）
    ========================= */
     /* デバッグ用 outline が残っていたら消す */
