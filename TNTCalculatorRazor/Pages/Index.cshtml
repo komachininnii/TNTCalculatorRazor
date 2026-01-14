@@ -1,28 +1,6 @@
 ﻿@page
 @model IndexModel
 @using TNTCalculatorRazor.Domain.Enums
-@* フッターに移動
-<div class="appbar">
-    <div class="brand">
-        <img src="~/img/TNTCalculatorSmall.png" class="brand-icon" alt="app icon" asp-append-version="true" />
-        <span class="brand-meta-inline">TNTCalculator Ver. @(Model.AppVersion) by tyama</span>
-        <a class="brand-link"
-           href="/Help"
-           onclick="openHelpWindow(event, this.href);">
-            公式一覧
-        </a>
-        @if (Model.ShowInternalManualLink && !string.IsNullOrEmpty(Model.InternalManualUrl))
-        {
-            <a class="brand-link"
-               href="@Model.InternalManualUrl"
-               target="_blank"
-               rel="noopener">
-                院内マニュアル(EN-map)
-            </a>
-        }
-    </div>
-</div>
-*@
 
 <form asp-action="Index" method="post" data-tnt-form="main">
     
@@ -736,7 +714,10 @@
                     </details>
                 }
             </div>
-            @*
+
+            @{
+            #if DEBUG
+            }
             <div class="card">
                 <details class="fold">
                     <summary>デバッグ（開発中）</summary>
@@ -761,7 +742,10 @@
                     </pre>
                 </details>
             </div>
-            *@
+           @{
+            #endif
+            }
+
         </div>
     </div>
 </form>

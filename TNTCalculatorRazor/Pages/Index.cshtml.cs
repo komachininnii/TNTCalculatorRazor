@@ -50,7 +50,7 @@ public class IndexModel : PageModel
     public string? InternalManualUrl { get; private set; }
     
     // デバッグ用：体重算出内訳表示
-    //public string DebugWeightLine { get; private set; } = "";
+    public string DebugWeightLine { get; private set; } = "";
 
 
     //==============================
@@ -459,7 +459,9 @@ public class IndexModel : PageModel
         // BMRで用いる体重（値）
         BmrWeightUsed = CorrectedWeight.Value;
 
-        /* デバッグ用
+
+        // デバッグ用
+#if DEBUG
         DebugWeightLine =
          $"ObesityDegree={od}  " +
          $"Basis={BmrWeightBasis}  " +
@@ -467,7 +469,9 @@ public class IndexModel : PageModel
          $"Std={BodyIndex?.StandardWeight:0.0}  " +
          $"Adj={AdjustedWeight:0.0}  " +
          $"Corr={CorrectedWeight:0.0}";
-        */
+#else
+        DebugWeightLine = "";
+#endif  
 
         // 表示用エネルギー候補（整数）
         BmrKcal = (int)Math.Round(BmrResult.RawValue, MidpointRounding.AwayFromZero);
