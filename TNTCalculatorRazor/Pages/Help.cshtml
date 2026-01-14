@@ -3,10 +3,25 @@
 @{
     Layout = null;
 }
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Help</title>
 
-<div class="help-content small">
-    <!-- ここに Help.html の body の中身を貼る -->
-    <!-- 画像は /help/img/xxx.jpg か img/xxx.jpg に合わせる -->
+    @* もしBootstrapやsite.cssのスタイルを効かせたいならこれも（任意） *@
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        .help-content img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="help-content">
+        <!-- ここに Help.html の body の中身を貼る -->
         <p>
             <strong>●公式一覧</strong>
         </p>
@@ -111,3 +126,5 @@
             CCr(女)＝CCr(男)×0.85
         </p>
 </div>
+</body>
+</html>

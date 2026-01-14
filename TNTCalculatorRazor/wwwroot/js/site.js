@@ -5,21 +5,28 @@
 
 // ヘルプウィンドウを開く
 function openHelpWindow(e, url) {
-    e.preventDefault(); // 既定遷移（=二重オープン）を止める
+    e.preventDefault();  // 既定遷移（=二重オープン）を止める
 
     var name = "TNT_Help";
-    var features = "width=900,height=800,resizable=yes,scrollbars=yes";
+    var w = null;
 
-    var w = window.open(url, name, features);
+    // スマホ/狭幅では features を付けずに開く（縮小されにくい）
+    var vw = (window.innerWidth || document.documentElement.clientWidth || 0);
+    if (vw && vw <= 720) {
+        w = window.open(url, name); // featuresなし
+    } else {
+        var features = "width=760,height=800,resizable=yes,scrollbars=yes";
+        w = window.open(url, name, features);
+    }
 
     // ポップアップがブロックされたら、新しいタブで開く（フォールバック）
     if (!w) {
         window.open(url, "_blank", "noopener");
         return;
     }
-
     try { w.focus(); } catch (e) { }
 }
+
 
 // data-help-window をクリックしたら openHelpWindow で開く（フッター/本文どこでもOK）
 document.addEventListener("click", function (e) {
@@ -38,6 +45,43 @@ document.addEventListener("click", function (e) {
 
     openHelpWindow(e, url);
 });
+
+// Privacyウィンドウを開く（ヘルプと同様）
+function openPrivacyWindow(e, url) {
+    e.preventDefault();
+
+    var name = "TNT_Privacy";
+    var features = "width=760,height=800,resizable=yes,scrollbars=yes";
+
+    var w = window.open(url, name, features);
+
+    // ポップアップがブロックされたら、新しいタブで開く（フォールバック）
+    if (!w) {
+        window.open(url, "_blank", "noopener");
+        return;
+    }
+
+    try { w.focus(); } catch (e) { }
+}
+
+// data-privacy-window をクリックしたら openPrivacyWindow で開く
+document.addEventListener("click", function (e) {
+    e = e || window.event;
+    var t = e.target || e.srcElement;
+
+    // 親を辿って data-privacy-window を探す（IE11対応：closest不使用）
+    while (t && t !== document) {
+        if (t.getAttribute && t.getAttribute("data-privacy-window") !== null) break;
+        t = t.parentNode;
+    }
+    if (!t || t === document) return;
+
+    var url = t.getAttribute("href");
+    if (!url) return;
+
+    openPrivacyWindow(e, url);
+});
+
 
 
 // 数値入力を「桁数/小数桁」で物理的に制限する（IE11対応版）
