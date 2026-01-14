@@ -1469,7 +1469,7 @@ details summary {
 }
 
 /*スマホでバージョン情報を非表示にする場合 */
-/* スマホでバージョン情報と「〜による」を非表示に */
+/* スマホでバージョン情報と「by tyama」を非表示に */
 /*
 @media (max-width: 720px) {
     .brand-ver, .brand-by {
