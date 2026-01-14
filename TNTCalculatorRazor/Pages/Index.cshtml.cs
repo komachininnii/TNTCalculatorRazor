@@ -12,10 +12,8 @@ using TNTCalculatorRazor.Domain.Tables;
 using Microsoft.Extensions.Options;
 using TNTCalculatorRazor.Domain.Models;
 
-
 public class IndexModel : PageModel
 {
-
     public string AppVersion
     {
         get
@@ -52,7 +50,7 @@ public class IndexModel : PageModel
     public string? InternalManualUrl { get; private set; }
     
     // デバッグ用：体重算出内訳表示
-    public string DebugWeightLine { get; private set; } = "";
+    //public string DebugWeightLine { get; private set; } = "";
 
 
     //==============================
@@ -435,14 +433,7 @@ public class IndexModel : PageModel
         BodyIndex = BodyIndexCalculator.Calculate(Age.Value, Height.Value, Weight.Value, Gender);
         BodySurfaceArea = BodySurfaceAreaCalculator.Calculate(Height.Value, Weight.Value);
 
-        /*
-        BmrWeightFinal = AdjustedWeightCalculator.Calculate(
-            Age.Value,
-            Weight.Value,
-            BodyIndex.StandardWeight,
-            BodyIndex.ObesityDegree ?? 0);
-        */
-
+       
         // ※ BodyIndex が計算済みである前提
         double obesityDegree = BodyIndex?.ObesityDegree ?? 0;
         var od = BodyIndex.ObesityDegree ?? 0;
@@ -468,6 +459,7 @@ public class IndexModel : PageModel
         // BMRで用いる体重（値）
         BmrWeightUsed = CorrectedWeight.Value;
 
+        /* デバッグ用
         DebugWeightLine =
          $"ObesityDegree={od}  " +
          $"Basis={BmrWeightBasis}  " +
@@ -475,12 +467,6 @@ public class IndexModel : PageModel
          $"Std={BodyIndex?.StandardWeight:0.0}  " +
          $"Adj={AdjustedWeight:0.0}  " +
          $"Corr={CorrectedWeight:0.0}";
-
-
-        /*
-        // BMRで用いる体重（どれを採用したか）
-        BmrWeightBasis = AdjustedWeightCalculator.GetBasis(Age.Value, BodyIndex.ObesityDegree ?? 0);
-        BmrWeightUsed = BmrWeightFinal.Value;
         */
 
         // 表示用エネルギー候補（整数）

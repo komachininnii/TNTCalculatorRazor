@@ -111,22 +111,19 @@ function tntLimitNumber(el) {
     }
 }
 
+
+// ==== フォーム自動送信共通処理：数値制限、Enter送信、change送信、blur送信 ====
 (function () {
     "use strict";
 
-    // Enter直後のblur二重送信を防ぐ（現状Index.cshtmlと同じ目的）
+    // Enter直後のblur二重送信を防ぐ
     var tntSkipNextBlurSubmit = false;
 
     function getForm(target) {
         return (target && target.form) || document.querySelector("form[data-tnt-form]") || document.querySelector("form");
     }
 
-    function setAction(action) {
-        var el = document.getElementById("Action");
-        if (el) el.value = action;
-    }
-
-    // 多重送信ガード（blur連打や change+blur 連続など）
+    // 多重送信ガード
     function submitGuarded(form) {
         if (!form) return;
         if (form.__tntSubmitting) return;
@@ -137,14 +134,12 @@ function tntLimitNumber(el) {
 
     function trim(v) { return v ? v.replace(/^\s+|\s+$/g, "") : ""; }
 
-    // ==== 1) oninput不要：data-maxint/maxdec が付いてる要素に tntLimitNumber を自動適用 ====
+    // ==== 1) 数値制限：data-maxint/maxdec属性を持つ要素にtntLimitNumberを適用 ====
     document.addEventListener("input", function (e) {
         e = e || window.event;
         var t = e.target || e.srcElement;
         if (!t || !t.getAttribute) return;
         if (!t.getAttribute("data-maxint") && !t.getAttribute("data-maxdec")) return;
-
-        // 既存の tntLimitNumber をそのまま利用
         tntLimitNumber(t);
     });
 
@@ -157,7 +152,6 @@ function tntLimitNumber(el) {
         var action = t.getAttribute("data-enter-action");
         if (!action) return;
 
-        // input以外は無視（textarea/select等でEnterを奪わない）
         var tag = (t.tagName || "").toLowerCase();
         if (tag !== "input") return;
 
@@ -169,13 +163,16 @@ function tntLimitNumber(el) {
 
         tntSkipNextBlurSubmit = true;
 
-        setAction(action);
-        submitGuarded(getForm(t));
+        var form = getForm(t);
+        if (form) {
+            var actionField = form.querySelector('input[name="Action"]');
+            if (actionField) actionField.value = action;
+            submitGuarded(form);
+        }
         return false;
     });
 
-
-    // ==== 3) change送信：data-change-action（energy/volume/renal等）====
+    // ==== 3) change送信：data-change-action（全てのselectやcheckbox対象）====
     document.addEventListener("change", function (e) {
         var t = e.target || e.srcElement;
         if (!t || !t.getAttribute) return;
@@ -183,11 +180,24 @@ function tntLimitNumber(el) {
         var action = t.getAttribute("data-change-action");
         if (!action) return;
 
-        setAction(action);
-        submitGuarded(getForm(t));
+        var form = getForm(t);
+        if (!form) return;
+
+        // ★蛋白補正セレクトは特殊処理
+        if (t.name === "SelectedProteinCorrection") {
+            var flag = form.querySelector('input[name="IsProteinCorrectionUserEdited"]');
+            if (flag) {
+                flag.value = (t.value && t.value !== "None") ? "true" : "false";
+            }
+        }
+
+        var actionField = form.querySelector('input[name="Action"]');
+        if (actionField) actionField.value = action;
+
+        submitGuarded(form);
     });
 
-    // ==== 4) blur送信：smart blur か、単純blur(action固定)のどちらか ====
+    // ==== 4) blur送信：smart blur または data-blur-action ====
     function smartBlurSubmit(form) {
         if (tntSkipNextBlurSubmit) {
             tntSkipNextBlurSubmit = false;
@@ -197,7 +207,7 @@ function tntLimitNumber(el) {
         var h = document.getElementById("Height");
         var w = document.getElementById("Weight");
         var cr = document.getElementById("SerumCreatinine");
-        var act = document.getElementById("Action");
+        var actField = form ? form.querySelector('input[name="Action"]') : null;
 
         var heightStr = trim(h && h.value);
         var weightStr = trim(w && w.value);
@@ -208,14 +218,14 @@ function tntLimitNumber(el) {
 
         if (!doRenal && !doAnthro) return;
 
-        // 入力継続中なら送信しない（現状の tntSubmitOnBlurSmart と同じ）
+        // 入力継続中なら送信しない
         window.setTimeout(function () {
             var ae = document.activeElement;
             var id = (ae && ae.id) ? ae.id : "";
 
             if (id === "Age" || id === "Height" || id === "Weight" || id === "SerumCreatinine") return;
 
-            if (act) act.value = doRenal ? "renal" : "anthro";
+            if (actField) actField.value = doRenal ? "renal" : "anthro";
             submitGuarded(form);
         }, 0);
     }
@@ -225,29 +235,34 @@ function tntLimitNumber(el) {
         var t = e.target || e.srcElement;
         if (!t || !t.getAttribute) return;
 
-        // 4-A) smart blur 対象
+        var form = getForm(t);
+        if (!form) return;
+
+        // 4-A) smart blur
         if (t.getAttribute("data-smart-blur") === "1") {
-            smartBlurSubmit(getForm(t));
+            smartBlurSubmit(form);
             return;
         }
 
-        // 4-B) 単純 blur(action固定) を使いたい場合（必要ならHTMLに data-blur-action を付ける）
+        // 4-B) 単純 blur
         var blurAction = t.getAttribute("data-blur-action");
+        var actField = form.querySelector('input[name="Action"]');
+
         if (blurAction) {
             if (tntSkipNextBlurSubmit) {
                 tntSkipNextBlurSubmit = false;
                 return;
             }
-            setAction(blurAction);
-            submitGuarded(getForm(t));
+            if (actField) actField.value = blurAction;
+            submitGuarded(form);
         } else {
-            // 既存仕様：blur時、Actionが空ならcalcセットだけ（送信しない）
-            var act = document.getElementById("Action");
-            if (act && !act.value) act.value = "calc";
+            if (actField && !actField.value) actField.value = "calc";
         }
     });
 
 })();
+
+
 
 // ==== details要素のIE11対応と、モバイルでの初期折りたたみ＋ホーム画面追加案内 ====
 (function () {

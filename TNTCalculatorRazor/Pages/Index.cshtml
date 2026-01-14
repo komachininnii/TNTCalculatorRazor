@@ -24,9 +24,11 @@
 </div>
 *@
 
-<form method="post" data-tnt-form>
+<form asp-action="Index" method="post" data-tnt-form="main">
+    
     <input type="hidden" asp-for="Action" id="Action" />
     <input asp-for="IsProteinCorrectionUserEdited" type="hidden" id="IsProteinCorrectionUserEdited" />
+    
     <div class="layout">
  
         <!-- ========================= -->
@@ -127,7 +129,7 @@
                             <div class="inline-controls">
                                 <select asp-for="Gender"
                                         asp-items="Html.GetEnumSelectList<GenderType>()"
-                                        onchange="document.getElementById('Action').value='anthro'; this.form.submit();">
+                                        data-change-action="anthro">
                                 </select>
 
                                 @{
@@ -143,7 +145,8 @@
                                     <label class="inline-check"
                                            title="妊娠かつ肥満度120%以上では、水分計算に調整体重を使用します。">
                                         <input asp-for="IsPregnant"
-                                               onchange="document.getElementById('Action').value='anthro'; this.form.submit();" />
+                                               type="checkbox"
+                                               data-change-action="anthro" />
                                         妊娠
                                     </label>
                                 }
@@ -161,7 +164,7 @@
                         <div class="control">
                             <select asp-for="SelectedDisease"
                                     asp-items="Html.GetEnumSelectList<DiseaseType>()"
-                                    onchange="document.getElementById('Action').value='disease'; this.form.submit();">
+                                    data-change-action="disease">
                             </select>
                         </div>
                     </div>
@@ -175,7 +178,7 @@
                         <div class="control">
                             <select asp-for="ActivityFactor"
                                     asp-items="Html.GetEnumSelectList<ActivityFactorType>()"
-                                    onchange="document.getElementById('Action').value='factors'; this.form.submit();">
+                                    data-change-action="factors">
                             </select>
                         </div>
                     </div>
@@ -185,7 +188,7 @@
                             <select asp-for="StressFactor"
                                     class="sel-wide"
                                     asp-items="Html.GetEnumSelectList<StressFactorType>()"
-                                    onchange="document.getElementById('Action').value='factors'; this.form.submit();">
+                                    data-change-action="factors">
                             </select>
                         </div>
                     </div>
@@ -196,7 +199,7 @@
                             <select asp-for="SelectedBodyTemperature"
                                     class="sel-wide"
                                     asp-items="Html.GetEnumSelectList<BodyTemperatureLevel>()"
-                                    onchange="document.getElementById('Action').value='factors'; this.form.submit();">
+                                    data-change-action="factors">
                             </select>
                         </div>
                     </div>
@@ -207,7 +210,7 @@
                             <select asp-for="SelectedPressureUlcer"
                                     class="sel-wide"
                                     asp-items="Html.GetEnumSelectList<PressureUlcerLevel>()"
-                                    onchange="document.getElementById('Action').value='factors'; this.form.submit();">
+                                    data-change-action="factors">
                             </select>
                         </div>
                     </div>
@@ -220,7 +223,7 @@
                                 <label style="display:flex;gap:8px;align-items:center;">
                                     <input asp-for="IsHepaticEncephalopathy"
                                            type="checkbox"
-                                           onchange="document.getElementById('Action').value='hepatic'; this.form.submit();" />
+                                           data-change-action="hepatic" />
                                     あり（蛋白不耐）
                                 </label>
                                 <span class="muted small">※ ONで蛋白補正 0.5 + 肝不全用アミノ酸製剤を検討</span>
@@ -233,12 +236,7 @@
                         <div class="control">
                             <select asp-for="SelectedProteinCorrection"
                                     asp-items="Html.GetEnumSelectList<ProteinCorrectionType>()"
-                                    onchange="
-                                        var v = this.value;
-                                        document.getElementById('IsProteinCorrectionUserEdited').value = (v && v !== 'None') ? 'true' : 'false';
-                                        document.getElementById('Action').value = 'protein';
-                                        this.form.submit();
-                                    ">
+                                    data-change-action="protein">
                             </select>
                         </div>
                     </div>
@@ -255,7 +253,7 @@
                         <div class="control">
                             <select asp-for="SelectedEnergyOrder"
                                     asp-items="Html.GetEnumSelectList<EnergyOrderType>()"
-                                    onchange="document.getElementById('Action').value='order'; this.form.submit();">
+                                    data-change-action="order">
                             </select>
                         </div>
                     </div>
@@ -671,7 +669,7 @@
                         <div class="control">
                             <select asp-for="SelectedEnteralFormula"
                                     asp-items="Html.GetEnumSelectList<EnteralFormulaType>()"
-                                    onchange="document.getElementById('Action').value='formula'; this.form.submit();">
+                                    data-change-action="formula">
                                 <option value="">-- 選択してください -- [ mL/袋 (kcal/袋) ] </option>
                             </select>
                         </div>
