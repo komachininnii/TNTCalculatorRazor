@@ -410,7 +410,6 @@ public class IndexModel : PageModel
         BodyIndex = null;
         BodySurfaceArea = null;
         AdjustedWeight = null;
-        //BmrWeightFinal = null;
         CorrectedWeight = null;
 
         BmrWeightBasis = null;
@@ -436,22 +435,20 @@ public class IndexModel : PageModel
        
         // ※ BodyIndex が計算済みである前提
         double obesityDegree = BodyIndex?.ObesityDegree ?? 0;
-        var od = BodyIndex.ObesityDegree ?? 0;
 
-        // 1) まず basis を決める（nullにしない）
+        // まず basis を決める（nullにしない）
         BmrWeightBasis = AdjustedWeightCalculator.GetBasis(Age.Value, obesityDegree);
 
-        // 1) まず basis を決める（nullにしない）
-        //BmrWeightBasis = AdjustedWeightCalculator.GetBasis(Age.Value, BodyIndex?.ObesityDegree ?? 0);
-
+        // BodyIndex はこの時点で存在する前提（CanCalcBase通過＋Calculate済み）
+        var bodyIndex = BodyIndex!;
 
         // 調整体重そのもの（式で算出した値）を保持
-        AdjustedWeight = AdjustedWeightCalculator.CalculateAdjusted(Weight.Value, BodyIndex.StandardWeight);
-
+        AdjustedWeight = AdjustedWeightCalculator.CalculateAdjusted(Weight.Value, bodyIndex.StandardWeight);
+                
         // 補正体重（BMR/エネルギー/蛋白などの基礎として使う“最終採用体重”）
         CorrectedWeight = BmrWeightBasis switch
         {
-            BmrWeightBasisType.Standard => BodyIndex.StandardWeight,
+            BmrWeightBasisType.Standard => bodyIndex.StandardWeight,
             BmrWeightBasisType.Adjusted => AdjustedWeight.Value,
             _ => Weight.Value
         };
@@ -479,9 +476,9 @@ public class IndexModel : PageModel
 
         // 25/30/35 は標準体重ベース（年齢に関係なく表示する方針に寄せる）
         // ※ StandardWeight が計算できている前提
-        Kcal25 = (int)Math.Round(BodyIndex.StandardWeight * 25.0, MidpointRounding.AwayFromZero);
-        Kcal30 = (int)Math.Round(BodyIndex.StandardWeight * 30.0, MidpointRounding.AwayFromZero);
-        Kcal35 = (int)Math.Round(BodyIndex.StandardWeight * 35.0, MidpointRounding.AwayFromZero);
+        Kcal25 = (int)Math.Round(bodyIndex.StandardWeight * 25.0, MidpointRounding.AwayFromZero);
+        Kcal30 = (int)Math.Round(bodyIndex.StandardWeight * 30.0, MidpointRounding.AwayFromZero);
+        Kcal35 = (int)Math.Round(bodyIndex.StandardWeight * 35.0, MidpointRounding.AwayFromZero);
     }
     
 
@@ -549,8 +546,8 @@ public class IndexModel : PageModel
         double weightForProtein =
             WeightForCalculationSelector.Select(
                 WeightUsage.Protein,
-                Age.Value,
-                Weight.Value,
+                Age!.Value,
+                Weight!.Value,
                 CorrectedWeight.Value,
                 BodyIndex.StandardWeight,
                 SelectedDisease);
