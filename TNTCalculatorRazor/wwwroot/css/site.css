@@ -449,43 +449,6 @@ details summary {
     }
 }
 
-    /* アプリバージョン */
-    .brand-meta-inline {
-        font-size: 12px;
-        color: #667; /* muted */
-        white-space: nowrap;
-    }
-
-    .brand-icon {
-        width: 18px;
-        height: 18px;
-        object-fit: contain;
-        display: inline-block;
-    }
-
-    .appbar {
-        display: flex;
-        justify-content: flex-end; /* 右寄せ */
-        margin: 0 0 6px 0;
-    }
-
-    .brand {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        opacity: 0.75; /* さらに邪魔感を減らすなら */
-    }
-    /* 公式一覧 */
-    .brand-link {
-        font-size: 12px;
-        color: #667;
-        text-decoration: none;
-        margin-left: 10px;
-    }
-
-        .brand-link:hover {
-            text-decoration: underline;
-        }
    
     /* === IE11フォールバック（デフォルト） === */
     .layout {
@@ -1355,79 +1318,98 @@ details summary {
     }
 }
 
-/* フッター設定 */
+/* =========================
+   Footer (appbar-footer)
+   ========================= */
+/* フッター全体 */
 .appbar-footer {
     padding: 8px 0;
     border-top: 1px solid rgba(0,0,0,.12);
     margin-top: 12px;
 }
 
+    /* フッター内容（brand） */
     .appbar-footer .brand {
         display: flex;
-        flex-wrap: wrap;
-        gap: 8px 12px;
+        flex-wrap: wrap; /* 基本は自然折り返し */
         align-items: center;
+        gap: 8px 12px;
+        min-width: 0; /* はみ出し保険 */
+        opacity: 0.75;
     }
 
-.footer-spacer {
-    flex: 1 1 auto;
-}
-
-/* スマホ表示時のフッター設定 */
-@media (max-width: 520px) {
-    
-    .appbar-footer .brand {
-        flex-wrap: nowrap;
-        justify-content: space-between;
-        gap: 6px 10px;
-        min-width: 0; /* ←保険 */
+    /* アイコン */
+    .appbar-footer .brand-icon {
+        width: 18px;
+        height: 18px;
+        object-fit: contain;
+        display: inline-block;
     }
-    /* ここで100%幅を取らせない（＝強制改行をやめる） */
+
+    /* ブランド一式（TNTCalculator / Ver / by） */
     .appbar-footer .brand-meta-inline {
-        flex: 0 1 auto; /* ←重要 */
-        min-width: 0; /* ←省略すると一部環境で謎はみ出し */
-        white-space: nowrap;
+        font-size: 12px;
+        color: #667;
+        white-space: nowrap; /* ブランドは基本1塊で */
+        min-width: 0;
     }
 
-    /* 余白がある限り1行に粘る */
-    .appbar-footer .brand {
-        flex-wrap: nowrap; /* ←重要 */
-        justify-content: space-between;
-        gap: 6px 10px; /* 少し詰める（任意） */
+    /* リンク（公式一覧 / 院内マニュアル） */
+    .appbar-footer .brand-link {
+        font-size: 12px;
+        color: #667;
+        text-decoration: none;
+        margin-left: 0; /* gap で間隔管理（重複防止） */
+        white-space: normal; /* 狭ければ自然に折り返す */
     }
 
-    /* 右寄せのため spacer は消さない（Edgeでは有効活用できる） */
-    .footer-spacer {
-        display: block;
+        .appbar-footer .brand-link:hover {
+            text-decoration: underline;
+        }
+
+    /* Privacyリンク */
+    .appbar-footer .footer-privacy {
+        white-space: normal; /* フッターなので複数行OK（重なり防止優先） */
+    }
+
+    /* 右寄せ用スペーサ（使うなら） */
+    .appbar-footer .footer-spacer {
         flex: 1 1 auto;
     }
 
-    /* リンクは折り返さない（すでにprivacyはnowrap済み） */
-    .appbar-footer .brand-link,
-    .footer-privacy {
-        white-space: nowrap;
+/* スマホ帯：自然折り返し（1行に粘らない） */
+@media (max-width: 520px) {
+    .appbar-footer .brand {
+        justify-content: flex-start; /* space-between をやめる＝重なり防止 */
+        gap: 6px 10px;
+    }
+
+    .appbar-footer .footer-spacer {
+        display: none; /* 狭幅では邪魔になりやすいので消す */
     }
 }
 
-
-/* IE11(IEモード含む)対策: フッター */
+/* =========================
+   IE11 / IE mode
+   ========================= */
 @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
 
+    /* 横スクロール封じ込め（IE特有のはみ出し対策） */
     .appbar-footer {
-        overflow-x: hidden; /* 横スクロール封じ込め */
+        overflow-x: hidden;
     }
 
+        /* IEは flex-gap 非対応があるので block + inline-block にする */
         .appbar-footer .brand {
-            display: block; /* flexをやめて確実に折り返す */
-            box-sizing: border-box;
+            display: block;
             max-width: 100%;
+            box-sizing: border-box;
         }
 
         .appbar-footer .footer-spacer {
-            display: none;
+            display: none; /* IEは右寄せ暴れやすいので無効化 */
         }
 
-        /* 1行目：ロゴ～リンク類を横並び */
         .appbar-footer .brand > * {
             display: inline-block;
             margin-right: 10px;
@@ -1445,38 +1427,11 @@ details summary {
             height: auto;
         }
 
-        /* アイコンの左余白（今回の目的） */
+        /* アイコンの左余白（IEでも効かせる） */
         .appbar-footer .brand-icon {
             margin-left: 8px;
         }
-
-        /* 2行目：コピーライト */
-        .appbar-footer .footer-copy {
-            display: block;
-            margin: 4px 0 0 0;
-            white-space: normal;
-        }
-
-            .appbar-footer .footer-copy a {
-                margin-right: 0;
-            }
 }
-
-
-/* フッターのプライバシーポリシーリンクを折り返さない */
-.footer-privacy {
-    white-space: nowrap;
-}
-
-/*スマホでバージョン情報を非表示にする場合 */
-/* スマホでバージョン情報と「by tyama」を非表示に */
-/*
-@media (max-width: 720px) {
-    .brand-ver, .brand-by {
-        display: none;
-    }
-}
-*/
 
 /* スマホ：result-details / enteral-details の “一瞬openで描画” を隠してからJSで表示 */
 @media (max-width: 980px) {
