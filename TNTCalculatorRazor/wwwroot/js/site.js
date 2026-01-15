@@ -5,28 +5,23 @@
 
 // ヘルプウィンドウを開く
 function openHelpWindow(e, url) {
-    e.preventDefault();  // 既定遷移（=二重オープン）を止める
+    e.preventDefault();
 
     var name = "TNT_Help";
-    var w = null;
+    var features = "width=760,height=800,resizable=yes,scrollbars=yes";
+    var w = window.open(url, name, features);
 
-    // スマホ/狭幅では features を付けずに開く（縮小されにくい）
-    var vw = (window.innerWidth || document.documentElement.clientWidth || 0);
-    if (vw && vw <= 720) {
-        w = window.open(url, name); // featuresなし
-    } else {
-        var features = "width=760,height=800,resizable=yes,scrollbars=yes";
-        w = window.open(url, name, features);
-    }
-
-    // ポップアップがブロックされたら、新しいタブで開く（フォールバック）
     if (!w) {
-        window.open(url, "_blank", "noopener");
+        // ブロック時フォールバック（余計な指定をしない）
+        window.open(url, "_blank");
         return;
     }
-    try { w.focus(); } catch (e) { }
-}
 
+    // opener遮断（IE11でもOK。できない環境ではtry/catchで無害）
+    try { w.opener = null; } catch (err) { }
+
+    try { w.focus(); } catch (err) { }
+}
 
 // data-help-window をクリックしたら openHelpWindow で開く（フッター/本文どこでもOK）
 document.addEventListener("click", function (e) {
@@ -52,16 +47,18 @@ function openPrivacyWindow(e, url) {
 
     var name = "TNT_Privacy";
     var features = "width=760,height=800,resizable=yes,scrollbars=yes";
-
     var w = window.open(url, name, features);
 
-    // ポップアップがブロックされたら、新しいタブで開く（フォールバック）
     if (!w) {
-        window.open(url, "_blank", "noopener");
+        // ブロック時フォールバック（余計な指定をしない）
+        window.open(url, "_blank");
         return;
     }
 
-    try { w.focus(); } catch (e) { }
+    // opener遮断（IE11でもOK。できない環境ではtry/catchで無害）
+    try { w.opener = null; } catch (err) { }
+
+    try { w.focus(); } catch (err) { }
 }
 
 // data-privacy-window をクリックしたら openPrivacyWindow で開く
