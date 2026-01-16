@@ -1357,20 +1357,32 @@ details summary {
     /* リンク（公式一覧 / 院内マニュアル） */
     .appbar-footer .brand-link {
         font-size: 13px;
-        /*color: #667;*/
-        /*text-decoration: none;*/
+        /* color: #667; */
+        /* text-decoration: none; */
         margin-left: 0; /* gap で間隔管理（重複防止） */
         white-space: normal; /* 狭ければ自然に折り返す */
     }
-
-        .appbar-footer .brand-link:hover {
-            /*text-decoration: underline;*/
-        }
 
     /* Privacyリンク */
     .appbar-footer .footer-privacy {
         white-space: normal; /* フッターなので複数行OK（重なり防止優先） */
     }
+
+        /* PCで分かりやすく（太字＋下線） */
+        .appbar-footer .brand-link:hover,
+        .appbar-footer .footer-privacy:hover,
+        .appbar-footer .brand-link:focus,
+        .appbar-footer .footer-privacy:focus {
+            text-decoration: underline;
+            font-weight: bold;
+        }
+
+    /* スマホ/モダンで下線の見え方を統一（IE11/IEモードでは効かないが許容） */
+    .appbar-footer a {
+        text-underline-offset: 2px;
+        text-decoration-thickness: 1px;
+    }
+
 
     /* 右寄せ用スペーサ（使うなら） */
     .appbar-footer .footer-spacer {
