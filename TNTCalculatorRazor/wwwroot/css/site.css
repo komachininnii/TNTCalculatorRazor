@@ -1356,15 +1356,15 @@ details summary {
 
     /* リンク（公式一覧 / 院内マニュアル） */
     .appbar-footer .brand-link {
-        font-size: 12px;
-        color: #667;
-        text-decoration: none;
+        font-size: 13px;
+        /*color: #667;*/
+        /*text-decoration: none;*/
         margin-left: 0; /* gap で間隔管理（重複防止） */
         white-space: normal; /* 狭ければ自然に折り返す */
     }
 
         .appbar-footer .brand-link:hover {
-            text-decoration: underline;
+            /*text-decoration: underline;*/
         }
 
     /* Privacyリンク */
