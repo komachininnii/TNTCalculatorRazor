@@ -1452,3 +1452,12 @@ details summary {
         visibility: hidden;
     }
 }
+
+/* ヘルプ用 */
+.help-content img {
+    max-width: 100%;
+    height: auto;
+}
+.help-section-title {
+    margin-top: 1.2em;
+}
