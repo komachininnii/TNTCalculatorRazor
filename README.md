@@ -58,11 +58,15 @@ InternalManual には以下の2項目を持たせる。
 - Enabled：院内マニュアルリンクを表示するかどうか  
 - Url：院内PDFへのリンク
 
-【ここに appsettings.json の InternalManual 設定例を記載】
-"InternalManual": {
-  "Enabled": false,
-  "Url": ""
+**設定例（appsettings.json）**
+```json
+{
+  "InternalManual": {
+    "Enabled": false,
+    "Url": ""
+  }
 }
+```
 
 ---
 
@@ -79,10 +83,11 @@ InternalManual には以下の2項目を持たせる。
 
 院内専用のURLや設定は、このファイルにのみ記載する。
 
-【ここに .gitignore の設定内容を記載】
-.gitignore
+**.gitignore 例**
+```
+# Internal-only settings
 appsettings.Production.json
-
+```
 ---
 
 ## Azure 発行（Publish）時の安全対策
@@ -98,12 +103,17 @@ Azure App Service（Zip Deploy）は、
 そのため、過去の発行で一度でも  
 appsettings.Production.json が配置されていると、  
 以後の発行で除外しても Azure 側に残存する可能性がある。
-残骸確認（Azure /home/site/wwwroot）
-Azure Portal → App Service → SSH
-ls -la /home/site/wwwroot | grep appsettings
-見つかった場合は
-rm /home/site/wwwroot/appsettings.Production.json
-で削除後、アプリを再起動。
+
+**残骸確認（Azure /home/site/wwwroot）**
+1. Azure Portal → App Service → SSH
+2. 確認コマンド
+   ```bash
+   ls -la /home/site/wwwroot | grep appsettings
+   ```
+3. 見つかった場合は削除後、アプリを再起動
+   ```bash
+   rm /home/site/wwwroot/appsettings.Production.json
+   ```
 
 ---
 
@@ -119,12 +129,14 @@ rm /home/site/wwwroot/appsettings.Production.json
 appsettings.Production.json を  
 Publish の入力段階から完全に外す。
 
-【ここに csproj の Content Remove / None Remove 設定を記載】
+**csproj 設定例**
+```xml
 <ItemGroup>
   <!-- Internal-only settings: never publish, never copy -->
   <Content Remove="appsettings.Production.json" />
   <None Remove="appsettings.Production.json" />
 </ItemGroup>
+```
 
 この設定により、
 
@@ -138,7 +150,8 @@ Publish の入力段階から完全に外す。
 Zip Deploy の発行プロファイル（.pubxml）に、  
 appsettings.Production.json を除外する指定を追加する。
 
-【ここに pubxml の ExcludeFilesFromDeployment 設定を記載】
+**pubxml 設定例**
+```xml
 <PropertyGroup>
   <!-- Never deploy internal-only settings -->
   <ExcludeFilesFromDeployment>appsettings.Production.json</ExcludeFilesFromDeployment>
@@ -146,17 +159,19 @@ appsettings.Production.json を除外する指定を追加する。
   <!-- Clean up extra files on server -->
   <SkipExtraFilesOnServer>false</SkipExtraFilesOnServer>
 </PropertyGroup>
-
+```
 
 ## Program.cs（静的ファイル配信）
 
 Production 環境でもレイアウトが崩れないよう、従来方式で静的ファイル配信を行う。
 
+```csharp
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthorization();
 app.MapRazorPages();
+```
 
 ※ MapStaticAssets() / WithStaticAssets() は使用しない。
 ---
@@ -167,15 +182,18 @@ app.MapRazorPages();
 確認対象：
 - /home/site/wwwroot 配下
 
-【ここに Azure SSH での確認方法を記載】
+**Azure SSH での確認方法**
+```bash
 ls -la /home/site/wwwroot | grep appsettings
-
+```
 ## ローカル動作確認方法
 院内リンク表示だけ確認したい場合は、Development のまま環境変数で上書きする（見た目を壊さない）。
 launchSettings.json に一時的に追加：
 
+```json
 "InternalManual__Enabled": "true",
 "InternalManual__Url": "http://127.0.0.1/test.pdf"
+```
 ※ 本物の院内URLはローカル確認では記載しない。
 ---
 

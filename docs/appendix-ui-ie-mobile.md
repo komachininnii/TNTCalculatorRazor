@@ -1,6 +1,7 @@
 # TNTCalculatorRazor UI調整メモ（IE11互換・モダン・スマホ対応）
 
-本ドキュメントは、TNTCalculatorRazor において実施した **IE11（IEモード）／モダンブラウザ／スマートフォン**の UI 差異調整、および関連するロジック整理を将来振り返れるようにまとめた作業記録です。
+本ドキュメントは、TNTCalculatorRazor において実施した **IE11（IEモード）／モダンブラウザ／スマートフォン**の UI 差異調整と、
+関連するロジック整理の背景を記録するための作業メモです。
 
 ---
 
@@ -10,8 +11,9 @@
 - モダン側（grid/flex/gap）を主設計とし、IE側はフォールバック
 - スマホは「補助的利用」を想定し、
   - 横スクロールしない
-  - 重要情報は1画面で把握可能
-- 計算ロジックは壊さない（UI変更と責務分離を徹底）
+  - 重要情報は 1 画面で把握可能
+- 計算ロジックは壊さない（UI 変更と責務分離を徹底）
+
 
 ---
 
@@ -19,11 +21,8 @@
 
 ### 2.1 BMR pill の段ズレ対策（IE）
 
-- 問題：
-  - `dt` 側に pill を置くと、IE の float/flex フォールバックで行高が不安定
-- 対応：
-  - pill を **`dd` 側へ移動**
-  - ストレス係数と同じ構造に統一
+- 問題：`dt` 側に pill を置くと、IE の float/flex フォールバックで行高が不安定
+- 対応：pill を **`dd` 側へ移動**し、ストレス係数と同じ構造に統一
 
 ```html
 <dd>
@@ -34,40 +33,36 @@
 
 ### 2.2 BMR表示方針（最終）
 
-- 計算前：
-  - `[算出法] [使用体重]`
-- 計算後：
-  - `[HB] [実測50.0] / [標準50.0] / [調整50.0]`
+- 計算前：`[算出法] [使用体重]`
+- 計算後：`[HB] [実測50.0] / [標準50.0] / [調整50.0]`
 - 長い説明は `title` に退避
 
 ---
 
 ## 3. 体重ロジックの整理（重要）
 
-### 3.0 置換ルール（自分ルールとして固定・重要）
+### 3.1 命名ルール（固定）
 
-今後のコード検索・保守で迷わないため、以下の命名を**固定ルール**として統一する。
+今後のコード検索・保守で迷わないため、以下の命名を固定ルールとして統一する。
 
 - **「標準/実測/調整を切替して使う体重」→ `CorrectedWeight`**
 - **「調整体重（式で出した調整値）が必要」→ `AdjustedWeight`**
 
 運用の目安：
 
-- WaterCalculator の第5引数のように **“adjusted（調整体重）” を要求**している箇所は `AdjustedWeight`
-- Selector 等で **“補正体重（採用体重）”**として扱う箇所は `CorrectedWeight`
+- WaterCalculator の第 5 引数のように **「調整体重」を要求**している箇所は `AdjustedWeight`
+- Selector 等で **「補正体重（採用体重）」**として扱う箇所は `CorrectedWeight`
 
 ---
 
-## 3. 体重ロジックの整理（重要）
-
-### 3.1 用語整理
+### 3.2 用語整理
 
 - **AdjustedWeight**
   - 調整体重そのもの（式で計算される値）
 - **CorrectedWeight**
-  - 実測／標準／調整から最終的に選ばれた「補正体重」
+  - 実測／標準／調整から最終的に選ばれた補正体重
 
-### 3.2 プロパティ構成（IndexModel）
+### 3.3 プロパティ構成（IndexModel）
 
 ```csharp
 public double? AdjustedWeight { get; private set; }
@@ -77,7 +72,7 @@ public double? CorrectedWeight { get; private set; }
 public double? BmrWeightFinal => CorrectedWeight;
 ```
 
-### 3.3 注意点
+### 3.4 注意点
 
 - `CorrectedWeight` は **BMR / エネルギー / 蛋白**で共通利用
 - WaterCalculator では「調整体重そのもの」が必要なため `AdjustedWeight` を使用
@@ -88,8 +83,7 @@ public double? BmrWeightFinal => CorrectedWeight;
 
 ### 4.1 問題
 
-- `BmrWeightBasis` が null のまま評価され、
-  - 常に実測体重に落ちるケースが発生
+- `BmrWeightBasis` が null のまま評価され、常に実測体重に落ちるケースが発生
 
 ### 4.2 対応
 
@@ -155,7 +149,7 @@ public bool IsPregnant { get; set; } = false;
 
 ### 6.2 中間幅でのはみ出し対策
 
-- 1300px 以下で縦積み
+1300px 以下で縦積み
 
 ```css
 @media (max-width: 1300px) {
@@ -183,7 +177,7 @@ public bool IsPregnant { get; set; } = false;
 }
 ```
 
-※ `first-of-type` による例外指定は構造依存が強いため最終的に削除
+※ `first-of-type` による例外指定は構造依存が強いため削除。
 
 ---
 
@@ -227,19 +221,26 @@ public bool IsPregnant { get; set; } = false;
   }
 }
 ```
-## モダン/スマホでもカード上線を出す（＝@supports の打ち消しを上書き）
+### 8.3 モダン/スマホでもカード上線を出す
 
-「IEでは上線、モダンでは消す」にしていた影響でモダンカードの上線が消えたため、末尾で上書き。
+IE だけで上線を出していた影響でモダンの上線が消えたため、末尾で上書き。
 
+```css
 /* モダン/スマホでもカードの区切り線を出す（末尾で確実に上書き） */
 .main .card,
 .summary .card {
   border-top: 1px solid #d6d6d6;
   margin-top: 8px;
 }
+```
+
+### 8.4 1カラム時の列仕切りの残存解除
 
 ## 1カラム時にIE用の列仕切り（border/padding）が main に残り左列だけ細く見えるため強制解除
 
+1 カラム時に IE 用の border/padding が main に残り、左列だけ細く見えるため強制解除。
+
+```css
 /* 1カラム時：左（main）だけ狭く見えるのは、main側に残る余白/罫線が原因のことが多い */
 @media (max-width: 980px) {
   .main {
@@ -254,7 +255,7 @@ public bool IsPregnant { get; set; } = false;
     margin-left: 0 !important;
   }
 }
-
+```
 
 ---
 
@@ -265,17 +266,12 @@ public bool IsPregnant { get; set; } = false;
 - UI密度と可読性のバランスを維持
 - 計算ロジックへの影響なし
 - モダンでもカードの上線復帰
-- 1カラム時に左列が狭くなる問題を解消
+- 1 カラム時に左列が狭くなる問題を解消
 
 ---
 
 ## 10. 今後のメモ
 
-- IE対応CSSは将来削除可能なようコメントを残す
+- IE 対応 CSS は将来削除可能なようコメントを残す
 - 妊娠チェックは pill 表示などへ拡張可能
 - デバッグ欄は運用安定後に非表示化検討
-
----
-
-（作業記録用 README / MD）
-

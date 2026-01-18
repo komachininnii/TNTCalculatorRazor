@@ -6,6 +6,15 @@
 
 ---
 
+## 対象
+
+- `wwwroot/js/site.js`
+- `Index.cshtml` / `Index.cshtml.cs`
+- `_Layout.cshtml`
+
+---
+
+
 ## 1. JavaScript 構造整理
 
 ### 1.1 二重読み込みの解消

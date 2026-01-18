@@ -1,12 +1,14 @@
 # Appendix: Client-side JavaScript Design Notes
 
-本ドキュメントは、TNTCalculatorRazor における  
-**client-side JavaScript（site.js）の設計方針・移行経緯・意図**を記録するための補足資料である。
+本ドキュメントは、TNTCalculatorRazor における **client-side JavaScript（site.js）の設計方針・移行経緯・意図** を記録するための補足資料である。  
+将来の改修時に「なぜこの構成になっているのか」「どこを触ると何が起きるのか」を素早く思い出せることを目的とする。
 
-将来の改修時に  
-「なぜこの構成になっているのか」  
-「どこを触ると何が起きるのか」  
-を素早く思い出せることを目的とする。
+---
+
+## 0. 対象
+
+- `wwwroot/js/site.js`
+- `Index.cshtml` などの Razor ページ（JS 連携部分）
 
 ---
 
