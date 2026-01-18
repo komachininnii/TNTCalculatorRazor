@@ -460,7 +460,7 @@ public class IndexModel : PageModel
         // デバッグ用
 #if DEBUG
         DebugWeightLine =
-         $"ObesityDegree={od}  " +
+         $"ObesityDegree={obesityDegree}  " +
          $"Basis={BmrWeightBasis}  " +
          $"Actual={Weight.Value:0.0}  " +
          $"Std={BodyIndex?.StandardWeight:0.0}  " +
