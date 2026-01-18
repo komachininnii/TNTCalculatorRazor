@@ -188,11 +188,11 @@ ls -la /home/site/wwwroot | grep appsettings
 ```
 ## ローカル動作確認方法
 院内リンク表示だけ確認したい場合は、Development のまま環境変数で上書きする（見た目を壊さない）。
-launchSettings.json に一時的に追加("ASPNETCORE_ENVIRONMENT": "Development"の下：
+launchSettings.json に一時的に追加（https側の"ASPNETCORE_ENVIRONMENT": "Development"の下）：
 
 ```json
 "InternalManual__Enabled": "true",
-"InternalManual__Url": "http://127.0.0.1/test.pdf"
+"InternalManual__Url": "http://example.invalid/internal-manual.pdf"
 ```
 ※ 本物の院内URLはローカル確認では記載しない。
 ---

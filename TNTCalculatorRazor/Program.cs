@@ -17,7 +17,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// 静的ファイルは従来方式で確実に配信
+// 静的ファイルは従来方式で確実に配信 ※Production環境でsite.cssが配信されない問題への対処
 app.UseStaticFiles();
 
 app.UseRouting();
