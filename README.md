@@ -217,8 +217,18 @@ IE11互換、モダンブラウザ、スマートフォン表示に関する
 なお、この際、AdjustedWeight/CorrectedWeightの整理をおこなった（3. 体重ロジックの整理（重要）に記載）
 - [Appendix: UI / IE / Mobile 対応メモ](docs/appendix-ui-ie-mobile.md)
 
-※ 妊娠チェックの表示は WaterCalculator の年齢区切り（55/56）に合わせ、
-　Female かつ 18～55歳に限定した。
+- 
+## JS / Form Refactor & Debug Handling Summary
+
+JavaScript / Razor Pages の整理・リファクタリング内容のまとめ。
+挙動を一切変えずに、可読性・保守性・将来拡張性（複数フォーム対応）を高める。
+- [Appendix: JS / Form Refactor & Debug Handling Summary](docs/appendix-js-form-refactor.md)
+
+- 
+## JS Design Notes
+
+Index内の script を site.js に移行経緯・意図を記録する補足資料。
+- [Appendix: Client-side JavaScript Design Notes](docs/appendix-js.md)
 
 ---
 
