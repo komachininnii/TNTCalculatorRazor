@@ -386,17 +386,17 @@ public class IndexModel : PageModel
         // 範囲（「あり得ない値」を弾く）
         if (Age.Value < 0 || Age.Value >= 130)
         {
-            ModelState.AddModelError(nameof(Age), "年齢は 0〜129 の範囲で入力してください。");
+            if (addErrors) ModelState.AddModelError(nameof(Age), "年齢は 0〜129 の範囲で入力してください。");
             return false;
         }
         if (Height.Value < 30 || Height.Value >= 250)
         {
-            ModelState.AddModelError(nameof(Height), "身長は 30.0〜249.9 cm の範囲で入力してください。");
+            if (addErrors) ModelState.AddModelError(nameof(Height), "身長は 30.0〜249.9 cm の範囲で入力してください。");
             return false;
         }
         if (Weight.Value < 0.5 || Weight.Value >= 300)
         {
-            ModelState.AddModelError(nameof(Weight), "体重は 0.5〜299.9 kg の範囲で入力してください。");
+            if (addErrors) ModelState.AddModelError(nameof(Weight), "体重は 0.5〜299.9 kg の範囲で入力してください。");
             return false;
         }
 

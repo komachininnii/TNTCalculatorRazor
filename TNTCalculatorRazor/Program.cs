@@ -17,14 +17,14 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// ★ 静的ファイルは従来方式で確実に配信
+// 静的ファイルは従来方式で確実に配信
 app.UseStaticFiles();
 
 app.UseRouting();
 
 app.UseAuthorization();
 
-// ★ Static Assets 方式は使わない
+// Static Assets 方式は使わない
 app.MapRazorPages();
 
 app.Run();
