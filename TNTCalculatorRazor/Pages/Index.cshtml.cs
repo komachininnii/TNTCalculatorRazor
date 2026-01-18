@@ -213,7 +213,7 @@ public class IndexModel : PageModel
     // ==============================
     // CCr計算
     // ==============================
-    private void RecalcCcr()
+    private void RecalcCcr( bool addErrors )
     {
         CcrActual = null;
         CcrCorrected = null;
@@ -221,11 +221,34 @@ public class IndexModel : PageModel
 
         // 必須：年齢・体重・性別・Cr
         if (!Age.HasValue || !Weight.HasValue) return;
-        if (!SerumCreatinine.HasValue || SerumCreatinine.Value <= 0) return;
 
-        // あり得ない値は計算しない（エラー表示は今はしない方針）
-        if (Age.Value < 0 || Age.Value >= 130) return;
-        if (Weight.Value < 0.5 || Weight.Value >= 300) return;
+        if (!SerumCreatinine.HasValue)
+        {
+            // 未入力は（ボタンなし運用なら）沈黙でOK
+            return;
+        }
+
+        // Cr
+        if (SerumCreatinine.Value <= 0)
+        {
+            if (addErrors)
+                ModelState.AddModelError(nameof(SerumCreatinine), "Crは0より大きい値で入力してください。");
+            return;
+        }
+
+        // あり得ない値（renal のときだけ教える）
+        if (Age.Value < 0 || Age.Value >= 130)
+        {
+            if (addErrors)
+                ModelState.AddModelError(nameof(Age), "年齢は 0〜129 の範囲で入力してください。");
+            return;
+        }
+        if (Weight.Value < 0.5 || Weight.Value >= 300)
+        {
+            if (addErrors)
+                ModelState.AddModelError(nameof(Weight), "体重は 0.5〜299.9 kg の範囲で入力してください。");
+            return;
+        }
 
         var cr = SerumCreatinine.Value;
 
@@ -241,7 +264,8 @@ public class IndexModel : PageModel
         }
     }
 
-    
+
+
 
     // ==============================
     // POST
@@ -260,10 +284,10 @@ public class IndexModel : PageModel
             IsProteinCorrectionUserEdited = true;
 
         // 1) 基本計算（入力が揃っていて範囲内なら BMR/標準体重などが埋まる）
-        RecalcBase(addErrors: Act == "anthro");
+        RecalcBase(addErrors: Act == "anthro" || act == "renal");
 
-        // 1.5) 腎機能（参考）CCr
-        RecalcCcr();
+        // 1.5) 腎機能CCr
+        RecalcCcr(addErrors: act == "anthro" || act == "renal");
 
         // 小児は「例外疾患の対象外」：疾患は None に固定（UIもdisabled化する想定）
         if (Age.HasValue && Age.Value < 18)
@@ -383,24 +407,26 @@ public class IndexModel : PageModel
         if (!Age.HasValue || !Height.HasValue || !Weight.HasValue)
             return false;
 
+        bool isValid = true;
+
         // 範囲（「あり得ない値」を弾く）
         if (Age.Value < 0 || Age.Value >= 130)
         {
             if (addErrors) ModelState.AddModelError(nameof(Age), "年齢は 0〜129 の範囲で入力してください。");
-            return false;
+            isValid = false;
         }
         if (Height.Value < 30 || Height.Value >= 250)
         {
             if (addErrors) ModelState.AddModelError(nameof(Height), "身長は 30.0〜249.9 cm の範囲で入力してください。");
-            return false;
+            isValid = false;
         }
         if (Weight.Value < 0.5 || Weight.Value >= 300)
         {
             if (addErrors) ModelState.AddModelError(nameof(Weight), "体重は 0.5〜299.9 kg の範囲で入力してください。");
-            return false;
+            isValid = false;
         }
 
-        return true;
+        return isValid;
     }
 
     private void RecalcBase( bool addErrors )

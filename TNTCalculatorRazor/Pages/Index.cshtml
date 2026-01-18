@@ -43,7 +43,8 @@
                                    data-enter-action="anthro"
                                    data-smart-blur="1" />
                             <span class="unit">歳</span>
-                            @if (ViewData.ModelState.TryGetValue("Age", out var entryAge) && entryAge.Errors.Count > 0)
+                            @if (ViewData.ModelState.TryGetValue(nameof(Model.Age), out var entryAge)
+                                && entryAge.Errors.Count > 0)
                             {
                                 <div class="field-error text-danger">
                                     <span asp-validation-for="Age"></span>
@@ -61,7 +62,8 @@
                                    data-smart-blur="1" />
                             <span class="unit">cm</span>
 
-                            @if (ViewData.ModelState.TryGetValue("Height", out var entryHeight) && entryHeight.Errors.Count > 0)
+                            @if (ViewData.ModelState.TryGetValue(nameof(Model.Height), out var entryHeight)
+                                && entryHeight.Errors.Count > 0)
                             {
                                 <div class="field-error text-danger">
                                     <span asp-validation-for="Height"></span>
@@ -79,7 +81,8 @@
                                    data-smart-blur="1" />
                             <span class="unit">kg</span>
 
-                            @if (ViewData.ModelState.TryGetValue("Weight", out var entry) && entry.Errors.Count > 0)
+                            @if (ViewData.ModelState.TryGetValue(nameof(Model.Weight), out var entryWeight)
+                                && entryWeight.Errors.Count > 0)
                             {
                                 <div class="field-error text-danger">
                                     <span asp-validation-for="Weight"></span>
@@ -98,6 +101,13 @@
                                    data-enter-action="renal"
                                    data-smart-blur="1" />
                             <span class="unit">mg/dL</span>
+                            @if (ViewData.ModelState.TryGetValue(nameof(Model.SerumCreatinine), out var crEntry)
+                                && crEntry.Errors.Count > 0)
+                            {
+                                <div class="field-error text-danger">
+                                    <span asp-validation-for="SerumCreatinine"></span>
+                                </div>
+                            }
                         </div>
                     </div>
 
