@@ -257,6 +257,15 @@ IE だけで上線を出していた影響でモダンの上線が消えたた�
 }
 ```
 
+## 8.5 IEでフッターが右にはみ出す問題の対策
+```css
+    @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+        /* 横スクロール封じ込め（IE特有のはみ出し対策） */
+        .appbar-footer {
+            overflow-x: hidden;
+    }
+```
+
 ---
 
 ## 9. 結果
