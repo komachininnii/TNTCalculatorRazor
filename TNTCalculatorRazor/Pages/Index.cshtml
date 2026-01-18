@@ -361,10 +361,10 @@
                         <dl class="kv kv-need">
                             <dt>基礎代謝量</dt>
                             <dd>
-                            @if (Model.BmrKcal.HasValue)
-                            {
-                                <strong>@Model.BmrKcal.Value.ToString()</strong>
-                                <span class="unit">kcal</span>
+                                @if (Model.BmrKcal.HasValue)
+                                {
+                                    <strong>@Model.BmrKcal.Value.ToString()</strong>
+                                    <span class="unit">kcal</span>
                                 }
                                 else
                                 {
@@ -450,34 +450,35 @@
 
                             <dt>推定CCr</dt>
                             <dd>
-                            @if (Model.CcrActual.HasValue)
-                            {
-                                @* 主役：補正後（あれば補正後、なければ補正前） *@
-                                var ccrMain = Model.CcrCorrected ?? Model.CcrActual;
+                                @if (Model.CcrActual.HasValue)
+                                {
+                                    @* 補正後があれば補正値を主役にする *@
+                                    var ccrMain = Model.CcrCorrected ?? Model.CcrActual;
 
-                                <strong>@ccrMain.Value.ToString("F1")</strong>
-                                <span class="unit">mL/min</span>
-                                        @* 参照：補正がある場合のみ、補正前を pill で表示 *@
-                                        @if (Model.CcrCorrected.HasValue)
-                                        {
-                                            <span class="pill" style="margin-left:6px;">
-                                                @($"補正前 {Model.CcrActual.Value.ToString("F1")}")
-                                            </span>
-                                        }
+                                    <strong>@ccrMain.Value.ToString("F1")</strong>
+                                    <span class="unit">mL/min</span>
+                                    
+                                    @* 参照：補正がある場合のみ、補正前を pill で表示 *@
+                                    @if (Model.CcrCorrected.HasValue)
+                                    {
+                                        <span class="pill" style="margin-left:6px;">
+                                            @($"補正前 {Model.CcrActual.Value.ToString("F1")}")
+                                        </span>
+                                    }
 
-                                        @* 注記（補正条件など） *@
-                                        @if (!string.IsNullOrWhiteSpace(Model.CcrNote))
-                                        {
-                                            <div class="muted small" style="margin-top:4px; line-height:1.2;">
-                                                @Model.CcrNote
-                                            </div>
-                                        }
-                            }
-                            else
-                            {
-                                <span class="muted">-</span>
-                                        <span class="unit">mL/min</span>
-                            }
+                                    @* 注記（補正条件など） *@
+                                    @if (!string.IsNullOrWhiteSpace(Model.CcrNote))
+                                    {
+                                        <div class="muted small" style="margin-top:4px; line-height:1.2;">
+                                            @Model.CcrNote
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="muted">-</span>
+                                    <span class="unit">mL/min</span>
+                                }
                             </dd>
                         </dl>
                     </div>
