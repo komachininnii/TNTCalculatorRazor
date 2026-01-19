@@ -183,15 +183,20 @@ function tntLimitNumber(el) {
         return action + (action.indexOf("?") >= 0 ? "&" : "?") + "handler=Recalc";
     }
 
-    function setResultDetailsOpenByLayout() {
-        var isMobile = false;
+    var tntLastLayoutIsMobile = null;
 
+    function getIsMobileLayout() {
         if (window.matchMedia) {
-            isMobile = window.matchMedia("(max-width: 980px)").matches;
-        } else {
-            var w = document.documentElement.clientWidth || document.body.clientWidth;
-            isMobile = (w <= 980);
+            return window.matchMedia("(max-width: 980px)").matches;
         }
+
+        var w = document.documentElement.clientWidth || document.body.clientWidth;
+        return (w <= 980);
+    }
+
+    function setResultDetailsOpenByLayout() {
+        var isMobile = getIsMobileLayout();
+        tntLastLayoutIsMobile = isMobile;
 
         var list = document.querySelectorAll(".enteral-details, .result-details");
         for (var i = 0; i < list.length; i++) {
@@ -633,7 +638,8 @@ function tntLimitNumber(el) {
         }
 
         window.addEventListener("resize", function () {
-            if (window.tntSetResultDetailsOpenByLayout) {
+            var isMobile = getIsMobileLayout();
+            if (tntLastLayoutIsMobile !== isMobile && window.tntSetResultDetailsOpenByLayout) {
                 window.tntSetResultDetailsOpenByLayout();
             }
         });
