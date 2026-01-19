@@ -243,6 +243,47 @@ function tntLimitNumber(el) {
         }
     }
 
+    function applyEnergyFromPanel(panel) {
+        if (!panel) return;
+        var dataEl = panel.querySelector("#resultPanelEnergyData");
+        if (!dataEl) return;
+
+        var data;
+        try {
+            data = JSON.parse(dataEl.textContent || "{}");
+        } catch (e) {
+            return;
+        }
+
+        var select = document.querySelector("[data-energy-select]");
+        if (select && data.SelectedEnergyOrder) {
+            select.value = data.SelectedEnergyOrder;
+        }
+
+        var input = document.querySelector("[data-energy-input]");
+        if (input) {
+            if (data.EnergyOrderValue === null || data.EnergyOrderValue === undefined) {
+                input.value = "";
+            } else {
+                input.value = data.EnergyOrderValue;
+            }
+        }
+
+        var pill = document.querySelector("[data-energy-user-edited]");
+        if (pill) {
+            pill.style.display = data.IsEnergyUserEdited ? "" : "none";
+        }
+
+        var keys = ["EnergyByBmrKcal", "Kcal25", "Kcal30", "Kcal35"];
+        for (var i = 0; i < keys.length; i++) {
+            var key = keys[i];
+            var el = document.querySelector('[data-energy-candidate="' + key + '"]');
+            if (!el) continue;
+            var value = data[key];
+            el.textContent = (value === null || value === undefined || value === "") ? "-" : value;
+        }
+    }
+
     function submitWithRecalc(form) {
         if (!form) return;
         if (!canUseAjax()) {
@@ -267,6 +308,7 @@ function tntLimitNumber(el) {
                     panel.innerHTML = html;
                     setResultDetailsOpenByLayout();
                     applyResultErrorsFromPanel(panel);
+                    applyEnergyFromPanel(panel);
                 }
             })
             .catch(function () {

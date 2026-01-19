@@ -17,9 +17,23 @@
     };
 
     var errorJson = JsonSerializer.Serialize(errors);
+
+    var energy = new
+    {
+        SelectedEnergyOrder = Model.SelectedEnergyOrder.ToString(),
+        EnergyOrderValue = Model.EnergyOrderValue,
+        IsEnergyUserEdited = Model.IsEnergyUserEdited,
+        EnergyByBmrKcal = Model.EnergyByBmrKcal,
+        Kcal25 = Model.Kcal25,
+        Kcal30 = Model.Kcal30,
+        Kcal35 = Model.Kcal35
+    };
+
+    var energyJson = JsonSerializer.Serialize(energy);
 }
 
 <script type="application/json" id="resultPanelErrorData">@Html.Raw(errorJson)</script>
+<script type="application/json" id="resultPanelEnergyData">@Html.Raw(energyJson)</script>
 
         <div class="summary">
 

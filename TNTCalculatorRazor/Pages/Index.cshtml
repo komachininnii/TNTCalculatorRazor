@@ -253,7 +253,8 @@
                         <div class="control">
                             <select asp-for="SelectedEnergyOrder"
                                     asp-items="Html.GetEnumSelectList<EnergyOrderType>()"
-                                    data-change-action="order">
+                                    data-change-action="order"
+                                    data-energy-select="1">
                             </select>
                         </div>
                     </div>
@@ -265,12 +266,10 @@
                                    type="number" step="1" inputmode="numeric"
                                    data-maxint="4" data-maxdec="0"
                                    data-change-action="energy"
-                                   data-enter-action="energy" />
+                                   data-enter-action="energy"
+                                   data-energy-input="1" />
                             <span class="unit">kcal/day</span>
-                            @if (Model.IsEnergyUserEdited)
-                            {
-                                <span class="pill">手動編集</span>
-                            }
+                            <span class="pill" data-energy-user-edited@(Model.IsEnergyUserEdited ? "" : " style=\"display:none;\"")>手動編集</span>
                         </div>
                     </div>
                 </div>
@@ -282,13 +281,13 @@
                     <div class="small" style="margin-top:10px;">
                         <dl class="kv kv-2col-energy">
                             <dt>基礎代謝量×係数</dt>
-                            <dd>@(Model.EnergyByBmrKcal?.ToString() ?? "-") kcal</dd>
+                            <dd><span data-energy-candidate="EnergyByBmrKcal">@(Model.EnergyByBmrKcal?.ToString() ?? "-")</span> kcal</dd>
                             <dt>25kcal/標準体重</dt>
-                            <dd>@(Model.Kcal25?.ToString() ?? "-") kcal</dd>
+                            <dd><span data-energy-candidate="Kcal25">@(Model.Kcal25?.ToString() ?? "-")</span> kcal</dd>
                             <dt>30kcal/標準体重</dt>
-                            <dd>@(Model.Kcal30?.ToString() ?? "-") kcal</dd>
+                            <dd><span data-energy-candidate="Kcal30">@(Model.Kcal30?.ToString() ?? "-")</span> kcal</dd>
                             <dt>35kcal/標準体重</dt>
-                            <dd>@(Model.Kcal35?.ToString() ?? "-") kcal</dd>
+                            <dd><span data-energy-candidate="Kcal35">@(Model.Kcal35?.ToString() ?? "-")</span> kcal</dd>
                         </dl>
                     </div>
                 </details>
