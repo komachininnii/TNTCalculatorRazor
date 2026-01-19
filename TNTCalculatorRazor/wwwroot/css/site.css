@@ -200,6 +200,7 @@ details summary {
     margin-top: 4px;
     font-size: 0.9em;
     display: none;
+    color: #b00020;
 }
 
 .field-error.field-error--visible {
