@@ -282,7 +282,10 @@
                                    data-energy-input="1" />
                             <span class="unit">kcal/day</span>
                             @{
-                                var showEnergyEdited = Model.IsEnergyUserEdited && Model.EnergyOrderValue.HasValue;
+                                var showEnergyEdited =
+                                    Model.IsEnergyUserEdited
+                                    && Model.EnergyOrderValue.HasValue
+                                    && Model.EnergyOrderValue.Value > 0;
                             }
                             <span class="pill" data-energy-user-edited@(showEnergyEdited ? "" : " style=\"display:none;\"")>手動編集</span>
                         </div>

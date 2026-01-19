@@ -304,7 +304,11 @@ function tntLimitNumber(el) {
 
         var pill = document.querySelector("[data-energy-user-edited]");
         if (pill) {
-            var hasEnergyValue = data.EnergyOrderValue !== null && data.EnergyOrderValue !== undefined && data.EnergyOrderValue !== "";
+            var hasEnergyValue =
+                data.EnergyOrderValue !== null
+                && data.EnergyOrderValue !== undefined
+                && data.EnergyOrderValue !== ""
+                && Number(data.EnergyOrderValue) > 0;
             pill.style.display = (data.IsEnergyUserEdited && hasEnergyValue) ? "" : "none";
         }
 
