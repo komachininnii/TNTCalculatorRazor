@@ -314,6 +314,12 @@ public class IndexModel : PageModel
                 IsHepaticEncephalopathy = false;
                 ClearModelState(nameof(IsHepaticEncephalopathy));
             }
+
+            if (!IsEnergyUserEdited)
+            {
+                SelectedEnergyOrder = EnergyOrderDefaultSelector.GetDefault(SelectedDisease);
+                ClearModelState(nameof(SelectedEnergyOrder));
+            }
         }
 
         // ★ 疾患から透析フラグを同期（UIにチェックが無くても一致させる）
@@ -723,4 +729,3 @@ public class IndexModel : PageModel
         }
     }
 }
-
