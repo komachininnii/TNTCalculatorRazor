@@ -216,7 +216,7 @@ function tntLimitNumber(el) {
 
     function readJsonScript(dataEl) {
         if (!dataEl) return "{}";
-        return dataEl.textContent || dataEl.innerText || dataEl.text || "{}";
+        return dataEl.textContent || dataEl.innerText || dataEl.text || dataEl.innerHTML || "{}";
     }
 
     function applyResultErrorsFromPanel(panel) {
