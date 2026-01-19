@@ -374,6 +374,7 @@ function tntLimitNumber(el) {
         }
     }
 
+    window.applyEnergyFromPanel = applyEnergyFromPanel;
     window.tntApplyFormStateFromPanel = applyFormStateFromPanel;
 
     // Enter/blur/changeの自動計算をAJAXで処理し、結果パネルのみ差し替える。
@@ -659,6 +660,9 @@ function tntLimitNumber(el) {
         if (window.tntApplyFormStateFromPanel) {
             var panel = document.getElementById("resultPanel");
             if (panel) {
+                if (window.applyEnergyFromPanel) {
+                    window.applyEnergyFromPanel(panel);
+                }
                 window.tntApplyFormStateFromPanel(panel);
             }
         }
