@@ -30,10 +30,30 @@
     };
 
     var energyJson = JsonSerializer.Serialize(energy);
+
+    var showPregnant =
+        Model.Gender == GenderType.Female
+        && Model.Age.HasValue
+        && Model.Age.Value >= 18
+        && Model.Age.Value <= 55;
+
+    var formState = new
+    {
+        ShowDisease = !(Model.Age.HasValue && Model.Age.Value < 18),
+        SelectedDisease = (int)Model.SelectedDisease,
+        ShowPregnant = showPregnant,
+        IsPregnant = Model.IsPregnant,
+        ShowHepatic = Model.SelectedDisease == DiseaseType.LiverCirrhosis,
+        IsHepaticEncephalopathy = Model.IsHepaticEncephalopathy,
+        SelectedProteinCorrection = (int)Model.SelectedProteinCorrection
+    };
+
+    var formStateJson = JsonSerializer.Serialize(formState);
 }
 
 <script type="application/json" id="resultPanelErrorData">@Html.Raw(errorJson)</script>
 <script type="application/json" id="resultPanelEnergyData">@Html.Raw(energyJson)</script>
+<script type="application/json" id="resultPanelFormStateData">@Html.Raw(formStateJson)</script>
 
         <div class="summary">
 

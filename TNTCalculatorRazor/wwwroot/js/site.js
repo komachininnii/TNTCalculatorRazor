@@ -284,6 +284,54 @@ function tntLimitNumber(el) {
         }
     }
 
+    function applyFormStateFromPanel(panel) {
+        if (!panel) return;
+        var dataEl = panel.querySelector("#resultPanelFormStateData");
+        if (!dataEl) return;
+
+        var data;
+        try {
+            data = JSON.parse(dataEl.textContent || "{}");
+        } catch (e) {
+            return;
+        }
+
+        var diseaseWrapper = document.querySelector("[data-disease-wrapper]");
+        if (diseaseWrapper) {
+            diseaseWrapper.style.display = data.ShowDisease ? "" : "none";
+        }
+
+        var diseaseSelect = document.querySelector("[data-disease-select]");
+        if (diseaseSelect && data.SelectedDisease !== undefined && data.SelectedDisease !== null) {
+            diseaseSelect.value = data.SelectedDisease;
+        }
+
+        var pregnantWrapper = document.querySelector("[data-pregnant-wrapper]");
+        if (pregnantWrapper) {
+            pregnantWrapper.style.display = data.ShowPregnant ? "" : "none";
+        }
+
+        var pregnantInput = document.querySelector("[data-pregnant-input]");
+        if (pregnantInput) {
+            pregnantInput.checked = !!data.IsPregnant;
+        }
+
+        var hepaticWrapper = document.querySelector("[data-hepatic-wrapper]");
+        if (hepaticWrapper) {
+            hepaticWrapper.style.display = data.ShowHepatic ? "" : "none";
+        }
+
+        var hepaticInput = document.querySelector("[data-hepatic-input]");
+        if (hepaticInput) {
+            hepaticInput.checked = !!data.IsHepaticEncephalopathy;
+        }
+
+        var proteinSelect = document.querySelector("[data-protein-select]");
+        if (proteinSelect && data.SelectedProteinCorrection !== undefined && data.SelectedProteinCorrection !== null) {
+            proteinSelect.value = data.SelectedProteinCorrection;
+        }
+    }
+
     function submitWithRecalc(form) {
         if (!form) return;
         if (!canUseAjax()) {
@@ -309,6 +357,7 @@ function tntLimitNumber(el) {
                     setResultDetailsOpenByLayout();
                     applyResultErrorsFromPanel(panel);
                     applyEnergyFromPanel(panel);
+                    applyFormStateFromPanel(panel);
                 }
             })
             .catch(function () {

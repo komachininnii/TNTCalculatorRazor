@@ -140,16 +140,16 @@
                                     && Model.Age.Value <= 55;
                                 }
 
-                                @if (showPregnant)
-                                {
-                                    <label class="inline-check"
-                                           title="妊娠かつ肥満度120%以上では、水分計算に調整体重を使用します。">
-                                        <input asp-for="IsPregnant"
-                                               type="checkbox"
-                                               data-change-action="anthro" />
-                                        妊娠
-                                    </label>
-                                }
+                                <label class="inline-check"
+                                       data-pregnant-wrapper
+                                       title="妊娠かつ肥満度120%以上では、水分計算に調整体重を使用します。"
+                                       @(showPregnant ? "" : "style=\"display:none;\"")>
+                                    <input asp-for="IsPregnant"
+                                           type="checkbox"
+                                           data-change-action="anthro"
+                                           data-pregnant-input />
+                                    妊娠
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -157,18 +157,21 @@
             </div>
 
             <div class="card">
-                @if (!(Model.Age.HasValue && Model.Age.Value < 18))
-                {
-                    <div class="field field-compact">
-                        <div class="label">疾患</div>
-                        <div class="control">
-                            <select asp-for="SelectedDisease"
-                                    asp-items="Html.GetEnumSelectList<DiseaseType>()"
-                                    data-change-action="disease">
-                            </select>
-                        </div>
-                    </div>
+                @{
+                    var showDisease = !(Model.Age.HasValue && Model.Age.Value < 18);
                 }
+                <div class="field field-compact"
+                     data-disease-wrapper
+                     @(showDisease ? "" : "style=\"display:none;\"")>
+                    <div class="label">疾患</div>
+                    <div class="control">
+                        <select asp-for="SelectedDisease"
+                                asp-items="Html.GetEnumSelectList<DiseaseType>()"
+                                data-change-action="disease"
+                                data-disease-select>
+                        </select>
+                    </div>
+                </div>
             </div>
 
             <div class="card">
@@ -215,28 +218,29 @@
                         </div>
                     </div>
 
-                    @if (Model.SelectedDisease == DiseaseType.LiverCirrhosis)
-                    {
-                        <div class="field sub">
-                            <div class="label">肝性脳症</div>
-                            <div class="control">
-                                <label style="display:flex;gap:8px;align-items:center;">
-                                    <input asp-for="IsHepaticEncephalopathy"
-                                           type="checkbox"
-                                           data-change-action="hepatic" />
-                                    あり（蛋白不耐）
-                                </label>
-                                <span class="muted small">※ ONで蛋白補正 0.5 + 肝不全用アミノ酸製剤を検討</span>
-                            </div>
+                    <div class="field sub"
+                         data-hepatic-wrapper
+                         @(Model.SelectedDisease == DiseaseType.LiverCirrhosis ? "" : "style=\"display:none;\"")>
+                        <div class="label">肝性脳症</div>
+                        <div class="control">
+                            <label style="display:flex;gap:8px;align-items:center;">
+                                <input asp-for="IsHepaticEncephalopathy"
+                                       type="checkbox"
+                                       data-change-action="hepatic"
+                                       data-hepatic-input />
+                                あり（蛋白不耐）
+                            </label>
+                            <span class="muted small">※ ONで蛋白補正 0.5 + 肝不全用アミノ酸製剤を検討</span>
                         </div>
-                    }
+                    </div>
 
                     <div class="field field-compact">
                         <div class="label">蛋白補正</div>
                         <div class="control">
                             <select asp-for="SelectedProteinCorrection"
                                     asp-items="Html.GetEnumSelectList<ProteinCorrectionType>()"
-                                    data-change-action="protein">
+                                    data-change-action="protein"
+                                    data-protein-select>
                             </select>
                         </div>
                     </div>
