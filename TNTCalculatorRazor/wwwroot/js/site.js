@@ -256,7 +256,7 @@ function tntLimitNumber(el) {
         }
 
         var select = document.querySelector("[data-energy-select]");
-        if (select && data.SelectedEnergyOrder) {
+        if (select && data.SelectedEnergyOrder !== undefined && data.SelectedEnergyOrder !== null) {
             select.value = data.SelectedEnergyOrder;
         }
 
@@ -331,6 +331,8 @@ function tntLimitNumber(el) {
             proteinSelect.value = data.SelectedProteinCorrection;
         }
     }
+
+    window.tntApplyFormStateFromPanel = applyFormStateFromPanel;
 
     function submitWithRecalc(form) {
         if (!form) return;
@@ -608,6 +610,13 @@ function tntLimitNumber(el) {
 
         if (window.tntSetResultDetailsOpenByLayout) {
             window.tntSetResultDetailsOpenByLayout();
+        }
+
+        if (window.tntApplyFormStateFromPanel) {
+            var panel = document.getElementById("resultPanel");
+            if (panel) {
+                window.tntApplyFormStateFromPanel(panel);
+            }
         }
 
         window.addEventListener("resize", function () {
