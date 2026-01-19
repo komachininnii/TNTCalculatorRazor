@@ -219,6 +219,8 @@ function tntLimitNumber(el) {
         return dataEl.textContent || dataEl.innerText || dataEl.text || dataEl.innerHTML || "";
     }
 
+    // IE対策：<script type="application/json">の中身が取得できない場合があるため、
+    // scriptの内容が空なら data-* 属性のJSONを使う。
     function readPanelJson(panel, scriptId, dataAttr) {
         var scriptEl = panel ? panel.querySelector(scriptId) : null;
         var raw = scriptEl ? readJsonScript(scriptEl) : "";
@@ -231,6 +233,8 @@ function tntLimitNumber(el) {
         return attr || "{}";
     }
 
+    // 再計算結果のエラーJSONを左カラムの入力欄へ反映する。
+    // IEでは classList が使えない場合があるため className 操作も併用する。
     function applyResultErrorsFromPanel(panel) {
         if (!panel) return;
 
@@ -273,6 +277,7 @@ function tntLimitNumber(el) {
         }
     }
 
+    // 必要エネルギー関連（算出方法/数値/候補）を左カラムへ同期する。
     function applyEnergyFromPanel(panel) {
         if (!panel) return;
 
@@ -312,6 +317,7 @@ function tntLimitNumber(el) {
         }
     }
 
+    // 疾患・妊娠・肝性脳症・蛋白補正など条件付きUIを同期する。
     function applyFormStateFromPanel(panel) {
         if (!panel) return;
 
@@ -365,6 +371,8 @@ function tntLimitNumber(el) {
 
     window.tntApplyFormStateFromPanel = applyFormStateFromPanel;
 
+    // Enter/blur/changeの自動計算をAJAXで処理し、結果パネルのみ差し替える。
+    // fetch非対応（IE等）の場合は従来submitへフォールバックする。
     function submitWithRecalc(form) {
         if (!form) return;
         if (!canUseAjax()) {
