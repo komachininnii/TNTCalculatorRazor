@@ -323,7 +323,7 @@ function tntLimitNumber(el) {
 
         var hepaticInput = document.querySelector("[data-hepatic-input]");
         if (hepaticInput) {
-            hepaticInput.checked = !!data.IsHepaticEncephalopathy;
+            hepaticInput.checked = data.ShowHepatic ? !!data.IsHepaticEncephalopathy : false;
         }
 
         var proteinSelect = document.querySelector("[data-protein-select]");
