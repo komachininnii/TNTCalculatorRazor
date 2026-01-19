@@ -1,5 +1,25 @@
 @model IndexModel
+@using System.Text.Json
 @using TNTCalculatorRazor.Domain.Enums
+
+@{
+    Func<string, string?> getError = key =>
+        ViewData.ModelState.TryGetValue(key, out var entry) && entry.Errors.Count > 0
+            ? entry.Errors[0].ErrorMessage
+            : null;
+
+    var errors = new Dictionary<string, string?>
+    {
+        ["Age"] = getError(nameof(Model.Age)),
+        ["Height"] = getError(nameof(Model.Height)),
+        ["Weight"] = getError(nameof(Model.Weight)),
+        ["SerumCreatinine"] = getError(nameof(Model.SerumCreatinine))
+    };
+
+    var errorJson = JsonSerializer.Serialize(errors);
+}
+
+<script type="application/json" id="resultPanelErrorData">@Html.Raw(errorJson)</script>
 
         <div class="summary">
 

@@ -209,6 +209,40 @@ function tntLimitNumber(el) {
 
     window.tntSetResultDetailsOpenByLayout = setResultDetailsOpenByLayout;
 
+    function applyResultErrorsFromPanel(panel) {
+        if (!panel) return;
+        var dataEl = panel.querySelector("#resultPanelErrorData");
+        if (!dataEl) return;
+
+        var data;
+        try {
+            data = JSON.parse(dataEl.textContent || "{}");
+        } catch (e) {
+            return;
+        }
+
+        for (var key in data) {
+            if (!Object.prototype.hasOwnProperty.call(data, key)) continue;
+            var msg = data[key] || "";
+            var container = document.querySelector('[data-error-for="' + key + '"]');
+            if (!container) continue;
+
+            var span = container.querySelector("span");
+            if (!span) {
+                span = document.createElement("span");
+                container.appendChild(span);
+            }
+
+            if (msg) {
+                span.textContent = msg;
+                container.style.display = "";
+            } else {
+                span.textContent = "";
+                container.style.display = "none";
+            }
+        }
+    }
+
     function submitWithRecalc(form) {
         if (!form) return;
         if (!canUseAjax()) {
@@ -232,6 +266,7 @@ function tntLimitNumber(el) {
                 if (panel) {
                     panel.innerHTML = html;
                     setResultDetailsOpenByLayout();
+                    applyResultErrorsFromPanel(panel);
                 }
             })
             .catch(function () {
