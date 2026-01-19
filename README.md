@@ -199,6 +199,11 @@ launchSettings.json に一時的に追加（https側の"ASPNETCORE_ENVIRONMENT":
 
 ## トラブルシューティング
 
+---
+
+## Appendix
+- [AJAX再計算と結果パネル同期（B-1最小差分）](appendix-ajax-recalc.md)
+
 ### Azure で院内マニュアルリンクが表示されてしまう場合
 - /home/site/wwwroot 配下に appsettings.Production.json が残っていないか確認
 - Zip Deploy は不要ファイルを自動削除しない点に注意
