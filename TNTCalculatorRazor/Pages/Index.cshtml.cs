@@ -304,20 +304,21 @@ public class IndexModel : PageModel
         if (Age.HasValue && Age.Value < 18)
         {
             var forcedDiseaseReset = false;
-
+            
+            // 疾患を None に強制
             if (SelectedDisease != DiseaseType.None)
             {
                 SelectedDisease = DiseaseType.None;
                 ClearModelState(nameof(SelectedDisease));
                 forcedDiseaseReset = true;
             }
-            
+            // 肝性脳症チェックも解除
             if (IsHepaticEncephalopathy)
             {
                 IsHepaticEncephalopathy = false;
                 ClearModelState(nameof(IsHepaticEncephalopathy));
             }
-
+            // エネルギー算出方法もデフォルトへ強制
             if (forcedDiseaseReset && !IsEnergyUserEdited && act == "anthro")
             {
                 SelectedEnergyOrder = EnergyOrderDefaultSelector.GetDefault(SelectedDisease);

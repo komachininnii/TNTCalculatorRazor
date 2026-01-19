@@ -201,9 +201,6 @@ launchSettings.json に一時的に追加（https側の"ASPNETCORE_ENVIRONMENT":
 
 ---
 
-## Appendix
-- [AJAX再計算と結果パネル同期（B-1最小差分）](appendix-ajax-recalc.md)
-
 ### Azure で院内マニュアルリンクが表示されてしまう場合
 - /home/site/wwwroot 配下に appsettings.Production.json が残っていないか確認
 - Zip Deploy は不要ファイルを自動削除しない点に注意
@@ -234,6 +231,11 @@ JavaScript / Razor Pages の整理・リファクタリング内容のまとめ�
 
 Index内の script を site.js に移行経緯・意図を記録する補足資料。
 - [Appendix: Client-side JavaScript Design Notes](docs/appendix-js.md)
+
+## AJAX再計算と結果パネル同期
+
+スマホの戻るボタンで「フォーム再送信の確認」を出さないようにするための実装ノート。
+- [AJAX再計算と結果パネル同期（B-1最小差分）](docs/appendix-ajax-recalc.md)
 
 ---
 
