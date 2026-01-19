@@ -278,7 +278,7 @@ public class IndexModel : PageModel
     public PartialViewResult OnPostRecalc()
     {
         RecalcAll();
-        return Partial("_ResultPanel");
+        return Partial("_ResultPanel", this);
     }
 
     private void RecalcAll()
@@ -723,5 +723,4 @@ public class IndexModel : PageModel
         }
     }
 }
-
 
