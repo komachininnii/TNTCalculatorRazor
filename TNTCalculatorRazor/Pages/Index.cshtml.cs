@@ -272,6 +272,17 @@ public class IndexModel : PageModel
     // ==============================
     public void OnPost()
     {
+        RecalcAll();
+    }
+
+    public PartialViewResult OnPostRecalc()
+    {
+        RecalcAll();
+        return Partial("_ResultPanel");
+    }
+
+    private void RecalcAll()
+    {
         var act = Act;
 
         // 0) ユーザー編集フラグ（kcal or mL を触ったら以後自動同期しない）
@@ -712,6 +723,5 @@ public class IndexModel : PageModel
         }
     }
 }
-
 
 

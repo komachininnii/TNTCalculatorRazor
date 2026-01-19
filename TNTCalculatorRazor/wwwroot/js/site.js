@@ -173,6 +173,78 @@ function tntLimitNumber(el) {
         finally { window.setTimeout(function () { form.__tntSubmitting = false; }, 300); }
     }
 
+    function canUseAjax() {
+        return typeof window.fetch === "function" && typeof window.FormData !== "undefined";
+    }
+
+    function buildRecalcUrl(form) {
+        var action = (form && form.getAttribute) ? form.getAttribute("action") : "";
+        if (!action) action = window.location.href;
+        return action + (action.indexOf("?") >= 0 ? "&" : "?") + "handler=Recalc";
+    }
+
+    function setResultDetailsOpenByLayout() {
+        var isMobile = false;
+
+        if (window.matchMedia) {
+            isMobile = window.matchMedia("(max-width: 980px)").matches;
+        } else {
+            var w = document.documentElement.clientWidth || document.body.clientWidth;
+            isMobile = (w <= 980);
+        }
+
+        var list = document.querySelectorAll(".enteral-details, .result-details");
+        for (var i = 0; i < list.length; i++) {
+            var d = list[i];
+            if (!d) continue;
+            if (isMobile) {
+                if (d.removeAttribute) d.removeAttribute("open");
+                if ("open" in d) d.open = false;
+            } else {
+                if (d.setAttribute) d.setAttribute("open", "open");
+                if ("open" in d) d.open = true;
+            }
+        }
+    }
+
+    window.tntSetResultDetailsOpenByLayout = setResultDetailsOpenByLayout;
+
+    function submitWithRecalc(form) {
+        if (!form) return;
+        if (!canUseAjax()) {
+            submitGuarded(form);
+            return;
+        }
+        if (form.__tntSubmitting) return;
+        form.__tntSubmitting = true;
+
+        var fd = new FormData(form);
+        var url = buildRecalcUrl(form);
+
+        fetch(url, {
+            method: "POST",
+            body: fd,
+            credentials: "same-origin"
+        })
+            .then(function (r) { return r.text(); })
+            .then(function (html) {
+                var panel = document.getElementById("resultPanel");
+                if (panel) {
+                    panel.innerHTML = html;
+                    setResultDetailsOpenByLayout();
+                }
+            })
+            .catch(function () {
+                form.__tntSubmitting = false;
+                submitGuarded(form);
+            })
+            .then(function () {
+                if (form.__tntSubmitting) {
+                    window.setTimeout(function () { form.__tntSubmitting = false; }, 300);
+                }
+            });
+    }
+
     function trim(v) { return v ? v.replace(/^\s+|\s+$/g, "") : ""; }
 
     // ==== 1) 数値制限：data-maxint/maxdec属性を持つ要素にtntLimitNumberを適用 ====
@@ -208,7 +280,7 @@ function tntLimitNumber(el) {
         if (form) {
             var actionField = form.querySelector('input[name="Action"]');
             if (actionField) actionField.value = action;
-            submitGuarded(form);
+            submitWithRecalc(form);
         }
         return false;
     });
@@ -235,7 +307,7 @@ function tntLimitNumber(el) {
         var actionField = form.querySelector('input[name="Action"]');
         if (actionField) actionField.value = action;
 
-        submitGuarded(form);
+        submitWithRecalc(form);
     });
 
     // ==== 4) blur送信：smart blur または data-blur-action ====
@@ -267,7 +339,7 @@ function tntLimitNumber(el) {
             if (id === "Age" || id === "Height" || id === "Weight" || id === "SerumCreatinine") return;
 
             if (actField) actField.value = doRenal ? "renal" : "anthro";
-            submitGuarded(form);
+            submitWithRecalc(form);
         }, 0);
     }
 
@@ -295,7 +367,7 @@ function tntLimitNumber(el) {
                 return;
             }
             if (actField) actField.value = blurAction;
-            submitGuarded(form);
+            submitWithRecalc(form);
         } else {
             if (actField && !actField.value) actField.value = "calc";
         }
@@ -407,7 +479,16 @@ function tntLimitNumber(el) {
                 root.className = cn ? (cn + " tnt-ready") : "tnt-ready";
             }
         }
+
+        if (window.tntSetResultDetailsOpenByLayout) {
+            window.tntSetResultDetailsOpenByLayout();
+        }
+
+        window.addEventListener("resize", function () {
+            if (window.tntSetResultDetailsOpenByLayout) {
+                window.tntSetResultDetailsOpenByLayout();
+            }
+        });
     });
 
 })();
-
