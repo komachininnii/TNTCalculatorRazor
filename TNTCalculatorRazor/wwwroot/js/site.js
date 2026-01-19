@@ -304,7 +304,8 @@ function tntLimitNumber(el) {
 
         var pill = document.querySelector("[data-energy-user-edited]");
         if (pill) {
-            pill.style.display = data.IsEnergyUserEdited ? "" : "none";
+            var hasEnergyValue = data.EnergyOrderValue !== null && data.EnergyOrderValue !== undefined && data.EnergyOrderValue !== "";
+            pill.style.display = (data.IsEnergyUserEdited && hasEnergyValue) ? "" : "none";
         }
 
         var keys = ["EnergyByBmrKcal", "Kcal25", "Kcal30", "Kcal35"];
