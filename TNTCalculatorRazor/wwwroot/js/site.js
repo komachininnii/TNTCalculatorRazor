@@ -235,10 +235,18 @@ function tntLimitNumber(el) {
 
             if (msg) {
                 span.textContent = msg;
-                container.style.display = "";
+                if (container.classList && container.classList.add) {
+                    container.classList.add("field-error--visible");
+                } else {
+                    container.className = (container.className || "") + " field-error--visible";
+                }
             } else {
                 span.textContent = "";
-                container.style.display = "none";
+                if (container.classList && container.classList.remove) {
+                    container.classList.remove("field-error--visible");
+                } else {
+                    container.className = (container.className || "").replace(/\bfield-error--visible\b/g, "");
+                }
             }
         }
     }

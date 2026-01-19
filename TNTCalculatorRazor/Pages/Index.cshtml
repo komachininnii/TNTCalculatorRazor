@@ -49,8 +49,9 @@
                                         && entryAge.Errors.Count > 0
                                         ? entryAge.Errors[0].ErrorMessage
                                         : "";
+                                var ageErrorClass = string.IsNullOrEmpty(ageError) ? "" : " field-error--visible";
                             }
-                            <div class="field-error text-danger" data-error-for="Age"@(string.IsNullOrEmpty(ageError) ? " style=\"display:none;\"" : "")>
+                            <div class="field-error text-danger@ageErrorClass" data-error-for="Age">
                                 <span>@ageError</span>
                             </div>
                         </div>
@@ -71,8 +72,9 @@
                                         && entryHeight.Errors.Count > 0
                                         ? entryHeight.Errors[0].ErrorMessage
                                         : "";
+                                var heightErrorClass = string.IsNullOrEmpty(heightError) ? "" : " field-error--visible";
                             }
-                            <div class="field-error text-danger" data-error-for="Height"@(string.IsNullOrEmpty(heightError) ? " style=\"display:none;\"" : "")>
+                            <div class="field-error text-danger@heightErrorClass" data-error-for="Height">
                                 <span>@heightError</span>
                             </div>
                         </div>
@@ -93,8 +95,9 @@
                                         && entryWeight.Errors.Count > 0
                                         ? entryWeight.Errors[0].ErrorMessage
                                         : "";
+                                var weightErrorClass = string.IsNullOrEmpty(weightError) ? "" : " field-error--visible";
                             }
-                            <div class="field-error text-danger" data-error-for="Weight"@(string.IsNullOrEmpty(weightError) ? " style=\"display:none;\"" : "")>
+                            <div class="field-error text-danger@weightErrorClass" data-error-for="Weight">
                                 <span>@weightError</span>
                             </div>
                         </div>
@@ -116,8 +119,9 @@
                                         && crEntry.Errors.Count > 0
                                         ? crEntry.Errors[0].ErrorMessage
                                         : "";
+                                var crErrorClass = string.IsNullOrEmpty(crError) ? "" : " field-error--visible";
                             }
-                            <div class="field-error text-danger" data-error-for="SerumCreatinine"@(string.IsNullOrEmpty(crError) ? " style=\"display:none;\"" : "")>
+                            <div class="field-error text-danger@crErrorClass" data-error-for="SerumCreatinine">
                                 <span>@crError</span>
                             </div>
                         </div>
