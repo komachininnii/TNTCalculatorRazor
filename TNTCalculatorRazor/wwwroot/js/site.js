@@ -173,6 +173,251 @@ function tntLimitNumber(el) {
         finally { window.setTimeout(function () { form.__tntSubmitting = false; }, 300); }
     }
 
+    function canUseAjax() {
+        return typeof window.fetch === "function" && typeof window.FormData !== "undefined";
+    }
+
+    function buildRecalcUrl(form) {
+        var action = (form && form.getAttribute) ? form.getAttribute("action") : "";
+        if (!action) action = window.location.href;
+        return action + (action.indexOf("?") >= 0 ? "&" : "?") + "handler=Recalc";
+    }
+
+    var tntLastLayoutIsMobile = null;
+
+    function getIsMobileLayout() {
+        if (window.matchMedia) {
+            return window.matchMedia("(max-width: 980px)").matches;
+        }
+
+        var w = document.documentElement.clientWidth || document.body.clientWidth;
+        return (w <= 980);
+    }
+
+    function setResultDetailsOpenByLayout() {
+        var isMobile = getIsMobileLayout();
+        tntLastLayoutIsMobile = isMobile;
+
+        var list = document.querySelectorAll(".enteral-details, .result-details");
+        for (var i = 0; i < list.length; i++) {
+            var d = list[i];
+            if (!d) continue;
+            if (isMobile) {
+                if (d.removeAttribute) d.removeAttribute("open");
+                if ("open" in d) d.open = false;
+            } else {
+                if (d.setAttribute) d.setAttribute("open", "open");
+                if ("open" in d) d.open = true;
+            }
+        }
+    }
+
+    window.tntSetResultDetailsOpenByLayout = setResultDetailsOpenByLayout;
+
+    function readJsonScript(dataEl) {
+        if (!dataEl) return "";
+        return dataEl.textContent || dataEl.innerText || dataEl.text || dataEl.innerHTML || "";
+    }
+
+    // IE対策：<script type="application/json">の中身が取得できない場合があるため、
+    // scriptの内容が空なら data-* 属性のJSONを使う。
+    function readPanelJson(panel, scriptId, dataAttr) {
+        var scriptEl = panel ? panel.querySelector(scriptId) : null;
+        var raw = scriptEl ? readJsonScript(scriptEl) : "";
+        if (raw && raw.replace(/\s+/g, "") !== "") return raw;
+
+        var dataEl = panel ? panel.querySelector("#resultPanelData") : null;
+        if (!dataEl) return "{}";
+
+        var attr = dataEl.getAttribute(dataAttr);
+        return attr || "{}";
+    }
+
+    // 再計算結果のエラーJSONを左カラムの入力欄へ反映する。
+    // IEでは classList が使えない場合があるため className 操作も併用する。
+    function applyResultErrorsFromPanel(panel) {
+        if (!panel) return;
+
+        var data;
+        try {
+            data = JSON.parse(readPanelJson(panel, "#resultPanelErrorData", "data-errors"));
+        } catch (e) {
+            return;
+        }
+
+        for (var key in data) {
+            if (!Object.prototype.hasOwnProperty.call(data, key)) continue;
+            var msg = data[key] || "";
+            var container = document.querySelector('[data-error-for="' + key + '"]');
+            if (!container) continue;
+
+            var span = container.querySelector("span");
+            if (!span) {
+                span = document.createElement("span");
+                container.appendChild(span);
+            }
+
+            if (msg) {
+                span.textContent = msg;
+                if (container.classList && container.classList.add) {
+                    container.classList.add("field-error--visible");
+                } else {
+                    container.className = (container.className || "") + " field-error--visible";
+                }
+                container.style.display = "block";
+            } else {
+                span.textContent = "";
+                if (container.classList && container.classList.remove) {
+                    container.classList.remove("field-error--visible");
+                } else {
+                    container.className = (container.className || "").replace(/\bfield-error--visible\b/g, "");
+                }
+                container.style.display = "none";
+            }
+        }
+    }
+
+    // 必要エネルギー関連（算出方法/数値/候補）を左カラムへ同期する。
+    function applyEnergyFromPanel(panel) {
+        if (!panel) return;
+
+        var data;
+        try {
+            data = JSON.parse(readPanelJson(panel, "#resultPanelEnergyData", "data-energy"));
+        } catch (e) {
+            return;
+        }
+
+        var select = document.querySelector("[data-energy-select]");
+        if (select && data.SelectedEnergyOrder !== undefined && data.SelectedEnergyOrder !== null) {
+            select.value = data.SelectedEnergyOrder;
+        }
+
+        var input = document.querySelector("[data-energy-input]");
+        if (input) {
+            if (data.EnergyOrderValue === null || data.EnergyOrderValue === undefined) {
+                input.value = "";
+            } else {
+                input.value = data.EnergyOrderValue;
+            }
+        }
+
+        var pill = document.querySelector("[data-energy-user-edited]");
+        if (pill) {
+            var hasEnergyValue =
+                data.EnergyOrderValue !== null
+                && data.EnergyOrderValue !== undefined
+                && data.EnergyOrderValue !== ""
+                && Number(data.EnergyOrderValue) > 0;
+            pill.style.display = (data.IsEnergyUserEdited && hasEnergyValue) ? "" : "none";
+        }
+
+        var keys = ["EnergyByBmrKcal", "Kcal25", "Kcal30", "Kcal35"];
+        for (var i = 0; i < keys.length; i++) {
+            var key = keys[i];
+            var el = document.querySelector('[data-energy-candidate="' + key + '"]');
+            if (!el) continue;
+            var value = data[key];
+            el.textContent = (value === null || value === undefined || value === "") ? "-" : value;
+        }
+    }
+
+    // 疾患・妊娠・肝性脳症・蛋白補正など条件付きUIを同期する。
+    function applyFormStateFromPanel(panel) {
+        if (!panel) return;
+
+        var data;
+        try {
+            data = JSON.parse(readPanelJson(panel, "#resultPanelFormStateData", "data-form-state"));
+        } catch (e) {
+            return;
+        }
+
+        var diseaseWrapper = document.querySelector("[data-disease-wrapper]");
+        if (diseaseWrapper) {
+            diseaseWrapper.style.display = data.ShowDisease ? "" : "none";
+        }
+
+        var diseaseSelect = document.querySelector("[data-disease-select]");
+        if (diseaseSelect && data.SelectedDisease !== undefined && data.SelectedDisease !== null) {
+            diseaseSelect.value = data.SelectedDisease;
+        }
+
+        var pregnantWrapper = document.querySelector("[data-pregnant-wrapper]");
+        if (pregnantWrapper) {
+            pregnantWrapper.style.display = data.ShowPregnant ? "" : "none";
+        }
+
+        var pregnantInput = document.querySelector("[data-pregnant-input]");
+        if (pregnantInput) {
+            pregnantInput.checked = !!data.IsPregnant;
+        }
+
+        var hepaticWrapper = document.querySelector("[data-hepatic-wrapper]");
+        if (hepaticWrapper) {
+            hepaticWrapper.style.display = data.ShowHepatic ? "" : "none";
+        }
+
+        var hepaticInput = document.querySelector("[data-hepatic-input]");
+        if (hepaticInput) {
+            hepaticInput.checked = data.ShowHepatic ? !!data.IsHepaticEncephalopathy : false;
+        }
+
+        var proteinSelect = document.querySelector("[data-protein-select]");
+        if (proteinSelect && data.SelectedProteinCorrection !== undefined && data.SelectedProteinCorrection !== null) {
+            proteinSelect.value = data.SelectedProteinCorrection;
+        }
+
+        var proteinFlag = document.querySelector('input[name="IsProteinCorrectionUserEdited"]');
+        if (proteinFlag && data.IsProteinCorrectionUserEdited !== undefined && data.IsProteinCorrectionUserEdited !== null) {
+            proteinFlag.value = data.IsProteinCorrectionUserEdited ? "true" : "false";
+        }
+    }
+
+    window.applyEnergyFromPanel = applyEnergyFromPanel;
+    window.tntApplyFormStateFromPanel = applyFormStateFromPanel;
+
+    // Enter/blur/changeの自動計算をAJAXで処理し、結果パネルのみ差し替える。
+    // fetch非対応（IE等）の場合は従来submitへフォールバックする。
+    function submitWithRecalc(form) {
+        if (!form) return;
+        if (!canUseAjax()) {
+            submitGuarded(form);
+            return;
+        }
+        if (form.__tntSubmitting) return;
+        form.__tntSubmitting = true;
+
+        var fd = new FormData(form);
+        var url = buildRecalcUrl(form);
+
+        fetch(url, {
+            method: "POST",
+            body: fd,
+            credentials: "same-origin"
+        })
+            .then(function (r) { return r.text(); })
+            .then(function (html) {
+                var panel = document.getElementById("resultPanel");
+                if (panel) {
+                    panel.innerHTML = html;
+                    setResultDetailsOpenByLayout();
+                    applyResultErrorsFromPanel(panel);
+                    applyEnergyFromPanel(panel);
+                    applyFormStateFromPanel(panel);
+                }
+            })
+            .catch(function () {
+                form.__tntSubmitting = false;
+                submitGuarded(form);
+            })
+            .then(function () {
+                if (form.__tntSubmitting) {
+                    window.setTimeout(function () { form.__tntSubmitting = false; }, 300);
+                }
+            });
+    }
+
     function trim(v) { return v ? v.replace(/^\s+|\s+$/g, "") : ""; }
 
     // ==== 1) 数値制限：data-maxint/maxdec属性を持つ要素にtntLimitNumberを適用 ====
@@ -208,7 +453,7 @@ function tntLimitNumber(el) {
         if (form) {
             var actionField = form.querySelector('input[name="Action"]');
             if (actionField) actionField.value = action;
-            submitGuarded(form);
+            submitWithRecalc(form);
         }
         return false;
     });
@@ -235,7 +480,7 @@ function tntLimitNumber(el) {
         var actionField = form.querySelector('input[name="Action"]');
         if (actionField) actionField.value = action;
 
-        submitGuarded(form);
+        submitWithRecalc(form);
     });
 
     // ==== 4) blur送信：smart blur または data-blur-action ====
@@ -267,7 +512,7 @@ function tntLimitNumber(el) {
             if (id === "Age" || id === "Height" || id === "Weight" || id === "SerumCreatinine") return;
 
             if (actField) actField.value = doRenal ? "renal" : "anthro";
-            submitGuarded(form);
+            submitWithRecalc(form);
         }, 0);
     }
 
@@ -295,7 +540,7 @@ function tntLimitNumber(el) {
                 return;
             }
             if (actField) actField.value = blurAction;
-            submitGuarded(form);
+            submitWithRecalc(form);
         } else {
             if (actField && !actField.value) actField.value = "calc";
         }
@@ -407,7 +652,27 @@ function tntLimitNumber(el) {
                 root.className = cn ? (cn + " tnt-ready") : "tnt-ready";
             }
         }
+
+        if (window.tntSetResultDetailsOpenByLayout) {
+            window.tntSetResultDetailsOpenByLayout();
+        }
+
+        if (window.tntApplyFormStateFromPanel) {
+            var panel = document.getElementById("resultPanel");
+            if (panel) {
+                if (window.applyEnergyFromPanel) {
+                    window.applyEnergyFromPanel(panel);
+                }
+                window.tntApplyFormStateFromPanel(panel);
+            }
+        }
+
+        window.addEventListener("resize", function () {
+            var isMobile = getIsMobileLayout();
+            if (tntLastLayoutIsMobile !== isMobile && window.tntSetResultDetailsOpenByLayout) {
+                window.tntSetResultDetailsOpenByLayout();
+            }
+        });
     });
 
 })();
-

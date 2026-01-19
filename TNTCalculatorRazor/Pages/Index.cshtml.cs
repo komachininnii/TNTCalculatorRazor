@@ -272,6 +272,17 @@ public class IndexModel : PageModel
     // ==============================
     public void OnPost()
     {
+        RecalcAll();
+    }
+
+    public PartialViewResult OnPostRecalc()
+    {
+        RecalcAll();
+        return Partial("_ResultPanel", this);
+    }
+
+    private void RecalcAll()
+    {
         var act = Act;
 
         // 0) ユーザー編集フラグ（kcal or mL を触ったら以後自動同期しない）
@@ -292,16 +303,25 @@ public class IndexModel : PageModel
         // 小児は「例外疾患の対象外」：疾患は None に固定（UIもdisabled化する想定）
         if (Age.HasValue && Age.Value < 18)
         {
+            var forcedDiseaseReset = false;
+
             if (SelectedDisease != DiseaseType.None)
             {
                 SelectedDisease = DiseaseType.None;
                 ClearModelState(nameof(SelectedDisease));
+                forcedDiseaseReset = true;
             }
             
             if (IsHepaticEncephalopathy)
             {
                 IsHepaticEncephalopathy = false;
                 ClearModelState(nameof(IsHepaticEncephalopathy));
+            }
+
+            if (forcedDiseaseReset && !IsEnergyUserEdited && act == "anthro")
+            {
+                SelectedEnergyOrder = EnergyOrderDefaultSelector.GetDefault(SelectedDisease);
+                ClearModelState(nameof(SelectedEnergyOrder));
             }
         }
 
@@ -712,6 +732,3 @@ public class IndexModel : PageModel
         }
     }
 }
-
-
-

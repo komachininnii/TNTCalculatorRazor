@@ -1,0 +1,535 @@
+@model IndexModel
+@using System.Text.Json
+@using TNTCalculatorRazor.Domain.Enums
+
+@{
+    Func<string, string?> getError = key =>
+        ViewData.ModelState.TryGetValue(key, out var entry) && entry.Errors.Count > 0
+            ? entry.Errors[0].ErrorMessage
+            : null;
+
+    var errors = new Dictionary<string, string?>
+    {
+        ["Age"] = getError(nameof(Model.Age)),
+        ["Height"] = getError(nameof(Model.Height)),
+        ["Weight"] = getError(nameof(Model.Weight)),
+        ["SerumCreatinine"] = getError(nameof(Model.SerumCreatinine))
+    };
+
+    var errorJson = JsonSerializer.Serialize(errors);
+
+    var energy = new
+    {
+        SelectedEnergyOrder = (int)Model.SelectedEnergyOrder,
+        EnergyOrderValue = Model.EnergyOrderValue,
+        IsEnergyUserEdited = Model.IsEnergyUserEdited,
+        EnergyByBmrKcal = Model.EnergyByBmrKcal,
+        Kcal25 = Model.Kcal25,
+        Kcal30 = Model.Kcal30,
+        Kcal35 = Model.Kcal35
+    };
+
+    var energyJson = JsonSerializer.Serialize(energy);
+
+    var showPregnant =
+        Model.Gender == GenderType.Female
+        && Model.Age.HasValue
+        && Model.Age.Value >= 18
+        && Model.Age.Value <= 55;
+
+    var formState = new
+    {
+        ShowDisease = !(Model.Age.HasValue && Model.Age.Value < 18),
+        SelectedDisease = (int)Model.SelectedDisease,
+        ShowPregnant = showPregnant,
+        IsPregnant = Model.IsPregnant,
+        ShowHepatic = Model.SelectedDisease == DiseaseType.LiverCirrhosis,
+        IsHepaticEncephalopathy = Model.IsHepaticEncephalopathy,
+        SelectedProteinCorrection = (int)Model.SelectedProteinCorrection,
+        IsProteinCorrectionUserEdited = Model.IsProteinCorrectionUserEdited
+    };
+
+    var formStateJson = JsonSerializer.Serialize(formState);
+}
+
+<script type="application/json" id="resultPanelErrorData">@Html.Raw(errorJson)</script>
+<script type="application/json" id="resultPanelEnergyData">@Html.Raw(energyJson)</script>
+<script type="application/json" id="resultPanelFormStateData">@Html.Raw(formStateJson)</script>
+<div id="resultPanelData"
+     data-errors="@errorJson"
+     data-energy="@energyJson"
+     data-form-state="@formStateJson"
+     style="display:none;"></div>
+
+        <div class="summary">
+
+            <!-- 追加：右カラム先頭（スマホで先に読む3点） -->
+            <div class="card summary-hero">
+                <h3>結果（要点）</h3>
+                
+                <div class="hero3">
+
+                    <div class="hero3-item">
+                        <div class="hero3-label">蛋白<span class="label-unit">(g)</span></div>
+                        <div class="hero3-value">
+                            @if (!string.IsNullOrEmpty(Model.ProteinDisplayText))
+                            {
+                                <strong>@Model.ProteinDisplayText</strong>
+                                @if (Model.SelectedProteinCorrection != ProteinCorrectionType.None)
+                                {
+                                    <span class="value-tail">
+                                        <span class="pill mini">補正</span>
+                                    </span>
+                                }
+                            }
+                            else
+                            {
+                                <span class="muted">-</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="hero3-item">
+                        <div class="hero3-label">水分<span class="label-unit">(mL)</span></div>
+                        <div class="hero3-value">
+                            @if (Model.WaterDisplay.HasValue)
+                            {
+                                <strong>@Model.WaterDisplay.Value</strong>
+                                @if (Model.WaterFeverCorrected)
+                                {
+                                    <span class="value-tail">
+                                        <span class="pill mini">発熱</span>
+                                    </span>
+                                }
+                            }
+                            else
+                            {
+                                <span class="muted">-</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="hero3-item">
+                        <div class="hero3-label">推定CCr<span class="label-unit">(mL/min)</span></div>
+                        <div class="hero3-value">
+                            @if (Model.CcrCorrected.HasValue)
+                            {
+                                <strong>@Model.CcrCorrected.Value.ToString("F1")</strong>
+                                <span class="value-tail">
+                                    <span class="pill mini">補正</span>
+                                </span>
+                            }
+                            else if (Model.CcrActual.HasValue)
+                            {
+                                <strong>@Model.CcrActual.Value.ToString("F1")</strong>
+                            }
+                            else
+                            {
+                                <span class="muted">-</span>
+                            }
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 以下、既存の結果（詳細）カードや経腸栄養カードが続く -->
+            <details class="fold result-details" open>
+                <summary>結果（詳細）</summary>
+
+            <div class="card result-card">
+                <h3>結果</h3>
+
+                <div class="two-col">
+                    <div>
+                        <!-- "kv kv-tight" 2行表示から"kv kv-need"1行表示に変更 -->
+                        <dl class="kv kv-need">
+                            <dt>基礎代謝量</dt>
+                            <dd>
+                                @if (Model.BmrKcal.HasValue)
+                                {
+                                    <strong>@Model.BmrKcal.Value.ToString()</strong>
+                                    <span class="unit">kcal</span>
+                                }
+                                else
+                                {
+                                    <span class="muted">-</span>
+                                    <span class="unit">kcal</span>
+                                }
+                                @* pill は dd 側へ移動（IE段ズレ対策、ストレス合計と同じ構造） *@
+                                <div class="pills bmr-pills" style="margin-top:0px;">
+                                    @* 算出法 pill：計算前も表示 *@
+                                    <span class="pill mini trunc" title="@Model.BmrFormulaDisplayLong">
+                                        @(!string.IsNullOrWhiteSpace(Model.BmrFormulaDisplay) ? Model.BmrFormulaDisplay : "算出法")
+                                    </span>
+
+                                    @* 体重 pill：計算前は「使用体重」、計算後は「実測50.0/標準50.0/調整50.0」 *@
+                                    @if (Model.BmrWeightBasis.HasValue && Model.BmrWeightUsed.HasValue)
+                                    {
+                                        <span class="pill mini" title="@Model.BmrWeightBasis.Value.ToLongName()">
+                                            @( $"{Model.BmrWeightBasis.Value.ToKindName()}{Model.BmrWeightUsed.Value:F1}kg" )
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="pill mini" title="BMR算出に使用する体重（計算後に 実測/標準/調整 が確定します）">
+                                            使用体重
+                                        </span>
+                                    }
+                                </div>
+                            </dd>
+
+                            <dt>BMI</dt>
+                            <dd>
+                                @if (Model.BodyIndex != null)
+                                {
+                                    <strong>@Model.BodyIndex.Bmi.ToString("F1")</strong>
+                                }
+                                else
+                                {
+                                    <span class="muted">-</span>
+                                }
+                            </dd>
+
+                            <dt>標準体重</dt>
+                            <dd>
+                                @if (Model.BodyIndex != null)
+                                {
+                                    <strong>@Model.BodyIndex.StandardWeight.ToString("F1")</strong>
+                                    <span class="unit">kg</span>
+                                }
+                                else
+                                {
+                                    <span class="muted">-</span>
+                                    <span class="unit">kg</span>
+                                }
+                            </dd>
+
+                            <dt>肥満度</dt>
+                            <dd>
+                                @if (Model.BodyIndex?.ObesityDegree != null)
+                                {
+                                    <strong>@Model.BodyIndex.ObesityDegree.Value.ToString("F0")</strong>
+                                    <span class="unit">%</span>
+                                }
+                                else
+                                {
+                                    <span class="muted">-</span>
+                                    <span class="unit">%</span>
+                                }
+                            </dd>
+
+                            <dt>体表面積</dt>
+                            <dd>
+                                @if (Model.BodySurfaceArea.HasValue)
+                                {
+                                    <strong>@Model.BodySurfaceArea.Value.ToString("F3")</strong>
+                                    <span class="unit">m²</span>
+                                }
+                                else
+                                {
+                                    <span class="muted">-</span>
+                                    <span class="unit">m²</span>
+                                }
+                            </dd>
+
+                            <dt>推定CCr</dt>
+                            <dd>
+                                @if (Model.CcrActual.HasValue)
+                                {
+                                    @* 補正後があれば補正値を主役にする *@
+                                    var ccrMain = Model.CcrCorrected ?? Model.CcrActual;
+
+                                    <strong>@ccrMain.Value.ToString("F1")</strong>
+                                    <span class="unit">mL/min</span>
+                                    
+                                    @* 参照：補正がある場合のみ、補正前を pill で表示 *@
+                                    @if (Model.CcrCorrected.HasValue)
+                                    {
+                                        <span class="pill" style="margin-left:6px;">
+                                            @($"補正前 {Model.CcrActual.Value.ToString("F1")}")
+                                        </span>
+                                    }
+
+                                    @* 注記（補正条件など） *@
+                                    @if (!string.IsNullOrWhiteSpace(Model.CcrNote))
+                                    {
+                                        <div class="muted small" style="margin-top:4px; line-height:1.2;">
+                                            @Model.CcrNote
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="muted">-</span>
+                                    <span class="unit">mL/min</span>
+                                }
+                            </dd>
+                        </dl>
+                    </div>
+
+                    <div>
+                        <h4>必要量</h4>
+                        <dl class="kv kv-need">
+                            @* 悪目立ちしすぎて削除対象
+                            <dt>ストレス合計</dt>
+                            <dd>
+                                <div class="need-line">
+                                    @Model.StressTotal.ToString("F1")
+                                    <span class="pill mini">基礎 @Model.StressBase.ToString("F2")</span>
+                                </div>
+
+                                <div class="need-line">
+                                    <span class="pill mini">熱 @Model.StressTemperature.ToString("F1")</span>
+                                    <span class="pill mini">褥 @Model.StressPressureUlcer.ToString("F1")</span>
+                                </div>
+                            </dd>
+                            *@
+
+                            <dt>必要エネルギー</dt>
+                            <dd>
+                                @if (Model.EnergyFinal.HasValue)
+                                {
+                                    <strong>@Model.EnergyFinal.Value.ToString()</strong>
+                                    <span class="unit">kcal</span>
+                                }
+                                else
+                                {
+                                    <span class="muted">-</span>
+                                    <span class="unit">kcal</span>
+                                }
+                            </dd>
+
+                            <dt>蛋白</dt>
+                            <dd>
+                                @if (!string.IsNullOrEmpty(Model.ProteinDisplayText))
+                                {
+                                    <strong>@Model.ProteinDisplayText</strong>
+                                    <span class="unit">g</span>
+                                }
+                                else
+                                {
+                                    <span class="muted">-</span>
+                                    <span class="unit">g</span>
+                                }
+                            
+                                @if (Model.SelectedProteinCorrection != ProteinCorrectionType.None)
+                                {
+                                    <span class="pill mini" style="margin-left:6px;">
+                                        @(
+                                          Model.SelectedProteinCorrection switch
+                                          {
+                                              ProteinCorrectionType.CKD3bTo5 => "補正0.7",
+                                              ProteinCorrectionType.LiverCirrhosisPoor => "補正0.5",
+                                              _ => "補正"
+                                          }
+                                         )
+                                    </span>
+                                }
+                            </dd>
+
+                            <dt>水分</dt>
+                            <dd>
+                            @if (Model.WaterDisplay.HasValue)
+                            {
+                                <strong>@Model.WaterDisplay.Value.ToString()</strong>
+                                <span class="unit">mL</span>
+                            }
+                            else
+                            {
+                                <span class="muted">-</span>
+                                <span class="unit">mL</span>
+                            }
+                            @if (Model.WaterFeverCorrected)
+                            {
+                                <span class="pill mini" style="margin-left:6px;">発熱</span>
+                            }
+                            </dd>
+                        </dl>
+                        @if (Model.IsHemodialysis)
+                        {
+                            <div class="muted small">※水分は目安（DW・体重推移で判断）</div>
+                        }
+                        @if (Model.SelectedDisease == DiseaseType.LiverCirrhosis && Model.IsHepaticEncephalopathy)
+                        {
+                            <div class="muted small">※肝不全用アミノ酸製剤の併用を検討</div>
+                        }
+                    </div>
+                </div>
+
+                <div class="hr"></div>
+                
+                <details class="fold">
+                    <summary>補足（考え方・注意点）</summary>
+                    <div class="small" style="margin-top:10px;">
+                        <ul style="margin:0; padding-left:18px;">
+                            <li><b>BMR式</b>：乳児 KPUM7／小児 DRI2010／成人は条件で HB または G07。</li>
+                            <li><b>体重</b>：乳児は実測。その他は肥満度≤80%標準、80–120%実測、≥120%調整。</li>
+                            <li><b>水分（発熱）</b>：透析以外は加算、血液透析は一律加算なし。</li>
+                        </ul>
+                        @* 疾患別の目安：選択した疾患のときだけ *@
+                        @if (Model.SelectedDisease != DiseaseType.None)
+                        {
+                            <div style="margin-top:10px;">
+                                <div class="muted" style="margin-bottom:6px;">疾患別の目安（参考）</div>
+
+                                @switch (Model.SelectedDisease)
+                                {
+                                    case DiseaseType.Diabetes:
+                                        <ul style="margin:0; padding-left:18px;">
+                                            <li>軽い労作：25kcal/標準体重</li>
+                                            <li>普通労作：30kcal/標準体重</li>
+                                            <li>重い労作：35kcal/標準体重</li>
+                                        </ul>
+                                        break;
+
+                                    case DiseaseType.RenalFailure:
+                                        <ul style="margin:0; padding-left:18px;">
+                                            <li>エネルギー：25～35kcal/標準体重</li>
+                                            <li><b>蛋白（目安）</b>：CKD1-2 過剰摂取を避ける／CKD3a 0.8～1.0 g/標準体重</li>
+                                            <li>CKD3b-5：0.6～0.8 g/標準体重</li>
+                                        </ul>
+                                        break;
+
+                                    case DiseaseType.Hemodialysis:
+                                        <ul style="margin:0; padding-left:18px;">
+                                            <li>エネルギー：30～35kcal/標準体重</li>
+                                            <li>水分：15mL/kg は目安（ドライウェイト・体重推移で判断）</li>
+                                            <li><b>蛋白（目安）</b>：0.9～1.2 g/標準体重</li>
+                                        </ul>
+                                        break;
+
+                                    case DiseaseType.LiverCirrhosis:
+                                        <ul style="margin:0; padding-left:18px;">
+                                            <li>耐糖能異常なし：30～40kcal/標準体重</li>
+                                            <li>耐糖能異常あり：25～30kcal/標準体重</li>
+                                            <li><b>蛋白（目安）</b>：不耐なし 1.0～1.5 g/標準体重</li>
+                                            <li>不耐あり 0.5～0.7 g/標準体重＋肝不全用栄養</li>
+                                        </ul>
+                                        break;
+                                }
+                            </div>
+                        }
+                        @* 小児（動的に注意） *@
+                        @if (Model.Age.HasValue && Model.Age.Value < 18)
+                        {
+                            <div class="muted" style="margin-top:8px;">
+                                小児：疾患選択なし。蛋白補正は必要に応じて手動調整。
+                            </div>
+                        }
+
+                    </div>
+                </details>
+            </div>
+            </details>
+
+            <div class="card enteral-card">
+                <h3>経腸栄養</h3>
+                                
+                <div class="fields">
+
+                    <div class="field">
+                        <div class="label">経腸栄養剤</div>
+                        <div class="control">
+                            <select asp-for="SelectedEnteralFormula"
+                                    asp-items="Html.GetEnumSelectList<EnteralFormulaType>()"
+                                    data-change-action="formula">
+                                <option value="">-- 選択してください -- [ mL/袋 (kcal/袋) ] </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="label">投与量</div>
+                        <div class="control">
+                            <input asp-for="EnteralVolumeInput"
+                                   type="number" step="1" inputmode="numeric"
+                                   data-maxint="4" data-maxdec="0"
+                                   data-change-action="volume"
+                                   data-enter-action="volume" />
+                            <span class="unit">mL</span>
+                            <span class="muted small">※手入力可(kcal同期)</span>
+                        </div>
+                    </div>
+
+                </div>
+                
+                @if (Model.EnteralVolume.HasValue)
+                {
+                    <!-- 追加：スマホで折りたたむ領域 -->
+                    <details class="fold enteral-details" open>
+                        <summary>成分・割付候補</summary>
+
+                    <div class="enteral-top">
+                        <div class="enteral-box">
+                            <h4>計算結果</h4>
+                            <p>
+                                投与量：<strong>@Model.EnteralVolume.Value.ToString("F0")</strong> mL<br />
+                                投与カロリー：<strong>@(Model.EnteralEnergy?.ToString("F0") ?? "-")</strong> kcal
+                            </p>
+                        </div>
+                        <div class="enteral-box">
+                            <h4>割付候補</h4>
+                            <ul class="compact-list">
+                                @foreach (var plan in Model.EnteralPackagePlans)
+                                {
+                                    <li>@IndexModel.FormatPlan(plan)</li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="enteral-bottom">
+                        <h4>成分（投与量ベース）</h4>
+                       <dl class="kv kv-2col">
+                            <dt>蛋白質</dt>
+                            <dd>@(Model.EnteralProtein?.ToString("F1") ?? "-") g</dd>
+                            <dt>脂質</dt>
+                            <dd>@(Model.EnteralFat?.ToString("F1") ?? "-") g</dd>
+                            <dt>糖質</dt>
+                            <dd>@(Model.EnteralCarb?.ToString("F1") ?? "-") g</dd>
+                            <dt>食塩</dt>
+                            <dd>@(Model.EnteralSalt?.ToString("F2") ?? "-") g</dd>
+                            <dt>ビタミンK</dt>
+                            <dd>@(Model.EnteralVitaminK?.ToString("F1") ?? "-") µg</dd>
+                            <dt>水分量</dt>
+                            <dd>@(Model.EnteralWater?.ToString("F0") ?? "-") mL</dd>
+                        </dl>
+                    </div>
+
+                    </details>
+                }
+            </div>
+
+            @{
+            #if DEBUG
+            }
+            <div class="card">
+                <details class="fold">
+                    <summary>デバッグ（開発中）</summary>
+                    <pre class="small" style="white-space:pre-wrap;margin-top:10px;">
+                    Action                : @Model.Action
+                    IsProteinCorrectionUserEdited: @Model.IsProteinCorrectionUserEdited
+                    SelectedProteinCorrection: @Model.SelectedProteinCorrection
+                    Age/Height/Weight     : @Model.Age / @Model.Height / @Model.Weight
+                    Gender                : @Model.Gender
+                    Disease               : @Model.SelectedDisease
+                    EnergyOrderType       : @Model.SelectedEnergyOrder
+                    EnergyOrderValue      : @Model.EnergyOrderValue
+                    IsEnergyUserEdited    : @Model.IsEnergyUserEdited
+                    Formula               : @Model.SelectedEnteralFormula
+                    EnteralVolumeInput    : @Model.EnteralVolumeInput
+                    EnteralVolume         : @Model.EnteralVolume
+                    EnteralEnergy         : @Model.EnteralEnergy
+                    StressTotal           : @Model.StressTotal
+                    PressureUlcer         : @Model.SelectedPressureUlcer
+                    StressPressureUlcer   : @Model.StressPressureUlcer
+                    CorrectedWeight(debug): @Model.DebugWeightLine
+                    </pre>
+                </details>
+            </div>
+           @{
+            #endif
+            }
+
+        </div>

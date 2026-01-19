@@ -199,6 +199,12 @@ details summary {
 .field-error {
     margin-top: 4px;
     font-size: 0.9em;
+    display: none;
+    color: #b00020;
+}
+
+.field-error.field-error--visible {
+    display: block;
 }
 
 /* ストレス係数合計・内訳表示用 */
