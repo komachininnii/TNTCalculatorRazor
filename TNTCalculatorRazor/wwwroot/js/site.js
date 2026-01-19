@@ -330,6 +330,11 @@ function tntLimitNumber(el) {
         if (proteinSelect && data.SelectedProteinCorrection !== undefined && data.SelectedProteinCorrection !== null) {
             proteinSelect.value = data.SelectedProteinCorrection;
         }
+
+        var proteinFlag = document.querySelector('input[name="IsProteinCorrectionUserEdited"]');
+        if (proteinFlag && data.IsProteinCorrectionUserEdited !== undefined && data.IsProteinCorrectionUserEdited !== null) {
+            proteinFlag.value = data.IsProteinCorrectionUserEdited ? "true" : "false";
+        }
     }
 
     window.tntApplyFormStateFromPanel = applyFormStateFromPanel;

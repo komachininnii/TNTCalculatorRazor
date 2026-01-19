@@ -45,7 +45,8 @@
         IsPregnant = Model.IsPregnant,
         ShowHepatic = Model.SelectedDisease == DiseaseType.LiverCirrhosis,
         IsHepaticEncephalopathy = Model.IsHepaticEncephalopathy,
-        SelectedProteinCorrection = (int)Model.SelectedProteinCorrection
+        SelectedProteinCorrection = (int)Model.SelectedProteinCorrection,
+        IsProteinCorrectionUserEdited = Model.IsProteinCorrectionUserEdited
     };
 
     var formStateJson = JsonSerializer.Serialize(formState);
