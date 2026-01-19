@@ -260,6 +260,7 @@ function tntLimitNumber(el) {
                 } else {
                     container.className = (container.className || "") + " field-error--visible";
                 }
+                container.style.display = "block";
             } else {
                 span.textContent = "";
                 if (container.classList && container.classList.remove) {
@@ -267,6 +268,7 @@ function tntLimitNumber(el) {
                 } else {
                     container.className = (container.className || "").replace(/\bfield-error--visible\b/g, "");
                 }
+                container.style.display = "none";
             }
         }
     }
