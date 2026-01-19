@@ -303,10 +303,13 @@ public class IndexModel : PageModel
         // 小児は「例外疾患の対象外」：疾患は None に固定（UIもdisabled化する想定）
         if (Age.HasValue && Age.Value < 18)
         {
+            var forcedDiseaseReset = false;
+
             if (SelectedDisease != DiseaseType.None)
             {
                 SelectedDisease = DiseaseType.None;
                 ClearModelState(nameof(SelectedDisease));
+                forcedDiseaseReset = true;
             }
             
             if (IsHepaticEncephalopathy)
@@ -315,7 +318,7 @@ public class IndexModel : PageModel
                 ClearModelState(nameof(IsHepaticEncephalopathy));
             }
 
-            if (!IsEnergyUserEdited)
+            if (forcedDiseaseReset && !IsEnergyUserEdited && act == "anthro")
             {
                 SelectedEnergyOrder = EnergyOrderDefaultSelector.GetDefault(SelectedDisease);
                 ClearModelState(nameof(SelectedEnergyOrder));
