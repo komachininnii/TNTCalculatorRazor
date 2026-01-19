@@ -55,6 +55,11 @@
 <script type="application/json" id="resultPanelErrorData">@Html.Raw(errorJson)</script>
 <script type="application/json" id="resultPanelEnergyData">@Html.Raw(energyJson)</script>
 <script type="application/json" id="resultPanelFormStateData">@Html.Raw(formStateJson)</script>
+<div id="resultPanelData"
+     data-errors="@errorJson"
+     data-energy="@energyJson"
+     data-form-state="@formStateJson"
+     style="display:none;"></div>
 
         <div class="summary">
 

@@ -215,18 +215,28 @@ function tntLimitNumber(el) {
     window.tntSetResultDetailsOpenByLayout = setResultDetailsOpenByLayout;
 
     function readJsonScript(dataEl) {
+        if (!dataEl) return "";
+        return dataEl.textContent || dataEl.innerText || dataEl.text || dataEl.innerHTML || "";
+    }
+
+    function readPanelJson(panel, scriptId, dataAttr) {
+        var scriptEl = panel ? panel.querySelector(scriptId) : null;
+        var raw = scriptEl ? readJsonScript(scriptEl) : "";
+        if (raw && raw.replace(/\s+/g, "") !== "") return raw;
+
+        var dataEl = panel ? panel.querySelector("#resultPanelData") : null;
         if (!dataEl) return "{}";
-        return dataEl.textContent || dataEl.innerText || dataEl.text || dataEl.innerHTML || "{}";
+
+        var attr = dataEl.getAttribute(dataAttr);
+        return attr || "{}";
     }
 
     function applyResultErrorsFromPanel(panel) {
         if (!panel) return;
-        var dataEl = panel.querySelector("#resultPanelErrorData");
-        if (!dataEl) return;
 
         var data;
         try {
-            data = JSON.parse(readJsonScript(dataEl));
+            data = JSON.parse(readPanelJson(panel, "#resultPanelErrorData", "data-errors"));
         } catch (e) {
             return;
         }
@@ -263,12 +273,10 @@ function tntLimitNumber(el) {
 
     function applyEnergyFromPanel(panel) {
         if (!panel) return;
-        var dataEl = panel.querySelector("#resultPanelEnergyData");
-        if (!dataEl) return;
 
         var data;
         try {
-            data = JSON.parse(readJsonScript(dataEl));
+            data = JSON.parse(readPanelJson(panel, "#resultPanelEnergyData", "data-energy"));
         } catch (e) {
             return;
         }
@@ -304,12 +312,10 @@ function tntLimitNumber(el) {
 
     function applyFormStateFromPanel(panel) {
         if (!panel) return;
-        var dataEl = panel.querySelector("#resultPanelFormStateData");
-        if (!dataEl) return;
 
         var data;
         try {
-            data = JSON.parse(readJsonScript(dataEl));
+            data = JSON.parse(readPanelJson(panel, "#resultPanelFormStateData", "data-form-state"));
         } catch (e) {
             return;
         }
