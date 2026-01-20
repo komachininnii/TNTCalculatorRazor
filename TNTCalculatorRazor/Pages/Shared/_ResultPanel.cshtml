@@ -26,7 +26,13 @@
         EnergyByBmrKcal = Model.EnergyByBmrKcal,
         Kcal25 = Model.Kcal25,
         Kcal30 = Model.Kcal30,
-        Kcal35 = Model.Kcal35
+        Kcal35 = Model.Kcal35,
+
+        // ★追加
+        EnergyWeightPillText =
+        (Model.BmrWeightBasis.HasValue && Model.BmrWeightUsed.HasValue)
+            ? $"{Model.BmrWeightBasis.Value.ToKindName()}{Model.BmrWeightUsed.Value:F1}kg"
+            : null
     };
 
     var energyJson = JsonSerializer.Serialize(energy);
@@ -53,6 +59,7 @@
 }
 
 <script type="application/json" id="resultPanelErrorData">@Html.Raw(errorJson)</script>
+@* 左列（必要エネルギー）の同期元JSON：AJAXで右列差し替え後に applyEnergyFromPanel() が読む *@
 <script type="application/json" id="resultPanelEnergyData">@Html.Raw(energyJson)</script>
 <script type="application/json" id="resultPanelFormStateData">@Html.Raw(formStateJson)</script>
 <div id="resultPanelData"
@@ -144,40 +151,26 @@
                     <div>
                         <!-- "kv kv-tight" 2行表示から"kv kv-need"1行表示に変更 -->
                         <dl class="kv kv-need">
-                            <dt>基礎代謝量</dt>
-                            <dd>
-                                @if (Model.BmrKcal.HasValue)
-                                {
-                                    <strong>@Model.BmrKcal.Value.ToString()</strong>
-                                    <span class="unit">kcal</span>
-                                }
-                                else
-                                {
-                                    <span class="muted">-</span>
-                                    <span class="unit">kcal</span>
-                                }
-                                @* pill は dd 側へ移動（IE段ズレ対策、ストレス合計と同じ構造） *@
-                                <div class="pills bmr-pills" style="margin-top:0px;">
-                                    @* 算出法 pill：計算前も表示 *@
-                                    <span class="pill mini trunc" title="@Model.BmrFormulaDisplayLong">
-                                        @(!string.IsNullOrWhiteSpace(Model.BmrFormulaDisplay) ? Model.BmrFormulaDisplay : "算出法")
-                                    </span>
+                        <dt>基礎代謝量</dt>
+                        <dd class="dd-inline">
+                            @if (Model.BmrKcal.HasValue)
+                            {
+                                <strong>@Model.BmrKcal.Value</strong>
+                            
+                                <span class="unit">kcal</span>
+                            }
+                            else
+                            {
+                                <span class="muted">-</span>
+                            
+                                <span class="unit">kcal</span>
+                            }
+                            
+                                <span class="pill mini trunc" title="@Model.BmrFormulaDisplayLong">
+                                    @(!string.IsNullOrWhiteSpace(Model.BmrFormulaDisplay) ? Model.BmrFormulaDisplay : "算出法")
+                                </span>
 
-                                    @* 体重 pill：計算前は「使用体重」、計算後は「実測50.0/標準50.0/調整50.0」 *@
-                                    @if (Model.BmrWeightBasis.HasValue && Model.BmrWeightUsed.HasValue)
-                                    {
-                                        <span class="pill mini" title="@Model.BmrWeightBasis.Value.ToLongName()">
-                                            @( $"{Model.BmrWeightBasis.Value.ToKindName()}{Model.BmrWeightUsed.Value:F1}kg" )
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="pill mini" title="BMR算出に使用する体重（計算後に 実測/標準/調整 が確定します）">
-                                            使用体重
-                                        </span>
-                                    }
-                                </div>
-                            </dd>
+                        </dd>
 
                             <dt>BMI</dt>
                             <dd>

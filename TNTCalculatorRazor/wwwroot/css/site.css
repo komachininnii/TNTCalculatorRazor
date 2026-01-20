@@ -216,11 +216,6 @@ details summary {
     align-items: center;
 }
 
-.pill.mini {
-    font-size: 0.82em;
-    padding: 1px 6px;
-}
-
 /* mini pill は全体で統一して小さめに */
 .pill.mini {
     font-size: 0.70em;
@@ -1115,6 +1110,7 @@ details summary {
         }
             /* 算出法pillは省略（既にtrunc付与済みならこれで効く） */
             .bmr-pills .pill.trunc {
+                display: inline-block;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
@@ -1125,10 +1121,11 @@ details summary {
             }
         /* BMR pillsだけ少し小さくして2行化を防ぐ */
         .bmr-pills .pill {
-            font-size: 0.7em; /* 0.85〜0.92あたりで調整可 */
+            font-size: 0.75em; /* 0.85〜0.92あたりで調整可 */
             line-height: 1.2;
             padding: 1px 6px; /* pillの高さも少し詰める（任意） */
         }
+
     /* カード見出しは途中改行しない */
     .card .section-head h3 {
         white-space: nowrap;
@@ -1467,3 +1464,11 @@ details summary {
 .help-section-title {
     margin-top: 1.2em;
 }
+
+/* pillを同じ行で使うときの縦ズレ対策 */
+.dd-inline .pill {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle; /* 念のため */
+}
+

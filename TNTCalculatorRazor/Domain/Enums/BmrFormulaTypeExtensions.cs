@@ -8,16 +8,16 @@ public static class BmrFormulaTypeExtensions
         return formula switch
         {
             BmrFormulaType.Infant_KyotoPICU =>
-                "KPUM7",
+                "Inf",
 
             BmrFormulaType.Child_JapanDRI2010 =>
-                "DRI2010",
+                "DRI",
 
             BmrFormulaType.Adult_HarrisBenedict =>
                 "HB",
 
             BmrFormulaType.Adult_Ganpule2007 =>
-                "G07",
+                "Gan",
 
             _ => "不明な式"
         };

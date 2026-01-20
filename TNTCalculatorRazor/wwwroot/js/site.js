@@ -256,7 +256,7 @@ function tntLimitNumber(el) {
                 span = document.createElement("span");
                 container.appendChild(span);
             }
-
+            
             if (msg) {
                 span.textContent = msg;
                 if (container.classList && container.classList.add) {
@@ -288,11 +288,13 @@ function tntLimitNumber(el) {
             return;
         }
 
+        // 必要エネルギー算出方法セレクトを反映する
         var select = document.querySelector("[data-energy-select]");
         if (select && data.SelectedEnergyOrder !== undefined && data.SelectedEnergyOrder !== null) {
             select.value = data.SelectedEnergyOrder;
         }
 
+        // 必要エネルギー入力欄を反映する
         var input = document.querySelector("[data-energy-input]");
         if (input) {
             if (data.EnergyOrderValue === null || data.EnergyOrderValue === undefined) {
@@ -302,6 +304,7 @@ function tntLimitNumber(el) {
             }
         }
 
+        // ユーザー編集済みpillを表示/非表示にする
         var pill = document.querySelector("[data-energy-user-edited]");
         if (pill) {
             var hasEnergyValue =
@@ -312,6 +315,7 @@ function tntLimitNumber(el) {
             pill.style.display = (data.IsEnergyUserEdited && hasEnergyValue) ? "" : "none";
         }
 
+        // 候補値を反映する
         var keys = ["EnergyByBmrKcal", "Kcal25", "Kcal30", "Kcal35"];
         for (var i = 0; i < keys.length; i++) {
             var key = keys[i];
@@ -320,6 +324,23 @@ function tntLimitNumber(el) {
             var value = data[key];
             el.textContent = (value === null || value === undefined || value === "") ? "-" : value;
         }
+
+        // 必要エネルギー算出方法がBMRベースの場合のみ採用した体重pillを表示する。
+        var wPill = document.querySelector("[data-energy-weight-pill]");
+        if (wPill) {
+            var isBmrBased = (Number(data.SelectedEnergyOrder) === 0); // BmrEstimated
+            var text = data.EnergyWeightPillText;
+
+            if (isBmrBased && text) {
+                wPill.textContent = text;
+                wPill.style.display = "";
+            } else {
+                wPill.textContent = "";
+                wPill.style.display = "none";
+            }
+        }
+
+
     }
 
     // 疾患・妊娠・肝性脳症・蛋白補正など条件付きUIを同期する。
@@ -333,41 +354,49 @@ function tntLimitNumber(el) {
             return;
         }
 
+        // 疾患セレクトの表示/非表示と選択値反映
         var diseaseWrapper = document.querySelector("[data-disease-wrapper]");
         if (diseaseWrapper) {
             diseaseWrapper.style.display = data.ShowDisease ? "" : "none";
         }
 
+        // 疾患セレクトの選択値反映
         var diseaseSelect = document.querySelector("[data-disease-select]");
         if (diseaseSelect && data.SelectedDisease !== undefined && data.SelectedDisease !== null) {
             diseaseSelect.value = data.SelectedDisease;
         }
 
+        // 妊娠チェックボックスの表示/非表示と選択値反映
         var pregnantWrapper = document.querySelector("[data-pregnant-wrapper]");
         if (pregnantWrapper) {
             pregnantWrapper.style.display = data.ShowPregnant ? "" : "none";
         }
 
+        // 妊娠チェックボックスの選択値反映
         var pregnantInput = document.querySelector("[data-pregnant-input]");
         if (pregnantInput) {
             pregnantInput.checked = !!data.IsPregnant;
         }
 
+        // 肝性脳症チェックボックスの表示/非表示と選択値反映
         var hepaticWrapper = document.querySelector("[data-hepatic-wrapper]");
         if (hepaticWrapper) {
             hepaticWrapper.style.display = data.ShowHepatic ? "" : "none";
         }
 
+        // 肝性脳症チェックボックスの選択値反映
         var hepaticInput = document.querySelector("[data-hepatic-input]");
         if (hepaticInput) {
             hepaticInput.checked = data.ShowHepatic ? !!data.IsHepaticEncephalopathy : false;
         }
 
+        // 蛋白補正セレクトの表示/非表示と選択値反映
         var proteinSelect = document.querySelector("[data-protein-select]");
         if (proteinSelect && data.SelectedProteinCorrection !== undefined && data.SelectedProteinCorrection !== null) {
             proteinSelect.value = data.SelectedProteinCorrection;
         }
 
+        // 蛋白補正ユーザー編集フラグの反映
         var proteinFlag = document.querySelector('input[name="IsProteinCorrectionUserEdited"]');
         if (proteinFlag && data.IsProteinCorrectionUserEdited !== undefined && data.IsProteinCorrectionUserEdited !== null) {
             proteinFlag.value = data.IsProteinCorrectionUserEdited ? "true" : "false";
@@ -548,8 +577,6 @@ function tntLimitNumber(el) {
 
 })();
 
-
-
 // ==== details要素のIE11対応と、モバイルでの初期折りたたみ＋ホーム画面追加案内 ====
 (function () {
     "use strict";
@@ -593,6 +620,7 @@ function tntLimitNumber(el) {
         }
     }
 
+    // details要素のIE11対応ポリフィル
     function tntInitDetailsPolyfillForIE() {
         var test = document.createElement("details");
         if ("open" in test) return; // 対応ブラウザは何もしない
@@ -610,7 +638,7 @@ function tntLimitNumber(el) {
 
                 var summary = d.getElementsByTagName("summary")[0];
                 if (!summary) return;
-
+                
                 function apply(open) {
                     if (open) d.setAttribute("open", "open");
                     else d.removeAttribute("open");
@@ -621,7 +649,7 @@ function tntLimitNumber(el) {
                         child.style.display = open ? "" : "none";
                     }
                 }
-
+                
                 var isOpen = (d.getAttribute("open") !== null);
                 apply(isOpen);
 
@@ -652,11 +680,11 @@ function tntLimitNumber(el) {
                 root.className = cn ? (cn + " tnt-ready") : "tnt-ready";
             }
         }
-
+        // 4) layoutに応じたdetails開閉状態設定関数を呼ぶ
         if (window.tntSetResultDetailsOpenByLayout) {
             window.tntSetResultDetailsOpenByLayout();
         }
-
+        // 5) 結果パネルからエラー情報を左カラムへ反映する
         if (window.tntApplyFormStateFromPanel) {
             var panel = document.getElementById("resultPanel");
             if (panel) {
@@ -666,7 +694,7 @@ function tntLimitNumber(el) {
                 window.tntApplyFormStateFromPanel(panel);
             }
         }
-
+        // 6) ウィンドウリサイズで layout変更を検出し、details開閉状態を更新する
         window.addEventListener("resize", function () {
             var isMobile = getIsMobileLayout();
             if (tntLastLayoutIsMobile !== isMobile && window.tntSetResultDetailsOpenByLayout) {
