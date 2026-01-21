@@ -232,10 +232,11 @@ JavaScript / Razor Pages の整理・リファクタリング内容のまとめ�
 Index内の script を site.js に移行経緯・意図を記録する補足資料。
 - [Appendix: Client-side JavaScript Design Notes](docs/appendix-js.md)
 
+
 ## AJAX再計算と結果パネル同期
 
-スマホの戻るボタンで「フォーム再送信の確認」を出さないようにするための実装ノート。
-- [AJAX再計算と結果パネル同期（B-1最小差分）](docs/appendix-ajax-recalc.md)
+スマホの戻るボタンで「フォーム再送信の確認」を出さないようにするために実装。
+- [AJAX再計算と結果パネル同期](docs/appendix-ajax-recalc.md)
 
 ---
 
@@ -244,3 +245,4 @@ Index内の script を site.js に移行経緯・意図を記録する補足資�
 - Ver3.0.0-beta.8 2026/01/12 ストレス合計をなくして結果を見やすく。IEでもブラウザを狭くするとスマホモードに
 - Ver3.0.0-beta.9 2026/01/12 IEでフッターが右に飛び出すバグフィックス
 - Ver3.0.0 2026/01/15 Priacy Policyを別窓で開くよう修正 ※Helpがスマホで別窓にならないデグレあり
+- Ver3.0.2 2026/01/21 Helpの別窓化を修正。算出方法セレクトを体重補正代謝量×係数に変更し、採用体重pillを左列に
