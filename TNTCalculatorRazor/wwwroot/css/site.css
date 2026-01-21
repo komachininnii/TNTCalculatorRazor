@@ -458,7 +458,7 @@ details summary {
     }
 
         .layout > .main {
-            flex: 0 0 52.5%;
+            flex: 0 0 48%;
             margin-right: 16px; /* gap 代替 */
             min-width: 0;
         }
