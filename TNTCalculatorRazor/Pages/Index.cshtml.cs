@@ -10,6 +10,7 @@ using TNTCalculatorRazor.Domain.Selectors;
 using TNTCalculatorRazor.Domain.Services;
 using TNTCalculatorRazor.Domain.Tables;
 using Microsoft.Extensions.Options;
+using TNTCalculatorRazor.Domain.Constants;
 using TNTCalculatorRazor.Domain.Models;
 
 public class IndexModel : PageModel
@@ -237,16 +238,22 @@ public class IndexModel : PageModel
         }
 
         // あり得ない値（renal のときだけ教える）
-        if (Age.Value < 0 || Age.Value >= 130)
+        if (Age.Value < InputConstraints.AgeMin || Age.Value > InputConstraints.AgeMax)
         {
             if (addErrors)
-                ModelState.AddModelError(nameof(Age), "年齢は 0〜129 の範囲で入力してください。");
+                ModelState.AddModelError(
+                    nameof(Age),
+                    $"年齢は {InputConstraints.AgeMin}〜{InputConstraints.AgeMax} の範囲で入力してください。"
+                );
             return;
         }
-        if (Weight.Value < 0.5 || Weight.Value >= 300)
+        if (Weight.Value < InputConstraints.WeightMin || Weight.Value > InputConstraints.WeightMax)
         {
             if (addErrors)
-                ModelState.AddModelError(nameof(Weight), "体重は 0.5〜299.9 kg の範囲で入力してください。");
+                ModelState.AddModelError(
+                    nameof(Weight),
+                    $"体重は {InputConstraints.WeightMin:0.0}〜{InputConstraints.WeightMax:0.0} kg の範囲で入力してください。"
+                );
             return;
         }
 
@@ -431,19 +438,37 @@ public class IndexModel : PageModel
         bool isValid = true;
 
         // 範囲（「あり得ない値」を弾く）
-        if (Age.Value < 0 || Age.Value >= 130)
+        if (Age.Value < InputConstraints.AgeMin || Age.Value > InputConstraints.AgeMax)
         {
-            if (addErrors) ModelState.AddModelError(nameof(Age), "年齢は 0〜129 の範囲で入力してください。");
+            if (addErrors)
+            {
+                ModelState.AddModelError(
+                    nameof(Age),
+                    $"年齢は {InputConstraints.AgeMin}〜{InputConstraints.AgeMax} の範囲で入力してください。"
+                );
+            }
             isValid = false;
         }
-        if (Height.Value < 30 || Height.Value >= 250)
+        if (Height.Value < InputConstraints.HeightMin || Height.Value > InputConstraints.HeightMax)
         {
-            if (addErrors) ModelState.AddModelError(nameof(Height), "身長は 30.0〜249.9 cm の範囲で入力してください。");
+            if (addErrors)
+            {
+                ModelState.AddModelError(
+                    nameof(Height),
+                    $"身長は {InputConstraints.HeightMin:0.0}〜{InputConstraints.HeightMax:0.0} cm の範囲で入力してください。"
+                );
+            }
             isValid = false;
         }
-        if (Weight.Value < 0.5 || Weight.Value >= 300)
+        if (Weight.Value < InputConstraints.WeightMin || Weight.Value > InputConstraints.WeightMax)
         {
-            if (addErrors) ModelState.AddModelError(nameof(Weight), "体重は 0.5〜299.9 kg の範囲で入力してください。");
+            if (addErrors)
+            {
+                ModelState.AddModelError(
+                    nameof(Weight),
+                    $"体重は {InputConstraints.WeightMin:0.0}〜{InputConstraints.WeightMax:0.0} kg の範囲で入力してください。"
+                );
+            }
             isValid = false;
         }
 
