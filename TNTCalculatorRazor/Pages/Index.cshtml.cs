@@ -272,8 +272,6 @@ public class IndexModel : PageModel
     }
 
 
-
-
     // ==============================
     // POST
     // ==============================
@@ -328,7 +326,7 @@ public class IndexModel : PageModel
             // エネルギー算出方法もデフォルトへ強制
             if (forcedDiseaseReset && !IsEnergyUserEdited && act == "anthro")
             {
-                SelectedEnergyOrder = EnergyOrderDefaultSelector.GetDefault(SelectedDisease);
+                SelectedEnergyOrder = EnergyOrderDefaultsTable.GetDefault(SelectedDisease);
                 ClearModelState(nameof(SelectedEnergyOrder));
             }
         }
@@ -339,7 +337,7 @@ public class IndexModel : PageModel
         // 2) 疾患 → 算出方法（デフォルト）へ切替（ただし手動編集後は尊重）
         if (act == "disease" && !IsEnergyUserEdited)
         {
-            SelectedEnergyOrder = EnergyOrderDefaultSelector.GetDefault(SelectedDisease);
+            SelectedEnergyOrder = EnergyOrderDefaultsTable.GetDefault(SelectedDisease);
             ClearModelState(nameof(SelectedEnergyOrder)); // UIのselectに反映（ModelState優先対策）
         }
                 

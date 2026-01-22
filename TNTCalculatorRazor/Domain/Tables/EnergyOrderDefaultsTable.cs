@@ -3,7 +3,7 @@ using TNTCalculatorRazor.Domain.Enums;
 
 namespace TNTCalculatorRazor.Domain.Tables;
 
-public static class EnergyOrderDefaultSelector
+public static class EnergyOrderDefaultsTable
 {
     public static EnergyOrderType GetDefault(DiseaseType disease)
         => disease switch

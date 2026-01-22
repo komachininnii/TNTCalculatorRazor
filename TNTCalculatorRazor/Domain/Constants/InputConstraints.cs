@@ -1,5 +1,6 @@
 namespace TNTCalculatorRazor.Domain.Constants;
 
+// “ü—Í’l‚Ì§ŒÀ‚ğ’è‹`
 public static class InputConstraints
 {
     public const int AgeMin = 0;
