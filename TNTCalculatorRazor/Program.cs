@@ -25,6 +25,8 @@ app.UseRouting();
 app.UseAuthorization();
 
 // Static Assets 方式は使わない
+// 監視・Azureスリープ回避用（UptimeRobot監視にGETとHEADの両方を許可）: 軽量に 200 OK を返す　※効果はhttps://<app>/favicon.ico監視と同等
+app.MapMethods("/ping", new[] { "GET", "HEAD" }, () => Results.Text("OK", "text/plain"));
 app.MapRazorPages();
 
 app.Run();
