@@ -1,4 +1,12 @@
+using Microsoft.Extensions.Logging;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// 必要最小限のロギング（コンソールとデバッグに出力）
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
+builder.Logging.SetMinimumLevel(LogLevel.Information);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
@@ -7,6 +15,35 @@ builder.Services.Configure<TNTCalculatorRazor.Domain.Models.InternalManualOption
     builder.Configuration.GetSection("InternalManual"));
 
 var app = builder.Build();
+
+// ここで ILogger を取得しておく（起動時の致命例を残すため）
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+
+// 未処理例外 / 非同期の未観測例外を捕捉してログに残す（最小限）
+AppDomain.CurrentDomain.UnhandledException += (s, e) =>
+{
+    try
+    {
+        logger.LogCritical(e.ExceptionObject as Exception, "Unhandled exception (AppDomain)");
+    }
+    catch
+    {
+        // ロガーが使えない場合でも最低限出力
+        Console.Error.WriteLine("Unhandled exception (AppDomain): " + e.ExceptionObject);
+    }
+};
+TaskScheduler.UnobservedTaskException += (s, e) =>
+{
+    try
+    {
+        logger.LogError(e.Exception, "Unobserved task exception");
+    }
+    catch
+    {
+        Console.Error.WriteLine("Unobserved task exception: " + e.Exception);
+    }
+    e.SetObserved();
+};
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -29,4 +66,20 @@ app.UseAuthorization();
 app.MapMethods("/ping", new[] { "GET", "HEAD" }, () => Results.Text("OK", "text/plain"));
 app.MapRazorPages();
 
-app.Run();
+try
+{
+    app.Run();
+}
+catch (Exception ex)
+{
+    // 起動時の致命的例外は必ず出力
+    try
+    {
+        logger.LogCritical(ex, "Host terminated unexpectedly");
+    }
+    catch
+    {
+        Console.Error.WriteLine("Host terminated unexpectedly: " + ex);
+    }
+    throw;
+}
