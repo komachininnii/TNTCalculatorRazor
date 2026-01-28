@@ -16,7 +16,10 @@
       "launchBrowser": true,
       "applicationUrl": "https://localhost:7175;http://localhost:5079",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        // 開発環境で一時的に内部マニュアルへのリンクを有効化する設定
+        //"InternalManual__Enabled": "true",
+        //"InternalManual__Url": "http://example.invalid/internal-manual.pdf"
       }
     }
   }
