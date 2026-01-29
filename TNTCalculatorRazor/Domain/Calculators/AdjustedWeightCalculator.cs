@@ -5,7 +5,7 @@ namespace TNTCalculatorRazor.Domain.Calculators;
 public static class AdjustedWeightCalculator
 {   
     // 調整体重の計算
-    public static double CalculateAdjusted( double actualWeight, double standardWeight )
+    public static double CalculateAdjustedWeight( double actualWeight, double standardWeight )
          => (actualWeight - standardWeight) * 0.25 + standardWeight;
  
     public static BmrWeightBasisType GetBasis( int age, double obesityDegree )
@@ -17,8 +17,7 @@ public static class AdjustedWeightCalculator
     }
 
     // 肥満度等により、実測/標準/調整のいずれかを選択した「補正体重（最終採用体重）」を返す
-    [System.Obsolete("可読性向上のため、Index.cshtml.cs では GetBasis と CalculateAdjusted を使用", false)]
-    public static double Calculate(
+    public static double CalculateCorrectedWeight(
         int age,
         double actualWeight,
         double standardWeight,
@@ -27,7 +26,7 @@ public static class AdjustedWeightCalculator
         return GetBasis(age, obesityDegree) switch
         {
             BmrWeightBasisType.Standard => standardWeight,
-            BmrWeightBasisType.Adjusted => CalculateAdjusted(actualWeight, standardWeight), // 調整体重
+            BmrWeightBasisType.Adjusted => CalculateAdjustedWeight(actualWeight, standardWeight), // 調整体重
             _ => actualWeight
         };
     }

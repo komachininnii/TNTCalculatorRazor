@@ -79,17 +79,18 @@ public double? BmrWeightFinal => CorrectedWeight;
 
 ---
 
-## 4. 肥満度スケールと null 問題
+## 4. 肥満度スケールと null 問題（解決済）
 
-### 4.1 問題
+~~### 4.1 問題~~
 
-- `BmrWeightBasis` が null のまま評価され、常に実測体重に落ちるケースが発生
+~~- `BmrWeightBasis` が null のまま評価され、常に実測体重に落ちるケースが発生~~
 
-### 4.2 対応
+~~### 4.2 対応~~
 
-- **順序保証**を明示
+~~- **順序保証**を明示~~
 
 ```csharp
+//旧設計での対応例
 // 1) basis 決定
 BmrWeightBasis = AdjustedWeightCalculator.GetBasis(...);
 
@@ -99,6 +100,9 @@ AdjustedWeight = ...;
 // 3) CorrectedWeight 選択
 CorrectedWeight = BmrWeightBasis.Value switch { ... };
 ```
+※ 現在は CalculateCorrectedWeight() により
+計算結果の確定と null 問題は Domain 側で解消されている。
+BmrWeightBasis は UI 表示（pill）用の派生情報。
 
 ---
 

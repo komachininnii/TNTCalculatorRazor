@@ -506,22 +506,22 @@ public class IndexModel : PageModel
         // ※ BodyIndex が計算済みである前提
         double obesityDegree = BodyIndex?.ObesityDegree ?? 0;
 
-        // まず basis を決める（nullにしない）
+        // 採用体重のpill表示用
         BmrWeightBasis = AdjustedWeightCalculator.GetBasis(Age.Value, obesityDegree);
 
         // BodyIndex はこの時点で存在する前提（CanCalcBase通過＋Calculate済み）
         var bodyIndex = BodyIndex!;
 
         // 調整体重そのもの（式で算出した値）を保持
-        AdjustedWeight = AdjustedWeightCalculator.CalculateAdjusted(Weight.Value, bodyIndex.StandardWeight);
+        AdjustedWeight = AdjustedWeightCalculator.CalculateAdjustedWeight(Weight.Value, bodyIndex.StandardWeight);
                 
         // 補正体重（BMR/エネルギー/蛋白などの基礎として使う“最終採用体重”）
-        CorrectedWeight = BmrWeightBasis switch
-        {
-            BmrWeightBasisType.Standard => bodyIndex.StandardWeight,
-            BmrWeightBasisType.Adjusted => AdjustedWeight.Value,
-            _ => Weight.Value
-        };
+        CorrectedWeight =
+            AdjustedWeightCalculator.CalculateCorrectedWeight(
+                Age.Value,
+                Weight.Value,
+                bodyIndex.StandardWeight,
+                obesityDegree);
 
         // BMRで用いる体重（値）
         BmrWeightUsed = CorrectedWeight.Value;
