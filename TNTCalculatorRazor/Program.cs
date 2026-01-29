@@ -5,7 +5,16 @@ var builder = WebApplication.CreateBuilder(args);
 // 必要最小限のロギング（コンソールとデバッグに出力）
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
-builder.Logging.AddDebug();
+// デバッグ出力は開発環境のみ(Azure App Service のログストリームに影響を与えないようにするため)
+if (builder.Environment.IsDevelopment())
+{
+    builder.Logging.AddDebug();
+}
+// Windows の場合はイベントログに出力
+if (OperatingSystem.IsWindows())
+{
+    builder.Logging.AddEventLog();
+}
 builder.Logging.SetMinimumLevel(LogLevel.Information);
 
 // Add services to the container.
@@ -65,6 +74,9 @@ app.UseAuthorization();
 // 監視・Azureスリープ回避用（UptimeRobot監視にGETとHEADの両方を許可）: 軽量に 200 OK を返す　※効果はhttps://<app>/favicon.ico監視と同等
 app.MapMethods("/ping", new[] { "GET", "HEAD" }, () => Results.Text("OK", "text/plain"));
 app.MapRazorPages();
+
+// 起動ログを出力(テスト用)
+//logger.LogInformation("Application started. Environment={env}", app.Environment.EnvironmentName);
 
 try
 {
