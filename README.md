@@ -197,6 +197,24 @@ launchSettings.json に一時的に追加（https側の"ASPNETCORE_ENVIRONMENT":
 ※ 本物の院内URLはローカル確認では記載しない。
 ---
 
+## Azureでのログの確認
+Azure Portal→高度なツール→BashまたはSSH
+
+- ログファイル一覧
+   ```bash
+  ls -lh /home/LogFiles/*docker.log
+  ```
+
+- ログを監視する：終了はCTRL+C
+  ```bash
+  tail -f /home/LogFiles/*docker.log
+  ```
+- エラーだけ拾う
+  ```bash
+  grep -i error /home/LogFiles/*docker.log
+  ```
+
+
 ## トラブルシューティング
 
 ---
@@ -237,6 +255,7 @@ Index内の script を site.js に移行経緯・意図を記録する補足資�
 
 スマホの戻るボタンで「フォーム再送信の確認」を出さないようにするために実装。
 - [AJAX再計算と結果パネル同期](docs/appendix-ajax-recalc.md)
+
 
 ---
 
