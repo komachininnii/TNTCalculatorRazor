@@ -123,6 +123,3 @@ DebugWeightLine = "";
 - inline JS は原則禁止
 - Debug 表示は `#if DEBUG` を基本とする
 
----
-
-*This appendix is intended as a developer handover / maintenance reference.*
