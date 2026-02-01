@@ -22,19 +22,30 @@
 ### 2.1 BMR pill の段ズレ対策（IE）
 
 - 問題：`dt` 側に pill を置くと、IE の float/flex フォールバックで行高が不安定
-- 対応：pill を **`dd` 側へ移動**し、ストレス係数と同じ構造に統一
+- 対応：pill を **`dd` 側へ移動**
 
 ```html
-<dd>
-  <span class="bmr-value">...</span>
-  <div class="pills bmr-pills">...</div>
+<dd class="dd-inline">
+    @if (Model.BmrKcal.HasValue)
+    {
+        <strong>@Model.BmrKcal.Value</strong>
+        <span class="unit">kcal</span>
+    }
+    else
+    {
+        <span class="muted">-</span>
+        <span class="unit">kcal</span>
+    }
+    <span class="pill mini trunc" title="@Model.BmrFormulaDisplayLong">
+        @(!string.IsNullOrWhiteSpace(Model.BmrFormulaDisplay) ? Model.BmrFormulaDisplay : "算出法")
+    </span>
 </dd>
 ```
 
-### 2.2 BMR表示方針（最終）
+### 2.2 BMR表示方針
 
-- 計算前：`[算出法] [使用体重]`
-- 計算後：`[HB] [実測50.0] / [標準50.0] / [調整50.0]`
+- 計算前：`[算出法]`
+- 計算後：`[Inf]/[DRI]/[HB]/[Gan]`
 - 長い説明は `title` に退避
 
 ---
@@ -74,7 +85,7 @@ public double? BmrWeightFinal => CorrectedWeight;
 
 ### 3.4 注意点
 
-- `CorrectedWeight` は **BMR / エネルギー / 蛋白**で共通利用
+- `CorrectedWeight` は **必要エネルギー / 蛋白**で共通利用
 - WaterCalculator では「調整体重そのもの」が必要なため `AdjustedWeight` を使用
 
 ---
@@ -124,19 +135,24 @@ public bool IsPregnant { get; set; } = false;
 ### 5.3 Razor
 
 ```cshtml
-@if (Model.Gender == GenderType.Female)
-{
-  <label class="inline-check"
-         title="妊娠かつ肥満度120%以上では、水分計算に調整体重を使用します。">
-    <input asp-for="IsPregnant" onchange="..." />
-    妊娠
-  </label>
-}
+ @{
+    bool showPregnant =
+        Model.Gender == GenderType.Female
+            && Model.Age.HasValue
+            && Model.Age.Value >= 18
+            && Model.Age.Value <= 55;
+ }
+    <label class="inline-check"
+        data-pregnant-wrapper
+        title="妊娠かつ肥満度120%以上では、水分計算に調整体重を使用します。"
+        @(showPregnant ? "" : "style=\"display:none;\"")>
+            <input asp-for="IsPregnant"
+                type="checkbox"
+                data-change-action="anthro"
+                data-pregnant-input />
+            妊娠
+    </label>
 ```
-
-### 5.4 注意
-
-- `IsPregnant` の **二重定義（BindProperty重複）** に注意
 
 ---
 
@@ -185,7 +201,7 @@ public bool IsPregnant { get; set; } = false;
 
 ---
 
-## 8. スマホ横はみ出し対策（最終版）
+## 8. スマホ横はみ出し対策
 
 ### 8.1 基本セット（site.css 末尾）
 
