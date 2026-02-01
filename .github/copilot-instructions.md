@@ -17,3 +17,4 @@
 - Follow naming conventions
 
 ## Project-Specific Rules
+- Document the decision to set `.main .card` and `.summary .card` `margin-top` to `0px` in `appendix-ui-ie-mobile.md` to ensure clarity on this adjustment. This decision was finalized to reflect the adjustment in the documentation.

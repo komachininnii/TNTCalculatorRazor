@@ -161,7 +161,7 @@ if (tag !== "input") return;
 
 ---
 
-### 6.2 対策（採用）
+### 6.2 対策
 
 - CSSで「JS初期化完了まで非表示」にする
 - JS完了後に `html.tnt-ready` を付与して表示
@@ -192,10 +192,6 @@ if (tag !== "input") return;
 
 - `site.js` は **1回だけ読み込む**
 - 新しい入力挙動は必ず `data-*` で宣言
-- IE11 を切る場合：
-  - details polyfill
-  - ES5縛り
-  をまとめて撤去可能
 
 ---
 
