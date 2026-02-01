@@ -190,11 +190,23 @@ public bool IsPregnant { get; set; } = false;
 - IE：カード間に薄い上線
 
 ```css
+/* IE用：カードの区切り（上線＋間隔） */
 .main .card,
 .summary .card {
-  border-top: 1px solid #d6d6d6;
-  margin-top: 8px;
+    border-top: 1px solid #d6d6d6;
+    margin-top: 8px;
 }
+    @supports (display: grid) {
+    .main .card,
+    .summary .card {
+        border-top: 0;
+        margin-top: 0;
+    }
+        .main .card:first-of-type {
+            border-top: 0;
+            margin-top: 0;
+        }
+    }
 ```
 
 ※ `first-of-type` による例外指定は構造依存が強いため削除。
@@ -253,14 +265,14 @@ IE だけで上線を出していた影響でモダンの上線が消えたた�
   margin-top: 0px; /* カード間の隙間 */
 }
 ```
-#### カード間の margin の経緯
+**カード間の margin の経緯**
 - 当初の方針 
-- IE11（IEモード）向けにカード間の仕切り（上線）を出すため `.main .card, .summary .card` に 
+- IE11（IEモード）向けにカード間の仕切り（上線）を出すため、IEカード仕切り線として`.main .card, .summary .card` に 
   `border-top: 1px solid #d6d6d6; margin-top: 8px;` を適用していた。
 - モダンブラウザ側は grid や @supports を使って上線や余白を制御し、IE 用のスタイルはフォールバックとして残す方針だった。
-- 意図した上書き（ドキュメントの記録）  
-  - 「モダン/スマホでもカードの区切り線を出す」という意図で、最終的に site.css の末尾で上書きルールを置く設計にしたが、
-    実装の検証の結果、最終的に上述のように `margin-top` を 0px にして確定した。
+- 意図した上書き  
+  - 「モダン/スマホでカード上線消去を回避する」という意図で、最終的に site.css の末尾で上書きルールを置く設計にしたが、
+    実装の検証の結果、`margin-top` を 0px にして確定した。
 
 
 ### 8.4 1カラム時の列仕切りの残存解除
