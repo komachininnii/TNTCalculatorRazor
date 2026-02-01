@@ -161,6 +161,7 @@ launchSettings.json に一時的に追加（https側の"ASPNETCORE_ENVIRONMENT": "Developm
 "InternalManual__Url": "http://example.invalid/internal-manual.pdf"
 ```
 ※ 本物の院内URLはローカル確認では記載しない。
+
 ---
 
 ## トラブルシューティング
