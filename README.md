@@ -129,19 +129,16 @@ IE11互換、モダンブラウザ、スマートフォン表示に関する詳�
 なお、この際、AdjustedWeight/CorrectedWeightの整理をおこなった（3. 体重ロジックの整理に記載）
 - [Appendix: UI / IE / Mobile 対応メモ](docs/appendix-ui-ie-mobile.md)
 
- 
-### JS / Form Refactor & Debug Handling Summary
-
-JavaScript / Razor Pages の整理・リファクタリング内容のまとめ。
-挙動を一切変えずに、可読性・保守性・将来拡張性（複数フォーム対応）を高める。
-- [Appendix: JS / Form Refactor & Debug Handling Summary](docs/appendix-js-form-refactor.md)
-
-
 ### JS Design Notes
 
 Index内の script を site.js に移行経緯・意図を記録する補足資料。
 - [Appendix: Client-side JavaScript Design Notes](docs/appendix-js.md)
 
+- ### JS / Form Refactor & Debug Handling Summary
+
+JavaScript / Razor Pages の整理・リファクタリング内容のまとめ。
+挙動を一切変えずに、可読性・保守性・将来拡張性（複数フォーム対応）を高める。
+- [Appendix: JS / Form Refactor & Debug Handling Summary](docs/appendix-js-form-refactor.md)
 
 ### AJAX再計算と結果パネル同期
 
@@ -173,7 +170,7 @@ Index内の script を site.js に移行経緯・意図を記録する補足資�
 
 ### Ver3.0.0-beta.8 2026/01/12
 - ストレス合計をなくして結果を見やすく
-- IEでもブラウザを狭くすると1列表示（スマホモード）に
+- IEでもブラウザを狭くすると1列表示に
 
 ### Ver3.0.0-beta.7 2026/01/08
 - β版として初回公開
