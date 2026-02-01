@@ -1,203 +1,100 @@
 # TNTCalculatorRazor
 
 ## 概要
-経腸栄養量（必要エネルギー・蛋白・水分）を算出する Web アプリ。  
-ASP.NET Core Razor Pages で実装している。
-
-- 院外公開版：個人 Azure App Service で公開  
-- 院内版：院内サーバーから配信（専用PC・HD画角のみ）
+TNTCalculatorRazor は、臨床現場での使用を想定した 栄養評価・必要エネルギー計算支援アプリです。
+PC・スマートフォンの両方で利用でき、用途に応じた情報密度と操作性を重視して設計されています。
 
 ---
 
-## 基本設計方針（最重要）
-- ソースは **1系統のみ**（院内／院外で分岐しない）
-- 院内限定情報（院内マニュアルURL等）は **設定で制御**
-- GitHub / Azure に **院内情報を絶対に混入させない**
-
-この方針により、  
-ソース分岐による保守事故や、院内／院外での機能乖離を防止する。
-
----
-
-## UI 設計の要点
-
-### PC
-- 1画面完結
-- スクリーンショット運用を想定
-
-### スマートフォン（院外）
-- 入力〜「必要エネルギー／蛋白／水分（要点）」まで初期画面1画面内
-- 体重・Cr は onblur submit により入力取りこぼしを防止
-- Validation エラーは ModelState にエラーがある場合のみ描画し、行間揺れを防ぐ
+## Features
+- 必要エネルギー量の算出
+ - 基礎代謝量（BMR）× 活動係数 × ストレス係数
+ - 25kcal/標準体重
+ - 30kcal/調整体重
+ - 35kcal/調整体重
+- 推定クレアチニンクリアランス（CCr）の計算
+- 標準体重・調整体重を考慮した計算ロジック
+- 経腸栄養剤の投与量・成分量の算出（PC表示で特に有用）
+- PC / スマートフォン双方に対応したレスポンシブUI
 
 ---
 
-## 院内マニュアルリンクの設計
+## UI Design Concept
 
-### 目的
-院内サーバー配信時のみ、  
-ヘッダー右側（「公式一覧」の右）に「院内マニュアル」リンクを表示する。
+本アプリは 使用環境に応じて役割が自然に変わる ことを意図しています。
 
-院外（Azure）では **一切表示しない**。
+### Mobile (Smartphone)
+- 一列表示
+- 必要エネルギー計算
+- 推定 CCr 計算
+  → ベッドサイドでの迅速な確認を想定
 
-### 表示制御の考え方
-- 設定キー **InternalManual** の内容で表示を制御
-- URL はソースコード・GitHub・Azure 発行物に含めない
-
-### 表示条件
-- InternalManual.Enabled が true  
-- かつ InternalManual.Url が空でない
-
----
-
-## InternalManual 設定の考え方
-
-### 設定モデル（概念）
-InternalManual には以下の2項目を持たせる。
-
-- Enabled：院内マニュアルリンクを表示するかどうか  
-- Url：院内PDFへのリンク
-
-**設定例（appsettings.json）**
-```json
-{
-  "InternalManual": {
-    "Enabled": false,
-    "Url": ""
-  }
-}
-```
+### Desktop (PC)
+- 二列表示
+- 必要エネルギー計算
+- 経腸栄養剤の詳細計算
+- 候補値の比較・調整
+  → 計画立案・経腸栄養剤検討時の利用を想定
 
 ---
 
-## 設定ファイルの扱い（安全設計）
+## Calculation Policy
+- BMR は実測体重を用いた推定値を表示
+- 必要エネルギー計算では、
+  標準体重／調整体重を含めた 「最終採用体重」 を内部で選択
+- 計算に使用された体重や算出法は UI 上で明示
 
-### GitHub に含める設定ファイル
-- appsettings.json  
-- appsettings.Development.json  
-
-※ いずれにも院内URL等の機微情報は記載しない。
-
-### GitHub に含めない設定ファイル
-- appsettings.Production.json  
-
-院内専用のURLや設定は、このファイルにのみ記載する。
-
-**.gitignore 例**
-```
-# Internal-only settings
-appsettings.Production.json
-```
----
-
-## Azure 発行（Publish）時の安全対策
-
-### Zip Deploy の重要な挙動
-Azure App Service（Zip Deploy）は、
-
-- 発行物に含まれないファイルを  
-- 自動的には削除しない  
-
-という挙動を持つ。
-
-そのため、過去の発行で一度でも  
-appsettings.Production.json が配置されていると、  
-以後の発行で除外しても Azure 側に残存する可能性がある。
-
-**残骸確認（Azure /home/site/wwwroot）**
-1. Azure Portal → App Service → SSH
-2. 確認コマンド
-   ```bash
-   ls -la /home/site/wwwroot | grep appsettings
-   ```
-3. 見つかった場合は削除後、アプリを再起動
-   ```bash
-   rm /home/site/wwwroot/appsettings.Production.json
-   ```
+これにより、
+- 数値の意味が不明確にならない
+- 臨床的な判断と乖離しない
+ことを重視しています。
 
 ---
 
+## Design Principles
+- Single codebase
+- No environment-specific logic in source code
+- Configuration-driven behavior
+- Sensitive or environment-dependent information is never hard-coded
+- UI and calculation logic are clearly separated
 
-### 安全対策の基本方針
-- appsettings.Production.json は **Publish 対象から完全に除外**
-- csproj 側で根本的に Publish 入力から外す
-- pubxml 側でも除外指定を行う（保険）
+本プロジェクトは 「コードが置かれる環境を前提にしない」 ことを基本方針としています。
 
 ---
 
-### csproj による除外設定（確定版）
-appsettings.Production.json を  
-Publish の入力段階から完全に外す。
+## Technology Stack
+- ASP.NET Core (Razor Pages)
+- C#
+- JavaScript (minimal, framework-free)
+- CSS (IE11 / modern browsers fallback-aware)
 
-**csproj 設定例**
-```xml
-<ItemGroup>
-  <!-- Internal-only settings: never publish, never copy -->
-  <Content Remove="appsettings.Production.json" />
-  <None Remove="appsettings.Production.json" />
-</ItemGroup>
-```
-
-この設定により、
-
-- GitHub に含まれない  
-- Azure Publish に含まれない  
-- Zip Deploy による復活事故を防止できる  
-- ソリューションエクスプローラーでは非表示になり「すべてのファイルを表示」で見えるようになる
 ---
 
-### pubxml による除外設定（保険）
-Zip Deploy の発行プロファイル（.pubxml）に、  
-appsettings.Production.json を除外する指定を追加する。
+## Browser Support
+- Modern browsers (Chrome, Edge, Firefox)
+- Edge IE mode / IE11 (fallback layout)
+※ 一部の最新 CSS 機能は IE11 ではフォールバック動作となります。
 
-**pubxml 設定例**
-```xml
-<PropertyGroup>
-  <!-- Never deploy internal-only settings -->
-  <ExcludeFilesFromDeployment>appsettings.Production.json</ExcludeFilesFromDeployment>
-
-  <!-- Clean up extra files on server -->
-  <SkipExtraFilesOnServer>false</SkipExtraFilesOnServer>
-</PropertyGroup>
-```
-
-## Program.cs（静的ファイル配信）
-
-Production 環境でもレイアウトが崩れないよう、従来方式で静的ファイル配信を行う。
-
-```csharp
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-app.UseRouting();
-app.UseAuthorization();
-app.MapRazorPages();
-```
-
-※ MapStaticAssets() / WithStaticAssets() は使用しない。
 ---
 
-### Azure 側の初期確認
-初回のみ、Azure 側に設定ファイルの残骸が残っていないか確認する。
+## Notes
+- 本リポジトリには、環境固有の設定値や機密情報は含まれません。
+- 実運用に関する詳細な設定・運用ノウハウは別ドキュメントとして管理される想定です。
 
-確認対象：
-- /home/site/wwwroot 配下
+## License
+（※ OSS 化時に追記）
 
-**Azure SSH での確認方法**
-```bash
-ls -la /home/site/wwwroot | grep appsettings
-```
-## ローカル動作確認方法
-院内リンク表示だけ確認したい場合は、Development のまま環境変数で上書きする（見た目を壊さない）。
-launchSettings.json に一時的に追加（https側の"ASPNETCORE_ENVIRONMENT": "Development"の下）：
-
-```json
-"InternalManual__Enabled": "true",
-"InternalManual__Url": "http://example.invalid/internal-manual.pdf"
-```
-※ 本物の院内URLはローカル確認では記載しない。
 ---
 
-## Azureでのログの確認
+## Author
+tyama
+
+---
+
+## トラブルシューティング
+エラー発生時のログ確認方法。
+
+### Azureでのログの確認
 Azure Portal→高度なツール→BashまたはSSH
 
 - ログファイル一覧
@@ -213,22 +110,17 @@ Azure Portal→高度なツール→BashまたはSSH
   ```bash
   grep -i error /home/LogFiles/*docker.log
   ```
-
-
-## トラブルシューティング
-
----
-
-### Azure で院内マニュアルリンクが表示されてしまう場合
-- /home/site/wwwroot 配下に appsettings.Production.json が残っていないか確認
-- Zip Deploy は不要ファイルを自動削除しない点に注意
-- README の「Azure 発行時の安全対策」を参照
+### Windows IIS環境でのログの確認
+- Windowsイベントビューアー
+  - Windowsログ→アプリケーション
+  - ソースが「IIS AspNetCore Module V2」のものを探す
 
 ---
 
-## 今後
-院内サーバーは今後PHPへ移行予定だが、当面は.NETを維持していただけるとのこと。
-
+## Deployment / Security Notes
+院内限定情報をソースに混入させないための
+設計・運用上の注意点まとめ。
+- [Appendix: Deployment / Security Notes](docs/appendix-deployment-security.md)
 
 ## UI互換対応メモ
 
@@ -256,10 +148,9 @@ Index内の script を site.js に移行経緯・意図を記録する補足資�
 スマホの戻るボタンで「フォーム再送信の確認」を出さないようにするために実装。
 - [AJAX再計算と結果パネル同期](docs/appendix-ajax-recalc.md)
 
-
 ---
 
-## 院内公開履歴
+## 改変履歴
 - Ver3.0.0-beta.7 2026/01/08 初版
 - Ver3.0.0-beta.8 2026/01/12 ストレス合計をなくして結果を見やすく。IEでもブラウザを狭くするとスマホモードに
 - Ver3.0.0-beta.9 2026/01/12 IEでフッターが右に飛び出すバグフィックス

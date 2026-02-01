@@ -2,6 +2,7 @@
   <Folder Name="/ソリューション項目/">
     <File Path=".github/copilot-instructions.md" />
     <File Path="docs/appendix-ajax-recalc.md" />
+    <File Path="docs/appendix-deployment-security.md" />
     <File Path="docs/appendix-js-form-refactor.md" />
     <File Path="docs/appendix-js.md" />
     <File Path="docs/appendix-ui-ie-mobile.md" />
