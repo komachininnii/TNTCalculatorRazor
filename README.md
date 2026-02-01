@@ -68,7 +68,7 @@ PC・スマートフォンの両方で利用でき、用途に応じた情報密
 ## Browser Support
 - Modern browsers (Chrome, Edge, Firefox)
 - Edge IE mode / IE11 (fallback layout)
--
+
 ※ モダン CSS 機能は IE11 ではフォールバック動作となります。
 
 ---
@@ -113,35 +113,35 @@ Azure Portal→高度なツール→BashまたはSSH
 
 ---
 
-## Deployment / Security Notes
-院内限定情報をソースに混入させないための
-設計・運用上の注意点まとめ。
+## Appendix
+### デプロイ・セキュリティ
+
+院内限定情報をソースに混入させないための設計・運用上の注意点まとめ。
 - [Appendix: Deployment / Security Notes](docs/appendix-deployment-security.md)
 
-## UI互換対応メモ
+### UI互換対応メモ
 
-IE11互換、モダンブラウザ、スマートフォン表示に関する
-詳細な設計判断・調整履歴は以下を参照。
-なお、この際、AdjustedWeight/CorrectedWeightの整理をおこなった（3. 体重ロジックの整理（重要）に記載）
+IE11互換、モダンブラウザ、スマートフォン表示に関する詳細な設計判断・調整履歴は以下を参照。
+なお、この際、AdjustedWeight/CorrectedWeightの整理をおこなった（3. 体重ロジックの整理に記載）
 - [Appendix: UI / IE / Mobile 対応メモ](docs/appendix-ui-ie-mobile.md)
 
  
-## JS / Form Refactor & Debug Handling Summary
+### JS / Form Refactor & Debug Handling Summary
 
 JavaScript / Razor Pages の整理・リファクタリング内容のまとめ。
 挙動を一切変えずに、可読性・保守性・将来拡張性（複数フォーム対応）を高める。
 - [Appendix: JS / Form Refactor & Debug Handling Summary](docs/appendix-js-form-refactor.md)
 
 
-## JS Design Notes
+### JS Design Notes
 
 Index内の script を site.js に移行経緯・意図を記録する補足資料。
 - [Appendix: Client-side JavaScript Design Notes](docs/appendix-js.md)
 
 
-## AJAX再計算と結果パネル同期
+### AJAX再計算と結果パネル同期
 
-スマホの戻るボタンで「フォーム再送信の確認」を出さないようにするために実装。
+スマホの戻るボタンで「フォーム再送信の確認」を出さないようにするための実装。
 - [AJAX再計算と結果パネル同期](docs/appendix-ajax-recalc.md)
 
 ---
