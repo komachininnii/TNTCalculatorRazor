@@ -1,16 +1,16 @@
-using Microsoft.Extensions.Logging;
+ï»¿using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// •K—vÅ¬ŒÀ‚ÌƒƒMƒ“ƒOiƒRƒ“ƒ\[ƒ‹‚ÆƒfƒoƒbƒO‚Éo—Íj
+// å¿…è¦æœ€å°é™ã®ãƒ­ã‚®ãƒ³ã‚°ï¼ˆã‚³ãƒ³ã‚½ãƒ¼ãƒ«ã¨ãƒ‡ãƒãƒƒã‚°ã«å‡ºåŠ›ï¼‰
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
-// ƒfƒoƒbƒOo—Í‚ÍŠJ”­ŠÂ‹«‚Ì‚İ(Azure App Service ‚ÌƒƒOƒXƒgƒŠ[ƒ€‚É‰e‹¿‚ğ—^‚¦‚È‚¢‚æ‚¤‚É‚·‚é‚½‚ß)
+// ãƒ‡ãƒãƒƒã‚°å‡ºåŠ›ã¯é–‹ç™ºç’°å¢ƒã®ã¿(Azure App Service ã®ãƒ­ã‚°ã‚¹ãƒˆãƒªãƒ¼ãƒ ã«å½±éŸ¿ã‚’ä¸ãˆãªã„ã‚ˆã†ã«ã™ã‚‹ãŸã‚)
 if (builder.Environment.IsDevelopment())
 {
     builder.Logging.AddDebug();
 }
-// Windows ‚Ìê‡‚ÍƒCƒxƒ“ƒgƒƒO‚Éo—Í
+// Windows ã®å ´åˆã¯ã‚¤ãƒ™ãƒ³ãƒˆãƒ­ã‚°ã«å‡ºåŠ›
 if (OperatingSystem.IsWindows())
 {
     builder.Logging.AddEventLog();
@@ -25,10 +25,10 @@ builder.Services.Configure<TNTCalculatorRazor.Domain.Models.InternalManualOption
 
 var app = builder.Build();
 
-// ‚±‚±‚Å ILogger ‚ğæ“¾‚µ‚Ä‚¨‚­i‹N“®‚Ì’v–½—á‚ğc‚·‚½‚ßj
+// ã“ã“ã§ ILogger ã‚’å–å¾—ã—ã¦ãŠãï¼ˆèµ·å‹•æ™‚ã®è‡´å‘½ä¾‹ã‚’æ®‹ã™ãŸã‚ï¼‰
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
 
-// –¢ˆ——áŠO / ”ñ“¯Šú‚Ì–¢ŠÏ‘ª—áŠO‚ğ•ß‘¨‚µ‚ÄƒƒO‚Éc‚·iÅ¬ŒÀj
+// æœªå‡¦ç†ä¾‹å¤– / éåŒæœŸã®æœªè¦³æ¸¬ä¾‹å¤–ã‚’æ•æ‰ã—ã¦ãƒ­ã‚°ã«æ®‹ã™ï¼ˆæœ€å°é™ï¼‰
 AppDomain.CurrentDomain.UnhandledException += (s, e) =>
 {
     try
@@ -37,7 +37,7 @@ AppDomain.CurrentDomain.UnhandledException += (s, e) =>
     }
     catch
     {
-        // ƒƒK[‚ªg‚¦‚È‚¢ê‡‚Å‚àÅ’áŒÀo—Í
+        // ãƒ­ã‚¬ãƒ¼ãŒä½¿ãˆãªã„å ´åˆã§ã‚‚æœ€ä½é™å‡ºåŠ›
         Console.Error.WriteLine("Unhandled exception (AppDomain): " + e.ExceptionObject);
     }
 };
@@ -63,19 +63,19 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Ã“Iƒtƒ@ƒCƒ‹‚Í]—ˆ•û®‚ÅŠmÀ‚É”zM ¦ProductionŠÂ‹«‚Åsite.css‚ª”zM‚³‚ê‚È‚¢–â‘è‚Ö‚Ì‘Îˆ
+// é™çš„ãƒ•ã‚¡ã‚¤ãƒ«ã¯å¾“æ¥æ–¹å¼ã§ç¢ºå®Ÿã«é…ä¿¡ â€»Productionç’°å¢ƒã§site.cssãŒé…ä¿¡ã•ã‚Œãªã„å•é¡Œã¸ã®å¯¾å‡¦
 app.UseStaticFiles();
 
 app.UseRouting();
 
 app.UseAuthorization();
 
-// Static Assets •û®‚Íg‚í‚È‚¢
-// ŠÄ‹EAzureƒXƒŠ[ƒv‰ñ”ğ—piUptimeRobotŠÄ‹‚ÉGET‚ÆHEAD‚Ì—¼•û‚ğ‹–‰Âj: Œy—Ê‚É 200 OK ‚ğ•Ô‚·@¦Œø‰Ê‚Íhttps://<app>/favicon.icoŠÄ‹‚Æ“¯“™
+// Static Assets æ–¹å¼ã¯ä½¿ã‚ãªã„
+// ç›£è¦–ãƒ»Azureã‚¹ãƒªãƒ¼ãƒ—å›é¿ç”¨ï¼ˆUptimeRobotç›£è¦–ã«GETã¨HEADã®ä¸¡æ–¹ã‚’è¨±å¯ï¼‰: è»½é‡ã« 200 OK ã‚’è¿”ã™ã€€â€»åŠ¹æœã¯https://<app>/favicon.icoç›£è¦–ã¨åŒç­‰
 app.MapMethods("/ping", new[] { "GET", "HEAD" }, () => Results.Text("OK", "text/plain"));
 app.MapRazorPages();
 
-// ‹N“®ƒƒO‚ğo—Í(ƒeƒXƒg—p)
+// èµ·å‹•ãƒ­ã‚°ã‚’å‡ºåŠ›(ãƒ†ã‚¹ãƒˆç”¨)
 //logger.LogInformation("Application started. Environment={env}", app.Environment.EnvironmentName);
 
 try
@@ -84,7 +84,7 @@ try
 }
 catch (Exception ex)
 {
-    // ‹N“®‚Ì’v–½“I—áŠO‚Í•K‚¸o—Í
+    // èµ·å‹•æ™‚ã®è‡´å‘½çš„ä¾‹å¤–ã¯å¿…ãšå‡ºåŠ›
     try
     {
         logger.LogCritical(ex, "Host terminated unexpectedly");

@@ -1,0 +1,53 @@
+# EditorConfig は、異なるエディタやIDE間でコーディングスタイルを統一するためのファイルです
+# https://editorconfig.org
+
+# このファイルがルート設定であることを示す
+root = true
+
+# すべてのファイルに適用される設定
+[*]
+charset = utf-8-bom
+end_of_line = crlf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# C#ファイルの設定
+[*.cs]
+indent_style = space
+indent_size = 4
+charset = utf-8-bom
+
+# Razor/CSHTMLファイルの設定
+[*.{cshtml,razor}]
+indent_style = space
+indent_size = 4
+charset = utf-8-bom
+
+# JSONファイルの設定
+[*.json]
+indent_style = space
+indent_size = 2
+charset = utf-8
+
+# JavaScriptファイルの設定
+[*.js]
+indent_style = space
+indent_size = 4
+charset = utf-8
+
+# CSSファイルの設定
+[*.css]
+indent_style = space
+indent_size = 2
+charset = utf-8
+
+# XMLファイル（.csprojなど）の設定
+[*.{csproj,props,targets}]
+indent_style = space
+indent_size = 2
+charset = utf-8
+
+# Markdownファイルの設定
+[*.md]
+trim_trailing_whitespace = false
+charset = utf-8
