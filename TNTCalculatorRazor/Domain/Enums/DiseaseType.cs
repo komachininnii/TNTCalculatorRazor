@@ -4,7 +4,7 @@ namespace TNTCalculatorRazor.Domain.Enums;
 
 public enum DiseaseType
 {
-    [Display(Name = "なし")]
+    [Display(Name = "なし（標準計算）")]
     None,
     [Display(Name = "糖尿病")] 
     Diabetes,           // 糖尿病

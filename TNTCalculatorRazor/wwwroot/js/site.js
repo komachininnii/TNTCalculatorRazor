@@ -1,4 +1,4 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
+// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
@@ -343,6 +343,20 @@ function tntLimitNumber(el) {
 
     }
 
+    // 疾患種別に応じて係数ブロックの表示 / 非表示を切り替える
+    function applyFactorVisibility(data) {
+        if (!data || data.SelectedDisease === undefined || data.SelectedDisease === null)
+            return;
+
+        // DiseaseType.None = 0（標準計算）
+        var isStandard = (Number(data.SelectedDisease) === 0);
+
+        var blocks = document.querySelectorAll("[data-factor-block]");
+        for (var i = 0; i < blocks.length; i++) {
+            blocks[i].style.display = isStandard ? "" : "none";
+        }
+    }
+
     // 疾患・妊娠・肝性脳症・蛋白補正など条件付きUIを同期する。
     function applyFormStateFromPanel(panel) {
         if (!panel) return;
@@ -354,7 +368,7 @@ function tntLimitNumber(el) {
             return;
         }
 
-        // 疾患セレクトの表示/非表示と選択値反映
+        // 疾患セレクトの表示/非表示
         var diseaseWrapper = document.querySelector("[data-disease-wrapper]");
         if (diseaseWrapper) {
             diseaseWrapper.style.display = data.ShowDisease ? "" : "none";
@@ -366,7 +380,10 @@ function tntLimitNumber(el) {
             diseaseSelect.value = data.SelectedDisease;
         }
 
-        // 妊娠チェックボックスの表示/非表示と選択値反映
+        // 係数ブロックの表示/非表示
+        applyFactorVisibility(data);
+
+        // 妊娠チェックボックスの表示/非表示
         var pregnantWrapper = document.querySelector("[data-pregnant-wrapper]");
         if (pregnantWrapper) {
             pregnantWrapper.style.display = data.ShowPregnant ? "" : "none";
@@ -378,7 +395,7 @@ function tntLimitNumber(el) {
             pregnantInput.checked = !!data.IsPregnant;
         }
 
-        // 肝性脳症チェックボックスの表示/非表示と選択値反映
+        // 肝性脳症チェックボックスの表示/非表示
         var hepaticWrapper = document.querySelector("[data-hepatic-wrapper]");
         if (hepaticWrapper) {
             hepaticWrapper.style.display = data.ShowHepatic ? "" : "none";
@@ -390,10 +407,22 @@ function tntLimitNumber(el) {
             hepaticInput.checked = data.ShowHepatic ? !!data.IsHepaticEncephalopathy : false;
         }
 
-        // 蛋白補正セレクトの表示/非表示と選択値反映
+        // 蛋白補正セレクトの選択値反映と tooltip 更新
         var proteinSelect = document.querySelector("[data-protein-select]");
-        if (proteinSelect && data.SelectedProteinCorrection !== undefined && data.SelectedProteinCorrection !== null) {
-            proteinSelect.value = data.SelectedProteinCorrection;
+        if (proteinSelect) {
+
+            // 選択値の反映
+            if (data.SelectedProteinCorrection !== undefined && data.SelectedProteinCorrection !== null) {
+                proteinSelect.value = data.SelectedProteinCorrection;
+            }
+
+            // 手動固定時の tooltip（PC向け）
+            if (data.IsProteinCorrectionUserEdited) {
+                proteinSelect.title =
+                    "手動選択中のため、例外設定を変更しても自動追従しません。";
+            } else {
+                proteinSelect.removeAttribute("title");
+            }
         }
 
         // 蛋白補正ユーザー編集フラグの反映

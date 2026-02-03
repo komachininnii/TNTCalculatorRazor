@@ -350,58 +350,59 @@
                     </div>
                 </div>
 
-            @* 疾患別の目安がある場合のみ hr を表示 *@
-            @if (Model.SelectedDisease != DiseaseType.None)
-            {
-                <div class="hr"></div>
+                @* 疾患別の目安がある場合のみ表示 *@
+                @if (Model.SelectedDisease != DiseaseType.None)
+                {
+                    <div class="hr"></div>
 
-                <div class="disease-note small" style="margin-top:0;">
-                    <div class="muted" style="margin-bottom:6px; font-weight:600;">疾患別の目安</div>
+                    <div class="disease-note small" style="margin-top:0;">
+                        <div class="muted" style="margin-bottom:6px; font-weight:600;">疾患別の目安</div>
 
-                    @switch (Model.SelectedDisease)
-                    {
-                        case DiseaseType.Diabetes:
-                            <ul style="margin:0; padding-left:18px;">
-                                <li>軽い労作：25kcal/標準体重</li>
-                                <li>普通労作：30kcal/標準体重</li>
-                                <li>重い労作：35kcal/標準体重</li>
-                            </ul>
+                        @switch (Model.SelectedDisease)
+                        {
+                            case DiseaseType.Diabetes:
+                                <ul style="margin:0; padding-left:18px;">
+                                    <li>軽い労作：25kcal/標準体重</li>
+                                    <li>普通労作：30kcal/標準体重</li>
+                                    <li style="margin-bottom:6px;">重い労作：35kcal/標準体重</li>
+                                </ul>
                             break;
 
-                        case DiseaseType.RenalFailure:
-                            <ul style="margin:0; padding-left:18px;">
-                                <li>エネルギー：25～35kcal/標準体重</li>
-                                <li>
-                                    蛋白：CKD1-2 過剰摂取を避ける／CKD3a 0.8～1.0 g/標準体重<br>
-                                    <span style="padding-left:0;">CKD3b-5：0.6～0.8 g/標準体重</span>
-                                </li>
-                            </ul>
+                            case DiseaseType.RenalFailure:
+                                <ul style="margin:0; padding-left:18px;">
+                                    <li>エネルギー：25～35kcal/標準体重</li>
+                                    <li style="margin-bottom:6px;">
+                                        蛋白：CKD1-2 過剰摂取を避ける／CKD3a 0.8～1.0 g/標準体重<br>
+                                        <span style="padding-left:0;">CKD3b-5：0.6～0.8 g/標準体重</span>
+                                    </li>
+                                </ul>
                             break;
 
-                        case DiseaseType.Hemodialysis:
-                            <ul style="margin:0; padding-left:18px;">
-                                <li>エネルギー：30～35kcal/標準体重</li>
-                                <li>水分：15mL/kg は目安（ドライウェイト・体重推移で判断）</li>
-                                <li>蛋白：0.9～1.2 g/標準体重</li>
-                            </ul>
+                            case DiseaseType.Hemodialysis:
+                                <ul style="margin:0; padding-left:18px;">
+                                    <li>エネルギー：30～35kcal/標準体重</li>
+                                    <li>水分：15mL/kg は目安（ドライウェイト・体重推移で判断）</li>
+                                    <li style="margin-bottom:6px;">蛋白：0.9～1.2 g/標準体重</li>
+                                </ul>
                             break;
 
-                        case DiseaseType.LiverCirrhosis:
-                            <ul style="margin:0; padding-left:18px;">
-                                <li>耐糖能異常なし：30～40kcal/標準体重</li>
-                                <li>耐糖能異常あり：25～30kcal/標準体重</li>
-                                <li>
-                                    蛋白：不耐なし 1.0～1.5 g/標準体重<br>
-                                    <span style="padding-left:0;">不耐あり 0.5～0.7 g/標準体重＋肝不全用栄養</span>
-                                </li>
-                            </ul>
+                            case DiseaseType.LiverCirrhosis:
+                                <ul style="margin:0; padding-left:18px;">
+                                    <li>耐糖能異常なし：30～40kcal/標準体重</li>
+                                    <li>耐糖能異常あり：25～30kcal/標準体重</li>
+                                    <li style="margin-bottom:6px;">
+                                        蛋白：不耐なし 1.0～1.5 g/標準体重<br>
+                                        <span style="padding-left:0;">不耐あり 0.5～0.7 g/標準体重＋肝不全用栄養剤</span>
+                                    </li>
+                                </ul>
                             break;
-                    }
-                </div>
-            }
+                        }
+                    </div>
+                }
 
-        </div>
-    </details>
+            </div>
+        </details>
+
 
 
 
