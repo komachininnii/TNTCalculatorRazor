@@ -1,4 +1,4 @@
-@model IndexModel
+﻿@model IndexModel
 @using System.Text.Json
 @using TNTCalculatorRazor.Domain.Enums
 
@@ -350,71 +350,60 @@
                     </div>
                 </div>
 
+            @* 疾患別の目安がある場合のみ hr を表示 *@
+            @if (Model.SelectedDisease != DiseaseType.None)
+            {
                 <div class="hr"></div>
-                
-                <details class="fold">
-                    <summary>補足（考え方・注意点）</summary>
-                    <div class="small" style="margin-top:10px;">
-                        <ul style="margin:0; padding-left:18px;">
-                            <li><b>BMR式</b>：乳児 Inf／小児 DRI／成人は条件で HB または Gan。</li>
-                            <li><b>体重</b>：乳児は実測。その他は肥満度≤80%標準、80–120%実測、≥120%調整。</li>
-                            <li><b>水分（発熱）</b>：透析以外は加算、血液透析は一律加算なし。</li>
-                        </ul>
-                        @* 疾患別の目安：選択した疾患のときだけ *@
-                        @if (Model.SelectedDisease != DiseaseType.None)
-                        {
-                            <div style="margin-top:10px;">
-                                <div class="muted" style="margin-bottom:6px;">疾患別の目安（参考）</div>
 
-                                @switch (Model.SelectedDisease)
-                                {
-                                    case DiseaseType.Diabetes:
-                                        <ul style="margin:0; padding-left:18px;">
-                                            <li>軽い労作：25kcal/標準体重</li>
-                                            <li>普通労作：30kcal/標準体重</li>
-                                            <li>重い労作：35kcal/標準体重</li>
-                                        </ul>
-                                        break;
+                <div class="disease-note small" style="margin-top:0;">
+                    <div class="muted" style="margin-bottom:6px; font-weight:600;">疾患別の目安</div>
 
-                                    case DiseaseType.RenalFailure:
-                                        <ul style="margin:0; padding-left:18px;">
-                                            <li>エネルギー：25～35kcal/標準体重</li>
-                                            <li><b>蛋白（目安）</b>：CKD1-2 過剰摂取を避ける／CKD3a 0.8～1.0 g/標準体重</li>
-                                            <li>CKD3b-5：0.6～0.8 g/標準体重</li>
-                                        </ul>
-                                        break;
+                    @switch (Model.SelectedDisease)
+                    {
+                        case DiseaseType.Diabetes:
+                            <ul style="margin:0; padding-left:18px;">
+                                <li>軽い労作：25kcal/標準体重</li>
+                                <li>普通労作：30kcal/標準体重</li>
+                                <li>重い労作：35kcal/標準体重</li>
+                            </ul>
+                            break;
 
-                                    case DiseaseType.Hemodialysis:
-                                        <ul style="margin:0; padding-left:18px;">
-                                            <li>エネルギー：30～35kcal/標準体重</li>
-                                            <li>水分：15mL/kg は目安（ドライウェイト・体重推移で判断）</li>
-                                            <li><b>蛋白（目安）</b>：0.9～1.2 g/標準体重</li>
-                                        </ul>
-                                        break;
+                        case DiseaseType.RenalFailure:
+                            <ul style="margin:0; padding-left:18px;">
+                                <li>エネルギー：25～35kcal/標準体重</li>
+                                <li>
+                                    蛋白：CKD1-2 過剰摂取を避ける／CKD3a 0.8～1.0 g/標準体重<br>
+                                    <span style="padding-left:0;">CKD3b-5：0.6～0.8 g/標準体重</span>
+                                </li>
+                            </ul>
+                            break;
 
-                                    case DiseaseType.LiverCirrhosis:
-                                        <ul style="margin:0; padding-left:18px;">
-                                            <li>耐糖能異常なし：30～40kcal/標準体重</li>
-                                            <li>耐糖能異常あり：25～30kcal/標準体重</li>
-                                            <li><b>蛋白（目安）</b>：不耐なし 1.0～1.5 g/標準体重</li>
-                                            <li>不耐あり 0.5～0.7 g/標準体重＋肝不全用栄養</li>
-                                        </ul>
-                                        break;
-                                }
-                            </div>
-                        }
-                        @* 小児（動的に注意） *@
-                        @if (Model.Age.HasValue && Model.Age.Value < 18)
-                        {
-                            <div class="muted" style="margin-top:8px;">
-                                小児：疾患選択なし。蛋白補正は必要に応じて手動調整。
-                            </div>
-                        }
+                        case DiseaseType.Hemodialysis:
+                            <ul style="margin:0; padding-left:18px;">
+                                <li>エネルギー：30～35kcal/標準体重</li>
+                                <li>水分：15mL/kg は目安（ドライウェイト・体重推移で判断）</li>
+                                <li>蛋白：0.9～1.2 g/標準体重</li>
+                            </ul>
+                            break;
 
-                    </div>
-                </details>
-            </div>
-            </details>
+                        case DiseaseType.LiverCirrhosis:
+                            <ul style="margin:0; padding-left:18px;">
+                                <li>耐糖能異常なし：30～40kcal/標準体重</li>
+                                <li>耐糖能異常あり：25～30kcal/標準体重</li>
+                                <li>
+                                    蛋白：不耐なし 1.0～1.5 g/標準体重<br>
+                                    <span style="padding-left:0;">不耐あり 0.5～0.7 g/標準体重＋肝不全用栄養</span>
+                                </li>
+                            </ul>
+                            break;
+                    }
+                </div>
+            }
+
+        </div>
+    </details>
+
+
 
             <div class="card enteral-card">
                 <h3>経腸栄養</h3>

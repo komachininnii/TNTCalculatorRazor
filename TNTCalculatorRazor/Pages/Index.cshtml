@@ -171,7 +171,7 @@
                 <div class="field field-compact"
                      data-disease-wrapper
                      @(showDisease ? "" : "style=\"display:none;\"")>
-                    <div class="label">疾患</div>
+                    <div class="label">例外設定</div>
                     <div class="control">
                         <select asp-for="SelectedDisease"
                                 asp-items="Html.GetEnumSelectList<DiseaseType>()"

@@ -1,4 +1,4 @@
-﻿html {
+html {
     font-size: 14px;
     position: relative;
     min-height: 100%;
@@ -152,7 +152,7 @@ details summary {
 /* 補助説明：カード風 */
 .hr {
     border-top: 1px solid #eee;
-    margin: 12px 0;
+    margin: 6px 0;
 }
 
 .small {
