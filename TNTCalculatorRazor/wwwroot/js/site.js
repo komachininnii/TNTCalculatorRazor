@@ -343,8 +343,15 @@ function tntLimitNumber(el) {
 
     }
 
+    // 【検討履歴】2026年2月
+    // 当初、例外設定時は活動係数を非表示にする実装を試みた。
+    // しかし、例外設定時でもユーザーが「体重補正代謝量×係数」を
+    // 選択できる仕様のため、常に表示する設計に変更。
+
     // 疾患種別に応じて係数ブロックの表示 / 非表示を切り替える
     function applyFactorVisibility(data) {
+        return; // 例外設定時も係数ブロックは全項目表示としたため無効化
+        // --- 以下 将来用 ---
         if (!data || data.SelectedDisease === undefined || data.SelectedDisease === null)
             return;
 
@@ -381,7 +388,7 @@ function tntLimitNumber(el) {
         }
 
         // 係数ブロックの表示/非表示
-        applyFactorVisibility(data);
+        // applyFactorVisibility(data);     // 例外設定時も係数ブロックは全項目表示としたため無効化
 
         // 妊娠チェックボックスの表示/非表示
         var pregnantWrapper = document.querySelector("[data-pregnant-wrapper]");
