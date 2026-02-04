@@ -47,6 +47,7 @@
     {
         ShowDisease = !(Model.Age.HasValue && Model.Age.Value < 18),
         SelectedDisease = (int)Model.SelectedDisease,
+        // SelectedEnergyOrder = (int)Model.SelectedEnergyOrder, // ← 係数表示制御用(無効化)
         ShowPregnant = showPregnant,
         IsPregnant = Model.IsPregnant,
         ShowHepatic = Model.SelectedDisease == DiseaseType.LiverCirrhosis,

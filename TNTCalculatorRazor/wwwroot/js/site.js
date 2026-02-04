@@ -339,31 +339,33 @@ function tntLimitNumber(el) {
                 wPill.style.display = "none";
             }
         }
-
-
+        // 算出法セレクトによる係数の表示制御
+        // applyFactorVisibility(data);    // BMR*係数が非選択時も係数表示を残すため無効化
     }
-
+        
     // 【検討履歴】2026年2月
-    // 当初、例外設定時は活動係数を非表示にする実装を試みた。
-    // しかし、例外設定時でもユーザーが「体重補正代謝量×係数」を
-    // 選択できる仕様のため、常に表示する設計に変更。
+    // 例外設定時に係数ブロックを非表示にする実装を試みたが全て表示としたため無効化
 
-    // 疾患種別に応じて係数ブロックの表示 / 非表示を切り替える
+    // 係数ブロックの表示 / 非表示を切り替える
     function applyFactorVisibility(data) {
-        return; // 例外設定時も係数ブロックは全項目表示としたため無効化
+        return; // 無効化
         // --- 以下 将来用 ---
-        if (!data || data.SelectedDisease === undefined || data.SelectedDisease === null)
+        // if (!data || data.SelectedDisease === undefined || data.SelectedDisease === null) //例外設定セレクト
+        if (!data || data.SelectedEnergyOrder === undefined || data.SelectedEnergyOrder === null) // 算出法セレクト
             return;
 
-        // DiseaseType.None = 0（標準計算）
-        var isStandard = (Number(data.SelectedDisease) === 0);
+        // 例外設定なし（標準計算）の時だけ係数ブロックを表示
+        // var isStandard = (Number(data.SelectedDisease) === 0);
 
-        var blocks = document.querySelectorAll("[data-factor-block]");
+        // 標準計算（体重補正代謝量×係数）の時だけ係数ブロックを表示
+        var isStandardCalculation = (Number(data.SelectedEnergyOrder) === 0);
+        var blocks = document.querySelectorAll("[data-factor-block]"); // <div class="･･･" data-factor-block>で非表示
+
         for (var i = 0; i < blocks.length; i++) {
-            blocks[i].style.display = isStandard ? "" : "none";
+            blocks[i].style.display = isStandardCalculation ? "" : "none";
         }
     }
-
+    
     // 疾患・妊娠・肝性脳症・蛋白補正など条件付きUIを同期する。
     function applyFormStateFromPanel(panel) {
         if (!panel) return;
@@ -375,20 +377,20 @@ function tntLimitNumber(el) {
             return;
         }
 
-        // 疾患セレクトの表示/非表示
+        // 例外設定セレクトの表示/非表示
         var diseaseWrapper = document.querySelector("[data-disease-wrapper]");
         if (diseaseWrapper) {
             diseaseWrapper.style.display = data.ShowDisease ? "" : "none";
         }
 
-        // 疾患セレクトの選択値反映
+        // 例外設定セレクトの選択値反映
         var diseaseSelect = document.querySelector("[data-disease-select]");
         if (diseaseSelect && data.SelectedDisease !== undefined && data.SelectedDisease !== null) {
             diseaseSelect.value = data.SelectedDisease;
         }
 
-        // 係数ブロックの表示/非表示
-        // applyFactorVisibility(data);     // 例外設定時も係数ブロックは全項目表示としたため無効化
+        // 例外設定セレクトによる係数ブロックの表示制御
+        // applyFactorVisibility(data);     // 例外設定時もBMR*係数が選択できるため無効化
 
         // 妊娠チェックボックスの表示/非表示
         var pregnantWrapper = document.querySelector("[data-pregnant-wrapper]");
