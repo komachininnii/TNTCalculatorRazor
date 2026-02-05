@@ -7,6 +7,12 @@ PC・スマートフォンの両方で利用でき、用途に応じた情報密
 
 ---
 
+## Status
+This project is under active development.
+Specifications, UI behavior, and calculation policies may change as clinical feedback is accumulated.
+ 
+---
+
 ## Features
 - 必要エネルギー量の算出
   - 基礎代謝量（BMR）× 活動係数 × ストレス係数
@@ -81,13 +87,21 @@ PC・スマートフォンの両方で利用でき、用途に応じた情報密
 - 本リポジトリには、環境固有の設定値や機密情報は含まれません。
 - 実運用に関する詳細な設定・運用ノウハウは別ドキュメントに管理されています。
 
+---
+
+## Disclaimer
+This software is intended as a clinical calculation support tool.
+It does not replace professional medical judgment.
+The author assumes no responsibility for clinical decisions made using this software.
+
+---
 ## License
-（※ OSS 化時に追記）
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
 
 ---
 
 ## Author
-tyama
+Komachininnii (tyama)
 
 ---
 
@@ -157,6 +171,3 @@ JavaScript / Razor Pages の整理・リファクタリング内容のまとめ�
 
 ## 改変履歴
 詳細な改変履歴は [CHANGELOG.md](./CHANGELOG.md) を参照してください。
-
-
-
