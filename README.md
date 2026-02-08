@@ -138,6 +138,8 @@ Azure Portal→高度なツール→BashまたはSSH
 
 - [UI / 設計判断メモ](docs/ui-decisions.md)
 
+- [計算結果の丸め仕様と Final 値の設計](docs/calculation-rounding-and-final-values.md)
+ 
 ---
 
 ## Appendix

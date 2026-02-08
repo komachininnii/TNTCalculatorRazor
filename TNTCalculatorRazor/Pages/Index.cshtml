@@ -301,7 +301,11 @@
                     <div class="small" style="margin-top:10px;">
                         <dl class="kv kv-2col-energy">
                             <dt>補正代謝量×係数</dt>
-                            <dd><span data-energy-candidate="EnergyByBmrKcal">@(Model.EnergyByBmrKcal?.ToString() ?? "-")</span> kcal</dd>
+                            <dd>
+                                <span data-energy-candidate="EstimatedEnergyByCorrectedBmrDisplayKcal">
+                                    @(Model.EstimatedEnergyByCorrectedBmrDisplayKcal?.ToString() ?? "-")
+                                </span> kcal
+                            </dd>
                             <dt>25kcal/標準体重</dt>
                             <dd><span data-energy-candidate="Kcal25">@(Model.Kcal25?.ToString() ?? "-")</span> kcal</dd>
                             <dt>30kcal/標準体重</dt>

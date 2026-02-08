@@ -4,12 +4,12 @@ namespace TNTCalculatorRazor.Domain.Enums;
 
 public enum BmrWeightBasisType
 {
-    //[Display(Name = "実")]
+    //[Display(Name = "実測")]
     Actual,
 
-    //[Display(Name = "標")]
+    //[Display(Name = "標準")]
     Standard,
 
-    //[Display(Name = "調")]
+    //[Display(Name = "調整")]
     Adjusted
 }
