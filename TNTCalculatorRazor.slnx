@@ -12,5 +12,6 @@
     <File Path="LICENSE" />
     <File Path="README.md" />
   </Folder>
+  <Project Path="TNTCalculatorRazor.Tests/TNTCalculatorRazor.Tests.csproj" Id="be63e687-1d4c-4201-8c86-c3c2bb8c49fb" />
   <Project Path="TNTCalculatorRazor/TNTCalculatorRazor.csproj" />
 </Solution>
