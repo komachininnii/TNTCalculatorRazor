@@ -316,7 +316,7 @@ function tntLimitNumber(el) {
         }
 
         // 候補値を反映する
-        var keys = ["EnergyByBmrKcal", "Kcal25", "Kcal30", "Kcal35"];
+        var keys = ["CorrectedBmrEnergyDisplayKcal", "Kcal25", "Kcal30", "Kcal35"];
         for (var i = 0; i < keys.length; i++) {
             var key = keys[i];
             var el = document.querySelector('[data-energy-candidate="' + key + '"]');

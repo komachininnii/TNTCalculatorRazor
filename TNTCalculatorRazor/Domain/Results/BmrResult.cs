@@ -1,4 +1,5 @@
 ﻿using TNTCalculatorRazor.Domain.Enums;
+using TNTCalculatorRazor.Domain.Rules;
 
 namespace TNTCalculatorRazor.Domain.Results;
 
@@ -13,7 +14,6 @@ public class BmrResult
     /// 表示用（四捨五入）
     /// </summary>
     public int DisplayValue =>
-        (int)Math.Round(RawValue, MidpointRounding.AwayFromZero);
-
+        RoundingRules.RoundKcalToInt(RawValue);
     public BmrFormulaType Formula { get; init; }
 }

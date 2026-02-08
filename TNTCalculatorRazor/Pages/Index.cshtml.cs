@@ -110,7 +110,7 @@ public class IndexModel : PageModel
     // 表示用（Actual BMR）
     public int? ActualBmrDisplayKcal =>
         ActualBmrRaw.HasValue
-            ? (int?)Math.Round(ActualBmrRaw.Value, MidpointRounding.AwayFromZero)
+            ? (int?)RoundingRules.RoundKcalToInt(ActualBmrRaw.Value)
             : null;
 
     public string? ActualBmrFormulaDisplay { get; private set; }
@@ -150,7 +150,7 @@ public class IndexModel : PageModel
     public int? Kcal35 { get; private set; }
 
     // Corrected BMR × 係数（参考表示）
-    public int? EstimatedEnergyByCorrectedBmrDisplayKcal { get; private set; }
+    public int? CorrectedBmrEnergyDisplayKcal { get; private set; }
 
     // 最終仕様確定値
     public int? EnergyFinal { get; private set; }
@@ -433,7 +433,7 @@ public class IndexModel : PageModel
         // (B) フォールバック：EnergyFinalが作れない時だけ、候補（補正BMRx係数/25/30/35）から入れる
         EnergyOrderValue = SelectedEnergyOrder switch
         {
-            EnergyOrderType.BmrEstimated => EstimatedEnergyByCorrectedBmrDisplayKcal,
+            EnergyOrderType.BmrEstimated => CorrectedBmrEnergyDisplayKcal,
             EnergyOrderType.Kcal25 => Kcal25,
             EnergyOrderType.Kcal30 => Kcal30,
             EnergyOrderType.Kcal35 => Kcal35,
@@ -558,12 +558,12 @@ public class IndexModel : PageModel
         var correctedBmrRaw =
         BmrCalculator.Calculate(Age.Value, CorrectedWeight.Value, Height.Value, Gender)
                    .RawValue;
-            
+
         // 25/30/35 は標準体重ベース
         // ※ StandardWeight が計算できている前提
-        Kcal25 = (int)Math.Round(bodyIndex.StandardWeight * 25.0, MidpointRounding.AwayFromZero);
-        Kcal30 = (int)Math.Round(bodyIndex.StandardWeight * 30.0, MidpointRounding.AwayFromZero);
-        Kcal35 = (int)Math.Round(bodyIndex.StandardWeight * 35.0, MidpointRounding.AwayFromZero);
+        Kcal25 = RoundingRules.RoundKcalToInt(bodyIndex.StandardWeight * 25.0);
+        Kcal30 = RoundingRules.RoundKcalToInt(bodyIndex.StandardWeight * 30.0);
+        Kcal35 = RoundingRules.RoundKcalToInt(bodyIndex.StandardWeight * 35.0);
     }
 
 
@@ -573,7 +573,7 @@ public class IndexModel : PageModel
     private void RecalcEnergyProteinWater()
     {
         EnergyFinal = null;
-        EstimatedEnergyByCorrectedBmrDisplayKcal = null;
+        CorrectedBmrEnergyDisplayKcal = null;
         ProteinRaw = null;
         ProteinFinal = null;
         WaterFeverCorrected = false;
@@ -591,7 +591,7 @@ public class IndexModel : PageModel
             BmrCalculator.Calculate(Age!.Value, CorrectedWeight.Value, Height!.Value, Gender)
                 .RawValue;
 
-        var estimatedEnergyRequirementRaw =
+        var estimatedEnergyRawKcal =
             Age.Value == 0
                    ? ((correctedBmrRaw * StressTotal) + (40 * Weight!.Value)) * 1.1
                    : correctedBmrRaw
@@ -599,10 +599,8 @@ public class IndexModel : PageModel
                         *StressTotal;
 
         // 参考表示用（体重補正代謝量 × 係数）
-        EstimatedEnergyByCorrectedBmrDisplayKcal =
-            (int)Math.Round(
-                estimatedEnergyRequirementRaw,
-                MidpointRounding.AwayFromZero);
+        CorrectedBmrEnergyDisplayKcal =
+            RoundingRules.RoundKcalToInt(estimatedEnergyRawKcal);
 
         // kcal/kg（標準体重）
         var e25 = 25 * BodyIndex.StandardWeight;
@@ -615,8 +613,8 @@ public class IndexModel : PageModel
                 EnergyOrderType.Kcal25 => e25,
                 EnergyOrderType.Kcal30 => e30,
                 EnergyOrderType.Kcal35 => e35,
-                EnergyOrderType.Manual => ManualEnergyValue ?? estimatedEnergyRequirementRaw,
-                _ => estimatedEnergyRequirementRaw
+                EnergyOrderType.Manual => ManualEnergyValue ?? estimatedEnergyRawKcal,
+                _ => estimatedEnergyRawKcal
             };
 
         // 最終エネルギー必要量を仕様整数化
