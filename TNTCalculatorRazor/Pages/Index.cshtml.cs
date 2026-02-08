@@ -591,7 +591,7 @@ public class IndexModel : PageModel
             BmrCalculator.Calculate(Age!.Value, CorrectedWeight.Value, Height!.Value, Gender)
                 .RawValue;
 
-        var estimatedEnergyRawKcal =
+        var correctedBmrEnergyRawKcal =
             Age.Value == 0
                    ? ((correctedBmrRaw * StressTotal) + (40 * Weight!.Value)) * 1.1
                    : correctedBmrRaw
@@ -600,7 +600,7 @@ public class IndexModel : PageModel
 
         // 参考表示用（体重補正代謝量 × 係数）
         CorrectedBmrEnergyDisplayKcal =
-            RoundingRules.RoundKcalToInt(estimatedEnergyRawKcal);
+            RoundingRules.RoundKcalToInt(correctedBmrEnergyRawKcal);
 
         // kcal/kg（標準体重）
         var e25 = 25 * BodyIndex.StandardWeight;
@@ -613,8 +613,8 @@ public class IndexModel : PageModel
                 EnergyOrderType.Kcal25 => e25,
                 EnergyOrderType.Kcal30 => e30,
                 EnergyOrderType.Kcal35 => e35,
-                EnergyOrderType.Manual => ManualEnergyValue ?? estimatedEnergyRawKcal,
-                _ => estimatedEnergyRawKcal
+                EnergyOrderType.Manual => ManualEnergyValue ?? correctedBmrEnergyRawKcal,
+                _ => correctedBmrEnergyRawKcal
             };
 
         // 最終エネルギー必要量を仕様整数化
