@@ -52,7 +52,7 @@
 
 ## 3. 体重ロジックの整理
 
-体重ロジックの命名ルールや用語の整理は glossary-bmr-weight-terminology.md に転記
+体重ロジックの命名ルールや用語の整理は [用語集：基礎代謝量・体重関連の整理](docs/glossary-bmr-weight-terminology.md) に転記
 
 ---
 
