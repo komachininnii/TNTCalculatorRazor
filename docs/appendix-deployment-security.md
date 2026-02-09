@@ -1,30 +1,51 @@
-# 院内マニュアルリンクの設計
+# appendix-deployment-security.md
 
-## 目的
-院内サーバー配信時のみ、  
-ヘッダー右側（「公式一覧」の右）に「院内マニュアル」リンクを表示する。
+## 本書の位置づけと前提
 
-院外（Azure）では **一切表示しない**。
+本書は **TNTCalculatorRazor を Visual Studio から Azure App Service へ直接 Publish（Zip Deploy）する運用**を前提としている。
 
-### 表示制御の考え方
-- 設定キー **InternalManual** の内容で表示を制御
-- URL はソースコード・GitHub・Azure 発行物に含めない
+- GitHub Actions は使用していない
+- CI/CD は構成していない
+- Visual Studio の「発行（Publish）」機能を用いた Zip Deploy を採用している
 
-### 表示条件
-- InternalManual.Enabled が true  
-- かつ InternalManual.Url が空でない
+以下の内容は、**実際に発生した挙動と、それに対して行った対策の記録**であり、  
+Azure App Service / Zip Deploy の一般的な仕様を断定するものではない。
 
 ---
 
-## InternalManual 設定の考え方
+# 院内マニュアルリンクの設計
 
-### 設定モデル（概念）
-InternalManual には以下の2項目を持たせる。
+## 目的
 
-- Enabled：院内マニュアルリンクを表示するかどうか  
-- Url：院内PDFへのリンク
+院内サーバー配信時のみ、  
+フッターの「公式一覧」の右に「院内マニュアル」リンクを表示する。
 
-**設定例（appsettings.json）**
+Azure（院外公開）では **一切表示しない**。
+
+---
+
+## 表示制御の考え方
+
+- 設定キー **InternalManual** の内容で表示を制御する
+- 院内 URL は **ソースコード・GitHub・Azure 発行物に含めない**
+- URL は院内サーバー上の設定ファイルのみで管理する
+
+### 表示条件
+
+- `InternalManual.Enabled == true`
+- かつ `InternalManual.Url` が空でない
+
+---
+
+## InternalManual 設定モデル
+
+### 設定項目
+
+- **Enabled** : 院内マニュアルリンクを表示するかどうか
+- **Url** : 院内 PDF へのリンク
+
+### appsettings.json（例）
+
 ```json
 {
   "InternalManual": {
@@ -34,68 +55,93 @@ InternalManual には以下の2項目を持たせる。
 }
 ```
 
+※ appsettings.json / Development.json には実 URL を記載しない。
+
 ---
 
 ## 設定ファイルの扱い（安全設計）
 
 ### GitHub に含める設定ファイル
-- appsettings.json  
-- appsettings.Development.json  
 
-※ いずれにも院内URL等の機微情報は記載しない。
+- appsettings.json
+- appsettings.Development.json
+
+※ いずれにも院内 URL 等の機微情報は含めない。
 
 ### GitHub に含めない設定ファイル
-- appsettings.Production.json  
 
-院内専用のURLや設定は、このファイルにのみ記載する。
+- **appsettings.Production.json**
 
-**.gitignore 例**
-```
+院内専用の URL・設定は、このファイルのみに記載する。
+
+### .gitignore 設定例
+
+```gitignore
 # Internal-only settings
 appsettings.Production.json
 ```
----
-
-## Azure 発行（Publish）時の安全対策
-
-### Zip Deploy の重要な挙動
-Azure App Service（Zip Deploy）は、
-
-- 発行物に含まれないファイルを  
-- 自動的には削除しない  
-
-という挙動を持つ。
-
-そのため、過去の発行で一度でも  
-appsettings.Production.json が配置されていると、  
-以後の発行で除外しても Azure 側に残存する可能性がある。
-
-**残骸確認（Azure /home/site/wwwroot）**
-1. Azure Portal → App Service → SSH
-2. 確認コマンド
-   ```bash
-   ls -la /home/site/wwwroot | grep appsettings
-   ```
-3. 見つかった場合は削除後、アプリを再起動
-   ```bash
-   rm /home/site/wwwroot/appsettings.Production.json
-   ```
 
 ---
 
+## Azure Publish（Zip Deploy）で実際に起きたこと
 
-### 安全対策の基本方針
-- appsettings.Production.json は **Publish 対象から完全に除外**
-- csproj 側で根本的に Publish 入力から外す
-- pubxml 側でも除外指定を行う（保険）
+### 実際の経緯
+
+以下は **実際に確認・体験した手順**である。
+
+1. `.gitignore` に appsettings.Production.json を追加
+2. csproj に以下を設定
+
+```xml
+<ItemGroup>
+  <Content Update="appsettings.Production.json">
+    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+  </Content>
+</ItemGroup>
+```
+
+3. appsettings.Production.json を作成し、仮の院内 URL を記載
+4. GitHub への push と「フォルダー発行」では **含まれないことを確認**
+5. Azure App Service へ Publish（Zip Deploy）
+
+➡ **Azure 側に appsettings.Production.json が配置されてしまった**
 
 ---
 
-### csproj による除外設定（確定版）
-appsettings.Production.json を  
-Publish の入力段階から完全に外す。
+### 追加で発生した挙動
 
-**csproj 設定例**
+- Azure SSH で appsettings.Production.json を削除
+- 再 Publish を実行
+
+➡ **再び appsettings.Production.json が配置された**
+
+この時点で、
+
+- `.gitignore`
+- CopyToPublishDirectory = Never
+- CopyToOutputDirectory = Never
+
+はいずれも **Azure Publish には十分でなかった**。
+
+---
+
+## 最終的に有効だった対策
+
+### pubxml による除外指定（補助）
+
+```xml
+<PropertyGroup>
+  <ExcludeFilesFromDeployment>appsettings.Production.json</ExcludeFilesFromDeployment>
+</PropertyGroup>
+```
+
+※ これ単独では不十分だった。
+
+---
+
+### csproj による完全除外（決定打）
+
 ```xml
 <ItemGroup>
   <!-- Internal-only settings: never publish, never copy -->
@@ -104,32 +150,32 @@ Publish の入力段階から完全に外す。
 </ItemGroup>
 ```
 
-この設定により、
+この設定により：
 
-- GitHub に含まれない  
-- Azure Publish に含まれない  
-- Zip Deploy による復活事故を防止できる  
-- ソリューションエクスプローラーでは非表示になり「すべてのファイルを表示」で見えるようになる
+- Azure Publish に含まれなくなった
+- 再発行しても復活しなくなった
+- ソリューションエクスプローラーでは非表示になり、
+  「すべてのファイルを表示」でのみ確認できる状態になった
+
 ---
 
-### pubxml による除外設定（保険）
-Zip Deploy の発行プロファイル（.pubxml）に、  
-appsettings.Production.json を除外する指定を追加する。
+## 安全対策の整理（実運用）
 
-**pubxml 設定例**
-```xml
-<PropertyGroup>
-  <!-- Never deploy internal-only settings -->
-  <ExcludeFilesFromDeployment>appsettings.Production.json</ExcludeFilesFromDeployment>
+- appsettings.Production.json は **csproj で Remove する**
+- pubxml は保険として併用
+- Publish 後、初回のみ Azure 側の残骸を確認
 
-  <!-- Clean up extra files on server -->
-  <SkipExtraFilesOnServer>false</SkipExtraFilesOnServer>
-</PropertyGroup>
+### Azure SSH 確認コマンド
+
+```bash
+ls -la /home/site/wwwroot | grep appsettings
 ```
+
+---
 
 ## Program.cs（静的ファイル配信）
 
-Production 環境でもレイアウトが崩れないよう、従来方式で静的ファイル配信を行う。
+Production 環境でもレイアウト差異を出さないため、従来方式を採用。
 
 ```csharp
 app.UseHttpsRedirection();
@@ -139,36 +185,30 @@ app.UseAuthorization();
 app.MapRazorPages();
 ```
 
-※ MapStaticAssets() / WithStaticAssets() は使用しない。
+※ `MapStaticAssets()` / `WithStaticAssets()` は使用しない。
+
 ---
 
-### Azure 側の初期確認
-初回のみ、Azure 側に設定ファイルの残骸が残っていないか確認する。
+## ローカル確認方法（安全）
 
-確認対象：
-- /home/site/wwwroot 配下
+院内リンク表示のみを確認したい場合、  
+Development 環境のまま **環境変数で一時的に上書き**する。
 
-**Azure SSH での確認方法**
-```bash
-ls -la /home/site/wwwroot | grep appsettings
-```
-## ローカル動作確認方法
-院内リンク表示だけ確認したい場合は、Development のまま環境変数で上書きする（見た目を壊さない）。
-launchSettings.json に一時的に追加（https側の"ASPNETCORE_ENVIRONMENT": "Development"の下）：
+### launchSettings.json（例）
 
 ```json
 "InternalManual__Enabled": "true",
 "InternalManual__Url": "http://example.invalid/internal-manual.pdf"
 ```
-※ 本物の院内URLはローカル確認では記載しない。
+
+※ 実際の院内 URL はローカル環境に記載しない。
 
 ---
 
 ## トラブルシューティング
 
----
-
 ### Azure で院内マニュアルリンクが表示されてしまう場合
-- /home/site/wwwroot 配下に appsettings.Production.json が残っていないか確認
-- Zip Deploy は不要ファイルを自動削除しない点に注意
 
+- `/home/site/wwwroot` に appsettings.Production.json が残っていないか確認
+- Visual Studio Publish（Zip Deploy）では、
+  **除外方法を誤ると再配置される可能性がある**

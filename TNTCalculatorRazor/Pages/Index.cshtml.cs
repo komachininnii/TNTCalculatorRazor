@@ -554,9 +554,9 @@ public class IndexModel : PageModel
         // 体重補正BMRで用いる体重値
         CorrectedBmrWeightUsed = CorrectedWeight.Value;
 
-        // フォールバック用：CorrectedBMR（係数1想定）
+        // フォールバック用：CorrectedBMR
         var correctedBmrRaw =
-        BmrCalculator.Calculate(Age.Value, CorrectedWeight.Value, Height.Value, Gender)
+            BmrCalculator.Calculate(Age.Value, CorrectedWeight.Value, Height.Value, Gender)
                    .RawValue;
 
         // 25/30/35 は標準体重ベース
