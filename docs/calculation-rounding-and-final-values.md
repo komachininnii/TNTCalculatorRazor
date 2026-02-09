@@ -13,9 +13,7 @@
 |---|---|
 | Raw | 計算式から得られた未丸めの値（double） |
 | Final | 仕様として確定した丸め後の値 |
-| Display | 画面表示専用（文字列変換のみ） |
-
-丸めは **必ず Final を作る段階で一度だけ行う**。
+| Display | 画面表示専用 |
 
 ---
 
@@ -66,7 +64,7 @@ ProteinFinal =
     RoundingRules.RoundGram1dp(ProteinRaw.Value);
 ```
 
-表示用は計算を含めず、Final から生成する。
+表示用は計算を含めず、Final または Raw から生成する。
 
 ```csharp
 public string? ProteinDisplayText =>
