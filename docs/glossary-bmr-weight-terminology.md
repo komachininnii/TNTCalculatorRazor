@@ -19,19 +19,23 @@
 
 ### StandardWeight（標準体重）
 - 身長・年齢・性別に基づく理論体重
-- kcal/kg（25/30/35）計算の基準として使用
-- 肥満度が低い場合のエネルギー計算にも用いられる
+- 肥満度80%以下の必要エネルギー・蛋白計算に用いられる
+- kcal/kg（25/30/35）計算の基準に用いられる
 
 ### AdjustedWeight（調整体重）
-- 肥満度が高い場合に用いられる
-- **計算式で算出される値そのもの**
-- WaterCalculator など、一部ロジックで直接使用される
+- （実測体重 - 標準体重）× 0.25 + 標準体重
+- 肥満度120%以上の必要エネルギー・蛋白計算に用いられる
+- 肥満度120%以上の妊婦の水分計算で用いられる
 
 ### CorrectedWeight（補正体重）
 - Actual / Standard / Adjusted の中から
   **最終的に採用された体重**
 - 必要エネルギー・蛋白計算の共通基盤
+  - `肥満度80%以下：Standard`、`120%以上：Adjusted`、`その他：Actual`
 
+※肥満度 = (実測体重 / 標準体重) × 100 (%)
+※乳児では肥満度を算出せず常に実測体重を用いる
+ 
 ```csharp
 public double? AdjustedWeight { get; private set; }
 public double? CorrectedWeight { get; private set; }
@@ -119,7 +123,7 @@ CorrectedBmrEnergyDisplayKcal =
 ### BMR 系算出方法の命名
 
 従来の `BmrEstimated` は意味が曖昧であるため、  
-**補正体重ベースであることを明示**する。
+**補正体重ベースであることを明示**するため`CorrectedBmrBased`に変更。
 
 ```csharp
 public enum EnergyOrderType
@@ -163,8 +167,3 @@ public double? CorrectedBmrWeightUsed { get; private set; }
 - **必要エネルギー計算 = CorrectedBMR × 係数**
 - `CorrectedWeight` は エネルギー / 蛋白で共通利用
 - WaterCalculator は `AdjustedWeight` を直接使用する場合がある
-
----
-
-本ドキュメントは、  
-半年後・1年後に「これ何だっけ？」を防ぐための **一次参照資料** とする。
