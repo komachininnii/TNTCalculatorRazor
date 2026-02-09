@@ -104,4 +104,4 @@ WaterFinal = RoundingRules.CeilMl(WaterRaw.Value);
 
 ## BMR・補正代謝量（BMR×係数）系 命名ルールの整理
 
-※ 用語定義・命名ルールは [用語集：基礎代謝量・体重関連の整理](docs/glossary-bmr-weight-terminology.md) へ転記
+※ 用語定義・命名ルールは [用語集：基礎代謝量・体重関連の整理](glossary-bmr-weight-terminology.md) へ転記
