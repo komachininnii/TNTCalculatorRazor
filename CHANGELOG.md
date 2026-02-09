@@ -3,7 +3,7 @@
 ## Ver3.0.6（開発中）
 - Energy / Protein / Water / Enteral の丸め処理を RoundingRules に集約
 - Raw / Final / Display プロパティ構成を明確化
-- BMR（Actual / Corrected / Estimated）の役割整理と不要プロパティ削除
+- BMR（Actual / Corrected）の役割整理と不要プロパティ削除
 - ユニットテストプロジェクト（xUnit）を追加
   - 丸め処理テスト
   - BMR計算テスト

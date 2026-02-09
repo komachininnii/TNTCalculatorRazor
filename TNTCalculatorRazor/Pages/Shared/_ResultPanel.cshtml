@@ -23,6 +23,7 @@
         SelectedEnergyOrder = (int)Model.SelectedEnergyOrder,
         EnergyOrderValue = Model.EnergyOrderValue,
         IsEnergyUserEdited = Model.IsEnergyUserEdited,
+        IsCorrectedBmrBased = (Model.SelectedEnergyOrder == EnergyOrderType.CorrectedBmrBased),
         CorrectedBmrEnergyDisplayKcal = Model.CorrectedBmrEnergyDisplayKcal,
         Kcal25 = Model.Kcal25,
         Kcal30 = Model.Kcal30,
@@ -30,9 +31,9 @@
 
         // ★追加
         EnergyWeightPillText =
-    (Model.CorrectedBmrWeightBasis.HasValue && Model.CorrectedBmrWeightUsed.HasValue)
-        ? $"{Model.CorrectedBmrWeightBasis!.Value.ToKindName()}{Model.CorrectedBmrWeightUsed!.Value:F1}kg"
-        : null
+            (Model.CorrectedBmrWeightBasis.HasValue && Model.CorrectedBmrWeightUsed.HasValue)
+                ? $"{Model.CorrectedBmrWeightBasis!.Value.ToKindName()}{Model.CorrectedBmrWeightUsed!.Value:F1}kg"
+                : null
     };
 
     var energyJson = JsonSerializer.Serialize(energy);

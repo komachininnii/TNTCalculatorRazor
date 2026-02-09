@@ -8,11 +8,11 @@ public static class EnergyOrderDefaultsTable
     public static EnergyOrderType GetDefault(DiseaseType disease)
         => disease switch
         {
-            DiseaseType.None => EnergyOrderType.BmrEstimated,
+            DiseaseType.None => EnergyOrderType.CorrectedBmrBased,
             DiseaseType.Diabetes => EnergyOrderType.Kcal25,
             DiseaseType.RenalFailure => EnergyOrderType.Kcal30,
             DiseaseType.Hemodialysis => EnergyOrderType.Kcal30,
             DiseaseType.LiverCirrhosis => EnergyOrderType.Kcal35,
-            _ => EnergyOrderType.BmrEstimated
+            _ => EnergyOrderType.CorrectedBmrBased
         };
 }

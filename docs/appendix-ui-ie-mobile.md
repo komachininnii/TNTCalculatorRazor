@@ -26,9 +26,9 @@
 
 ```html
 <dd class="dd-inline">
-    @if (Model.BmrKcal.HasValue)
+    @if (Model.ActualBmrDisplayKcal.HasValue)
     {
-        <strong>@Model.BmrKcal.Value</strong>
+        <strong>@Model.ActualBmrDisplayKcal.Value</strong>
         <span class="unit">kcal</span>
     }
     else
@@ -36,8 +36,8 @@
         <span class="muted">-</span>
         <span class="unit">kcal</span>
     }
-    <span class="pill mini trunc" title="@Model.BmrFormulaDisplayLong">
-        @(!string.IsNullOrWhiteSpace(Model.BmrFormulaDisplay) ? Model.BmrFormulaDisplay : "算出法")
+    <span class="pill mini trunc" title="@Model.ActualBmrFormulaDisplayLong">
+         @(!string.IsNullOrWhiteSpace(Model.ActualBmrFormulaDisplay) ? Model.ActualBmrFormulaDisplay : "算出法")
     </span>
 </dd>
 ```
@@ -79,8 +79,9 @@
 public double? AdjustedWeight { get; private set; }
 public double? CorrectedWeight { get; private set; }
 
-// 表示用エイリアス
-public double? BmrWeightFinal => CorrectedWeight;
+// Corrected BMR に用いた体重情報（UI表示用）
+public BmrWeightBasisType? CorrectedBmrWeightBasis { get; private set; }
+public double? CorrectedBmrWeightUsed { get; private set; }
 ```
 
 ### 3.4 注意点
@@ -103,17 +104,17 @@ public double? BmrWeightFinal => CorrectedWeight;
 ```csharp
 //旧設計での対応例
 // 1) basis 決定
-BmrWeightBasis = AdjustedWeightCalculator.GetBasis(...);
+CorrectedBmrWeightBasis = AdjustedWeightCalculator.GetBasis(...);
 
 // 2) AdjustedWeight 算出
 AdjustedWeight = ...;
 
 // 3) CorrectedWeight 選択
-CorrectedWeight = BmrWeightBasis.Value switch { ... };
+CorrectedWeight = CorrectedBmrWeightBasis.Value switch { ... };
 ```
 ※ 現在は CalculateCorrectedWeight() により
 計算結果の確定と null 問題は Domain 側で解消されている。
-BmrWeightBasis は UI 表示（pill）用の派生情報。
+CorrectedBmrWeightBasis は UI 表示（pill）用の派生情報。
 
 ---
 

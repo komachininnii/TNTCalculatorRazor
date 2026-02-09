@@ -98,11 +98,11 @@ WaterFinal = RoundingRules.CeilMl(WaterRaw.Value);
 
 ## BMR 系プロパティの整理
 
-- ActualBmr：実測体重ベース
-- CorrectedBmr：体重補正ロジックの内部計算用
-- CorrectedBmrEnergyDisplayKcal：参考表示用
-
-曖昧だった `BmrKcal` は意味を失ったため削除した。
+- ActualBmr：実測体重ベースのBMR
+- CorrectedBmr：体重補正をおこなったBMR
+- CorrectedBmrEnergyRawKcal：実数値
+- CorrectedBmrEnergyDisplayKcal：丸め後の表示用
+- EnergyOrderType の Enum は BMRベースの場合は CorrectedBmrBased とする。
 
 ---
 

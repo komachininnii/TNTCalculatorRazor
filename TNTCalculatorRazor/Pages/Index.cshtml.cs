@@ -83,7 +83,7 @@ public class IndexModel : PageModel
     [BindProperty] public bool IsHepaticEncephalopathy { get; set; }
 
     // エネルギー指示
-    [BindProperty] public EnergyOrderType SelectedEnergyOrder { get; set; } = EnergyOrderType.BmrEstimated;
+    [BindProperty] public EnergyOrderType SelectedEnergyOrder { get; set; } = EnergyOrderType.CorrectedBmrBased;
     [BindProperty] public int? ManualEnergyValue { get; set; }
     [BindProperty] public int? EnergyOrderValue { get; set; }
     [BindProperty] public bool IsEnergyUserEdited { get; set; }
@@ -433,7 +433,7 @@ public class IndexModel : PageModel
         // (B) フォールバック：EnergyFinalが作れない時だけ、候補（補正BMRx係数/25/30/35）から入れる
         EnergyOrderValue = SelectedEnergyOrder switch
         {
-            EnergyOrderType.BmrEstimated => CorrectedBmrEnergyDisplayKcal,
+            EnergyOrderType.CorrectedBmrBased => CorrectedBmrEnergyDisplayKcal,
             EnergyOrderType.Kcal25 => Kcal25,
             EnergyOrderType.Kcal30 => Kcal30,
             EnergyOrderType.Kcal35 => Kcal35,

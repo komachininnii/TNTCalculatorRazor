@@ -328,7 +328,7 @@ function tntLimitNumber(el) {
         // 必要エネルギー算出方法がBMRベースの場合のみ採用した体重pillを表示する。
         var wPill = document.querySelector("[data-energy-weight-pill]");
         if (wPill) {
-            var isBmrBased = (Number(data.SelectedEnergyOrder) === 0); // BmrEstimated
+            var isBmrBased = !!data.IsCorrectedBmrBased; // EnergyOrderTypeがBMRベースかどうか
             var text = data.EnergyWeightPillText;
 
             if (isBmrBased && text) {
