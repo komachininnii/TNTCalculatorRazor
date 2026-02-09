@@ -52,42 +52,7 @@
 
 ## 3. 体重ロジックの整理
 
-### 3.1 命名ルール（固定）
-
-今後のコード検索・保守で迷わないため、以下の命名を固定ルールとして統一する。
-
-- **「標準/実測/調整を切替して使う体重」→ `CorrectedWeight`**
-- **「調整体重（式で出した調整値）が必要」→ `AdjustedWeight`**
-
-運用の目安：
-
-- WaterCalculator の第 5 引数のように **「調整体重」を要求**している箇所は `AdjustedWeight`
-- Selector 等で **「補正体重（採用体重）」**として扱う箇所は `CorrectedWeight`
-
----
-
-### 3.2 用語整理
-
-- **AdjustedWeight**
-  - 調整体重そのもの（式で計算される値）
-- **CorrectedWeight**
-  - 実測／標準／調整から最終的に選ばれた補正体重
-
-### 3.3 プロパティ構成（IndexModel）
-
-```csharp
-public double? AdjustedWeight { get; private set; }
-public double? CorrectedWeight { get; private set; }
-
-// Corrected BMR に用いた体重情報（UI表示用）
-public BmrWeightBasisType? CorrectedBmrWeightBasis { get; private set; }
-public double? CorrectedBmrWeightUsed { get; private set; }
-```
-
-### 3.4 注意点
-
-- `CorrectedWeight` は **必要エネルギー / 蛋白**で共通利用
-- WaterCalculator では「調整体重そのもの」が必要なため `AdjustedWeight` を使用
+体重ロジックの命名ルールや用語の整理は glossary-bmr-weight-terminology.md に転記
 
 ---
 

@@ -104,48 +104,4 @@ WaterFinal = RoundingRules.CeilMl(WaterRaw.Value);
 
 ## BMR・補正代謝量（BMR×係数）系 命名ルールの整理
 
-- 実測体重ベース（Actual）
-  - `ActualBmrRaw`：実測体重ベースのBMR（double）
-  - `ActualBmrDisplayKcal`：表示用（kcal/day を整数化、int）
-
-- 補正体重ベース（Corrected）
-  - `correctedBmrRaw`：補正体重ベースのBMR（中間値・ローカル変数）
-  - `CorrectedBmrEnergyRawKcal`：補正BMR×係数（＋乳児例外）で算出したエネルギー（未丸め、double）
-  - `CorrectedBmrEnergyDisplayKcal`：表示用（kcal/day を整数化、int）
-
-- `EnergyOrderType` は「基準（Based）」を表す。補正BMRベースは `CorrectedBmrBased`。
-
-```csharp
-public double? ActualBmrRaw { get; private set; }
-
-public int? ActualBmrDisplayKcal =>
-    ActualBmrRaw.HasValue
-        ? (int?)RoundingRules.RoundKcalToInt(ActualBmrRaw.Value)
-        : null;
-
-// ---- Actual ----
-var actualBmr = BmrCalculator.Calculate(Age!.Value, Weight!.Value, Height!.Value, Gender);
-ActualBmrRaw = actualBmr.RawValue;
-
-// ---- Corrected（補正体重ベース）----
-var correctedBmrRaw =
-    BmrCalculator.Calculate(Age!.Value, CorrectedWeight.Value, Height!.Value, Gender).RawValue;
-
-var correctedBmrEnergyRawKcal =
-    Age.Value == 0
-        ? ((correctedBmrRaw * StressTotal) + (40 * Weight!.Value)) * 1.1
-        : correctedBmrRaw
-            * ActivityFactorTable.Get(ActivityFactor)
-            * StressTotal;
-
-CorrectedBmrEnergyDisplayKcal =
-    RoundingRules.RoundKcalToInt(correctedBmrEnergyRawKcal);
-```
-※補足（用語の整理）
-
-- 実測体重ベースの BMR（ActualBMR）は、医学的な意味での「基礎代謝量」を表す。
-- 補正体重ベースの BMR は、基礎代謝量そのものを示す目的ではなく、
-  必要エネルギー量を算出するための計算基準として用いている。
-  そのため本プロジェクトでは「補正体重ベースのBMR×係数」を
-  必要エネルギー計算用の中間値として扱っている。
-
+※ 用語定義・命名ルールは docs/glossary-bmr-weight-terminology.md を参照

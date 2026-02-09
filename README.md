@@ -139,6 +139,8 @@ Azure Portal→高度なツール→BashまたはSSH
 - [UI / 設計判断メモ](docs/ui-decisions.md)
 
 - [計算結果の丸め仕様と Final 値の設計](docs/calculation-rounding-and-final-values.md)
+
+- [用語集：基礎代謝量・体重関連の整理](docs/glossary-bmr-weight-terminology.md)
  
 ---
 
