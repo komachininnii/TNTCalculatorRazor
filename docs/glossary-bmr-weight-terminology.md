@@ -57,7 +57,7 @@ public double? CorrectedWeight { get; private set; }
 | 名称 | 意味 |
 |----|----|
 | `ActualBmrRaw` | 実測体重ベースの BMR（double） |
-| `ActualBmrDisplayKcal` | 表示用（仕様丸め後, int） |
+| `ActualBmrDisplayKcal` | 表示用（表示丸め, int） |
 
 ```csharp
 public double? ActualBmrRaw { get; private set; }
@@ -80,7 +80,7 @@ public int? ActualBmrDisplayKcal =>
 |----|----|
 | `correctedBmrRaw` | 補正体重ベースの BMR（ローカル変数） |
 | `correctedBmrEnergyRawKcal` | BMR × 係数後のエネルギー（double） |
-| `CorrectedBmrEnergyDisplayKcal` | 表示用（仕様丸め後, int） |
+| `CorrectedBmrEnergyDisplayKcal` | 表示用（表示丸め, int） |
 
 ```csharp
 var correctedBmrRaw =
@@ -109,7 +109,7 @@ CorrectedBmrEnergyDisplayKcal =
 | 接尾語 | 意味 |
 |----|----|
 | `Raw` | 内部計算用の未丸め値 |
-| `Final` | 仕様として確定した値（丸め済） |
+| `Final` | 仕様として確定した値（仕様丸め） |
 | `Display` | 表示専用（UI用） |
 
 **原則**
