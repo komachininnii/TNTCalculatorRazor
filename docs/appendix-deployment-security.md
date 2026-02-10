@@ -136,8 +136,6 @@ appsettings.Production.json
 </PropertyGroup>
 ```
 
-※ これ単独では不十分だった。
-
 ---
 
 ### csproj による完全除外（決定打）
@@ -189,7 +187,7 @@ app.MapRazorPages();
 
 ---
 
-## ローカル確認方法（安全）
+## ローカル確認方法
 
 院内リンク表示のみを確認したい場合、  
 Development 環境のまま **環境変数で一時的に上書き**する。

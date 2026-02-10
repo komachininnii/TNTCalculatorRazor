@@ -19,19 +19,23 @@
 
 ### StandardWeight（標準体重）
 - 身長・年齢・性別に基づく理論体重
-- kcal/kg（25/30/35）計算の基準として使用
-- 肥満度が低い場合のエネルギー計算にも用いられる
+- 肥満度の算出に用いる
+  - 肥満度 = 実測体重 / 標準体重 × 100%
+- kcal/kg（25/30/35）計算の基準に用いる
+- 肥満度80%以下の必要エネルギー・蛋白計算に用いる
 
 ### AdjustedWeight（調整体重）
-- 肥満度が高い場合に用いられる
-- **計算式で算出される値そのもの**
-- WaterCalculator など、一部ロジックで直接使用される
-
+- 実測体重が標準体重に対して過剰な場合の調整体重
+  - 調整体重 = （実測体重 - 標準体重）× 0.25 + 標準体重
+- 肥満度120%以上の必要エネルギー・蛋白計算に用いる
+- 肥満度120%以上の妊婦の水分計算に用いる
+  
 ### CorrectedWeight（補正体重）
-- Actual / Standard / Adjusted の中から
-  **最終的に採用された体重**
+- Actual / Standard / Adjusted の中から**最終的に採用された体重**
 - 必要エネルギー・蛋白計算の共通基盤
 
+※乳児では肥満度を算出せず常に実測体重を用いる
+ 
 ```csharp
 public double? AdjustedWeight { get; private set; }
 public double? CorrectedWeight { get; private set; }
@@ -53,7 +57,7 @@ public double? CorrectedWeight { get; private set; }
 | 名称 | 意味 |
 |----|----|
 | `ActualBmrRaw` | 実測体重ベースの BMR（double） |
-| `ActualBmrDisplayKcal` | 表示用（仕様丸め後, int） |
+| `ActualBmrDisplayKcal` | 表示用（表示丸め, int） |
 
 ```csharp
 public double? ActualBmrRaw { get; private set; }
@@ -66,7 +70,7 @@ public int? ActualBmrDisplayKcal =>
 
 **補足**  
 - 「基礎代謝量」という日本語表記は **ActualBMR のみ**に用いる  
-- 栄養科要望により、実測体重ベースの BMR は常に保持する
+- 実測体重ベースの BMR は常に保持する
 
 ---
 
@@ -76,7 +80,7 @@ public int? ActualBmrDisplayKcal =>
 |----|----|
 | `correctedBmrRaw` | 補正体重ベースの BMR（ローカル変数） |
 | `correctedBmrEnergyRawKcal` | BMR × 係数後のエネルギー（double） |
-| `CorrectedBmrEnergyDisplayKcal` | 表示用（仕様丸め後, int） |
+| `CorrectedBmrEnergyDisplayKcal` | 表示用（表示丸め, int） |
 
 ```csharp
 var correctedBmrRaw =
@@ -105,7 +109,7 @@ CorrectedBmrEnergyDisplayKcal =
 | 接尾語 | 意味 |
 |----|----|
 | `Raw` | 内部計算用の未丸め値 |
-| `Final` | 仕様として確定した値（丸め済） |
+| `Final` | 仕様として確定した値（仕様丸め） |
 | `Display` | 表示専用（UI用） |
 
 **原則**
@@ -118,8 +122,8 @@ CorrectedBmrEnergyDisplayKcal =
 
 ### BMR 系算出方法の命名
 
-従来の `BmrEstimated` は意味が曖昧であるため、  
-**補正体重ベースであることを明示**する。
+**補正体重ベースであることを明示**するため、
+従来の `BmrEstimated` は`CorrectedBmrBased`に変更。
 
 ```csharp
 public enum EnergyOrderType
@@ -163,8 +167,3 @@ public double? CorrectedBmrWeightUsed { get; private set; }
 - **必要エネルギー計算 = CorrectedBMR × 係数**
 - `CorrectedWeight` は エネルギー / 蛋白で共通利用
 - WaterCalculator は `AdjustedWeight` を直接使用する場合がある
-
----
-
-本ドキュメントは、  
-半年後・1年後に「これ何だっけ？」を防ぐための **一次参照資料** とする。

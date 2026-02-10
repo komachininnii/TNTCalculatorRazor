@@ -99,9 +99,3 @@ WaterFinal = RoundingRules.CeilMl(WaterRaw.Value);
 - 丸めの重複・揺れを防ぐ
 - 表示変更が計算結果に影響しないようにする
 - どこで仕様が確定するかを明確にする
-
----
-
-## BMR・補正代謝量（BMR×係数）系 命名ルールの整理
-
-※ 用語定義・命名ルールは [用語集：基礎代謝量・体重関連の整理](glossary-bmr-weight-terminology.md) へ転記
