@@ -9,17 +9,17 @@ public static class WeightForCalculationSelector
         WeightUsage usage,
         int age,
         double actualWeight,
-        double adjustedWeight,
+        double correctedWeight,
         double standardWeight,
         DiseaseType disease )
     {
         switch (usage)
         {
             case WeightUsage.Energy:
-                // 年齢0歳（乳児）は実測体重、それ以外は補正体重(肥満度で標準・実測・調整）
+                // 年齢0歳（乳児）は実測体重、それ以外は CorrectedWeight（最終採用体重）
                 return age == 0
                     ? actualWeight 
-                    : adjustedWeight;
+                    : correctedWeight;
 
             case WeightUsage.Protein:
                 {
@@ -31,7 +31,7 @@ public static class WeightForCalculationSelector
                         return standardWeight;
 
                     // 成人・通常は補正体重
-                    return adjustedWeight;
+                    return correctedWeight;
                 }
 
             default:
