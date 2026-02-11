@@ -568,7 +568,7 @@ public class IndexModel : PageModel
 
 
     // ==============================
-    // エネルギー/蛋白/水分（参考表示）
+    // エネルギー/蛋白/水分
     // ==============================
     private void RecalcEnergyProteinWater()
     {

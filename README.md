@@ -132,7 +132,7 @@ Azure Portal→高度なツール→BashまたはSSH
 
 ---
 
-## 設計・仕様メモ（Design Notes）
+## 開発者向けメモ（Design Notes）
 本アプリのUIおよび計算仕様は、誤操作防止・臨床的安全性・将来の拡張性を重視して設計している。  
 設計上の判断理由やUI仕様変更の背景は以下にまとめている。
 
@@ -141,6 +141,8 @@ Azure Portal→高度なツール→BashまたはSSH
 - [計算結果の丸め仕様と Final 値の設計](docs/calculation-rounding-and-final-values.md)
 
 - [用語集：基礎代謝量・体重関連の整理](docs/glossary-bmr-weight-terminology.md)
+
+- [xUnit Tests](docs/testing.md)
  
 ---
 

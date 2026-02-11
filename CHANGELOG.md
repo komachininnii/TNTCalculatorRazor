@@ -1,13 +1,8 @@
 # CHANGELOG
 
 ## Ver3.0.6（開発中）
-- Energy / Protein / Water / Enteral の丸め処理を RoundingRules に集約
-- Raw / Final / Display プロパティ構成を明確化
-- BMR（Actual / Corrected）の役割整理と不要プロパティ削除
-- ユニットテストプロジェクト（xUnit）を追加
-  - 丸め処理テスト
-  - BMR計算テスト
-  - 標準体重計算テスト 
+- 内部品質改善（計算ロジックの整理とテスト追加）
+
 
 ## Ver3.0.5（2026/02/04） 
 - 例外設定時のUI表示を調整

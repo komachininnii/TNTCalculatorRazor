@@ -93,6 +93,20 @@ public class WeightForCalculationSelectorTests
         Assert.Equal(65.0, w);
     }
 
+    [Fact]
+    public void Select_Protein_Age18は成人扱い_通常はCorrectedWeight()
+    {
+        var w = WeightForCalculationSelector.Select(
+            usage: WeightUsage.Protein,
+            age: 18,
+            actualWeight: 70.0,
+            correctedWeight: 65.0,
+            standardWeight: 60.0,
+            disease: DiseaseType.None);
+
+        Assert.Equal(65.0, w);
+    }
+
     // ==========================
     // Defensive
     // ==========================
