@@ -8,7 +8,7 @@
 - Visual Studio: テスト エクスプローラーから実行
 - CLI: `dotnet test`
 
-## 主要テスト（Domain）
+## 主要テスト
 - BMR: `BmrCalculatorTests`
 - 標準体重: `StandardWeightCalculatorTests`
 - 補正体重: `CorrectedWeightCalculatorTests`
@@ -16,6 +16,7 @@
 - 水分: `WaterCalculatorTests`
 - CCr: `CcrCalculatorTests`, `CcrCreatinineCorrectionRuleTests`, `CcrCalculator_WithCorrection_Tests`
 - 丸め: `RoundingRulesTests`
+- 統合：`IndexIntegrationTests`
 
 ## 補足
 - CCrは常に実測体重を使用する。
