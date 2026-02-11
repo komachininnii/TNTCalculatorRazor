@@ -9,20 +9,10 @@ PC・スマートフォンの両方で利用でき、用途に応じた情報密
 
 <p>
   <a href="docs/img/screenshot-desktop.png">
-    <img
-      src="docs/img/screenshot-desktop.png"
-      width="70%"
-      alt="Desktop screenshot"
-      style="border:1px solid #d0d7de; border-radius:12px; box-shadow:0 1px 3px rgba(0,0,0,.08); background:#fff; padding:4px;"
-    >
+    <img src="docs/img/screenshot-desktop.png" width="70%" alt="Desktop screenshot">
   </a>
   <a href="docs/img/screenshot-mobile.png">
-    <img
-      src="docs/img/screenshot-mobile.png"
-      height="360"
-      alt="Mobile screenshot"
-      style="border:1px solid #d0d7de; border-radius:12px; box-shadow:0 1px 3px rgba(0,0,0,.08); background:#fff; padding:4px; margin-left:8px;"
-    >
+    <img src="docs/img/screenshot-mobile.png" height="360" alt="Mobile screenshot">
   </a>
 </p>
 
