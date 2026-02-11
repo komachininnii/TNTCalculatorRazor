@@ -9,14 +9,14 @@ PC・スマートフォンの両方で利用でき、用途に応じた情報密
 
 <p>
   <a href="docs/img/screenshot-desktop.png">
-    <img src="docs/img/screenshot-desktop.png" width="62%" alt="Desktop screenshot">
+    <img src="docs/img/screenshot-desktop.png" width="70%" alt="Desktop screenshot">
   </a>
   <a href="docs/img/screenshot-mobile.png">
-    <img src="docs/img/screenshot-mobile.png" width="34%" alt="Mobile screenshot">
+    <img src="docs/img/screenshot-mobile.png" height="320" alt="Mobile screenshot">
   </a>
 </p>
 
-<p><sub>※スクリーンショットはダミー値入力（例：Cr）およびダミー表示（例：サンプル商品A）で作成しています。</sub></p>
+<p><sub>※スクリーンショットに表示されている数値や商品名はダミーです。</sub></p>
 
 
 ---
