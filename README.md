@@ -12,7 +12,7 @@ PC・スマートフォンの両方で利用でき、用途に応じた情報密
     <img src="docs/img/screenshot-desktop.png" width="70%" alt="Desktop screenshot">
   </a>
   <a href="docs/img/screenshot-mobile.png">
-    <img src="docs/img/screenshot-mobile.png" height="375" alt="Mobile screenshot">
+    <img src="docs/img/screenshot-mobile.png" height="376" alt="Mobile screenshot">
   </a>
 </p>
 
