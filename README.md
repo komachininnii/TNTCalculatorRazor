@@ -174,7 +174,6 @@ Azure Portal→高度なツール→BashまたはSSH
 ### UI互換対応メモ
 
 IE11互換、モダンブラウザ、スマートフォン表示に関する詳細な設計判断・調整履歴は以下を参照。
-なお、この際、AdjustedWeight/CorrectedWeightの整理をおこなった（3. 体重ロジックの整理に記載）
 - [Appendix: UI / IE / Mobile 対応メモ](docs/appendix-ui-ie-mobile.md)
 
 ### JS Design Notes
