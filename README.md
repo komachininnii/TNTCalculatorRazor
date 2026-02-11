@@ -5,6 +5,20 @@ TNTCalculatorRazor は、必要項目を入力するだけで、必要エネル�
 投与量・成分が自動で表示される計算支援アプリケーションです。
 PC・スマートフォンの両方で利用でき、用途に応じた情報密度と操作性を重視して設計されています。
 
+<h2>Screenshots</h2>
+
+<p>
+  <a href="docs/img/screenshot-desktop.png">
+    <img src="docs/img/screenshot-desktop.png" width="62%" alt="Desktop screenshot">
+  </a>
+  <a href="docs/img/screenshot-mobile.png">
+    <img src="docs/img/screenshot-mobile.png" width="34%" alt="Mobile screenshot">
+  </a>
+</p>
+
+<p><sub>※スクリーンショットはダミー値入力（例：Cr）およびダミー表示（例：サンプル商品A）で作成しています。</sub></p>
+
+
 ---
 
 ## Status
