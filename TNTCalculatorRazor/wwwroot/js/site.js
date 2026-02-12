@@ -304,7 +304,7 @@ function tntLimitNumber(el) {
             }
         }
 
-        // ユーザー編集済みpillを表示/非表示にする
+        // EnergyOrderValueに手動編集pillを表示/非表示にする
         var pill = document.querySelector("[data-energy-user-edited]");
         if (pill) {
             var hasEnergyValue =
@@ -313,6 +313,18 @@ function tntLimitNumber(el) {
                 && data.EnergyOrderValue !== ""
                 && Number(data.EnergyOrderValue) > 0;
             pill.style.display = (data.IsEnergyUserEdited && hasEnergyValue) ? "" : "none";
+        }
+
+        // EntralVolumeInputに手動編集pillを表示/非表示にする
+        var pillVol = document.querySelector("[data-volume-user-edited]");
+        if (pillVol) {
+             var hasVolValue =
+                 data.EnteralVolumeInput !== null
+                 && data.EnteralVolumeInput !== undefined
+                 && data.EnteralVolumeInput !== ""
+                 && Number(data.EnteralVolumeInput) > 0;
+                 // エネルギーが「手動編集」なら投与量側も点灯させる（どっちを触ってもOK）
+                 pillVol.style.display = (data.IsEnergyUserEdited && hasVolValue) ? "" : "none";
         }
 
         // 候補値を反映する
