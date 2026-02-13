@@ -177,7 +177,7 @@ public class IndexModel : PageModel
     //==============================
     // 経腸栄養
     //==============================
-    public bool IsEnteralVolumeUserEdited { get; private set; }
+    [BindProperty] public bool IsEnteralVolumeUserEdited { get; set; }
     public int? EnteralVolume { get; private set; }          // mL/day（仕様確定）
     public double? EnteralEnergy { get; private set; }       // kcal/day（表示）
 
@@ -321,6 +321,14 @@ public class IndexModel : PageModel
 
         if (IsVolumeEditAction(act))
             IsEnteralVolumeUserEdited = true;
+
+        if (act == "energyreset")
+        {
+            IsEnergyUserEdited = false;
+            IsEnteralVolumeUserEdited = false;
+            EnergyOrderValue = null;
+            ClearModelState(nameof(EnergyOrderValue), nameof(EnteralVolumeInput));
+        }
 
         // 蛋白補正を手で触ったら以後はデフォルト上書きをしない
         // （肝性脳症チェックは “状態入力” 扱いなのでここでは true にしない）

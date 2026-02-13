@@ -348,6 +348,12 @@ function tntLimitNumber(el) {
                 wPill.style.display = "none";
             }
         }
+        var hEnergy = document.getElementById("IsEnergyUserEdited");
+        if (hEnergy) hEnergy.value = data.IsEnergyUserEdited ? "true" : "false";
+
+        var hVol = document.getElementById("IsEnteralVolumeUserEdited");
+        if (hVol) hVol.value = data.IsEnteralVolumeUserEdited ? "true" : "false";
+
         // 算出法セレクトによる係数の表示制御
         // applyFactorVisibility(data);    // BMR*係数が非選択時も係数表示を残すため無効化
     }
@@ -495,6 +501,30 @@ function tntLimitNumber(el) {
     }
 
     function trim(v) { return v ? v.replace(/^\s+|\s+$/g, "") : ""; }
+
+
+    document.addEventListener("click", function (e) {
+        e = e || window.event;
+        var t = e.target || e.srcElement;
+
+        while (t && t !== document) {
+            if (t.getAttribute && t.getAttribute("data-energy-reset") !== null) break;
+            t = t.parentNode;
+        }
+        if (!t || t === document) return;
+
+        if (e.preventDefault) e.preventDefault();
+        e.returnValue = false;
+
+        var form = document.querySelector('form[data-tnt-form="main"]') || getForm(t);
+        if (!form) return false;
+
+        var actionField = document.getElementById("Action") || form.querySelector('input[name="Action"]');
+        if (actionField) actionField.value = "energyReset";
+
+        submitWithRecalc(form);
+        return false;
+    });
 
     // ==== 1) 数値制限：data-maxint/maxdec属性を持つ要素にtntLimitNumberを適用 ====
     document.addEventListener("input", function (e) {
