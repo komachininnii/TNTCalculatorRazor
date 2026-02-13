@@ -348,6 +348,12 @@ function tntLimitNumber(el) {
                 wPill.style.display = "none";
             }
         }
+        var hEnergy = document.getElementById("IsEnergyUserEdited");
+        if (hEnergy) hEnergy.value = data.IsEnergyUserEdited ? "true" : "false";
+
+        var hVol = document.getElementById("IsEnteralVolumeUserEdited");
+        if (hVol) hVol.value = data.IsEnteralVolumeUserEdited ? "true" : "false";
+
         // 算出法セレクトによる係数の表示制御
         // applyFactorVisibility(data);    // BMR*係数が非選択時も係数表示を残すため無効化
     }

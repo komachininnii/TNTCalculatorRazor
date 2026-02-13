@@ -177,7 +177,7 @@ public class IndexModel : PageModel
     //==============================
     // 経腸栄養
     //==============================
-    public bool IsEnteralVolumeUserEdited { get; private set; }
+    [BindProperty] public bool IsEnteralVolumeUserEdited { get; set; }
     public int? EnteralVolume { get; private set; }          // mL/day（仕様確定）
     public double? EnteralEnergy { get; private set; }       // kcal/day（表示）
 
