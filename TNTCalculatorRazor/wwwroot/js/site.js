@@ -496,6 +496,30 @@ function tntLimitNumber(el) {
 
     function trim(v) { return v ? v.replace(/^\s+|\s+$/g, "") : ""; }
 
+
+    document.addEventListener("click", function (e) {
+        e = e || window.event;
+        var t = e.target || e.srcElement;
+
+        while (t && t !== document) {
+            if (t.getAttribute && t.getAttribute("data-energy-reset") !== null) break;
+            t = t.parentNode;
+        }
+        if (!t || t === document) return;
+
+        if (e.preventDefault) e.preventDefault();
+        e.returnValue = false;
+
+        var form = document.querySelector('form[data-tnt-form="main"]') || getForm(t);
+        if (!form) return false;
+
+        var actionField = document.getElementById("Action") || form.querySelector('input[name="Action"]');
+        if (actionField) actionField.value = "energyReset";
+
+        submitWithRecalc(form);
+        return false;
+    });
+
     // ==== 1) 数値制限：data-maxint/maxdec属性を持つ要素にtntLimitNumberを適用 ====
     document.addEventListener("input", function (e) {
         e = e || window.event;

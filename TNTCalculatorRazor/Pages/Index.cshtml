@@ -259,13 +259,18 @@
 
             <div class="card card-energy">
                 <h3>必要エネルギー</h3>
+                @{
+                    var energyOrderItems = Html
+                        .GetEnumSelectList<EnergyOrderType>()
+                        .Where(x => x.Value != ((int)EnergyOrderType.Manual).ToString());
+                }
 
                 <div class="fields">
                     <div class="field field-compact">
                         <div class="label">算出方法</div>
                         <div class="control">
                             <select asp-for="SelectedEnergyOrder"
-                                    asp-items="Html.GetEnumSelectList<EnergyOrderType>()"
+                                    asp-items="energyOrderItems"
                                     data-change-action="order"
                                     data-energy-select="1">
                             </select>
@@ -289,7 +294,10 @@
                                     && Model.EnergyOrderValue.HasValue
                                     && Model.EnergyOrderValue.Value > 0;
                             }
-                            <span class="pill" data-energy-user-edited@(showEnergyEdited ? "" : " style=\"display:none;\"")>手動編集</span> 
+                            <span class="pill" data-energy-user-edited@(showEnergyEdited ? "" : " style=\"display:none;\"")>
+                                手動編集
+                                <button type="button" data-energy-reset aria-label="自動に戻す" title="自動に戻す">×</button>
+                            </span>
                         </div>
                     </div>
                 </div>

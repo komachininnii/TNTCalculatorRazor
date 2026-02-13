@@ -322,6 +322,14 @@ public class IndexModel : PageModel
         if (IsVolumeEditAction(act))
             IsEnteralVolumeUserEdited = true;
 
+        if (act == "energyreset")
+        {
+            IsEnergyUserEdited = false;
+            IsEnteralVolumeUserEdited = false;
+            EnergyOrderValue = null;
+            ClearModelState(nameof(EnergyOrderValue), nameof(EnteralVolumeInput));
+        }
+
         // 蛋白補正を手で触ったら以後はデフォルト上書きをしない
         // （肝性脳症チェックは “状態入力” 扱いなのでここでは true にしない）
         if (act == "protein")
