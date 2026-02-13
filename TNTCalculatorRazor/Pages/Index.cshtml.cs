@@ -177,7 +177,7 @@ public class IndexModel : PageModel
     //==============================
     // 経腸栄養
     //==============================
-
+    public bool IsEnteralVolumeUserEdited { get; private set; }
     public int? EnteralVolume { get; private set; }          // mL/day（仕様確定）
     public double? EnteralEnergy { get; private set; }       // kcal/day（表示）
 
@@ -220,9 +220,14 @@ public class IndexModel : PageModel
 
     // ユーザー手動入力の判定
     private static readonly HashSet<string> EnergyEditActions =
-        new(StringComparer.OrdinalIgnoreCase) { "energy", "volume" };
+     new(StringComparer.OrdinalIgnoreCase) { "energy" };
 
     private bool IsEnergyEditAction( string act ) => EnergyEditActions.Contains(act);
+
+    private static readonly HashSet<string> VolumeEditActions =
+    new(StringComparer.OrdinalIgnoreCase) { "volume" };
+
+    private bool IsVolumeEditAction( string act ) => VolumeEditActions.Contains(act);
 
     private void ClearModelState( params string[] keys )
     {
@@ -310,9 +315,12 @@ public class IndexModel : PageModel
     {
         var act = Act;
 
-        // 0) ユーザー編集フラグ（kcal or mL を触ったら以後自動同期しない）
+        // 0) ユーザー編集フラグ（保持型）
         if (IsEnergyEditAction(act))
             IsEnergyUserEdited = true;
+
+        if (IsVolumeEditAction(act))
+            IsEnteralVolumeUserEdited = true;
 
         // 蛋白補正を手で触ったら以後はデフォルト上書きをしない
         // （肝性脳症チェックは “状態入力” 扱いなのでここでは true にしない）
@@ -718,11 +726,12 @@ public class IndexModel : PageModel
             EnteralEnergy =
                 EnteralEnergyCalculator.CalculateEnergyFromVolume(EnteralVolume.Value, comp);
 
+            // ★kcal入力欄の同期を中止する
             // kcal入力欄の同期（仕様丸め）
-            EnergyOrderValue =
-                RoundingRules.RoundKcalToInt(EnteralEnergy.Value);
+            //EnergyOrderValue =
+            //    RoundingRules.RoundKcalToInt(EnteralEnergy.Value);
 
-            ClearModelState(nameof(EnergyOrderValue));
+            //ClearModelState(nameof(EnergyOrderValue));
 
             // 割付候補
             EnteralPackagePlans =

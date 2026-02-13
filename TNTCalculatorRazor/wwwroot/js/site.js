@@ -304,27 +304,24 @@ function tntLimitNumber(el) {
             }
         }
 
-        // EnergyOrderValueに手動編集pillを表示/非表示にする
+        // EnergyOrderValueに手動編集pill
         var pill = document.querySelector("[data-energy-user-edited]");
         if (pill) {
-            var hasEnergyValue =
-                data.EnergyOrderValue !== null
+            var hasEnergyValue = data.EnergyOrderValue !== null
                 && data.EnergyOrderValue !== undefined
                 && data.EnergyOrderValue !== ""
                 && Number(data.EnergyOrderValue) > 0;
             pill.style.display = (data.IsEnergyUserEdited && hasEnergyValue) ? "" : "none";
         }
 
-        // EntralVolumeInputに手動編集pillを表示/非表示にする
+        // EnteralVolumeInputに手動編集pill（独立）
         var pillVol = document.querySelector("[data-volume-user-edited]");
         if (pillVol) {
-             var hasVolValue =
-                 data.EnteralVolumeInput !== null
-                 && data.EnteralVolumeInput !== undefined
-                 && data.EnteralVolumeInput !== ""
-                 && Number(data.EnteralVolumeInput) > 0;
-                 // エネルギーが「手動編集」なら投与量側も点灯させる（どっちを触ってもOK）
-                 pillVol.style.display = (data.IsEnergyUserEdited && hasVolValue) ? "" : "none";
+            var hasVolValue = data.EnteralVolumeInput !== null
+                && data.EnteralVolumeInput !== undefined
+                && data.EnteralVolumeInput !== ""
+                && Number(data.EnteralVolumeInput) > 0;
+            pillVol.style.display = (data.IsEnteralVolumeUserEdited && hasVolValue) ? "" : "none";
         }
 
         // 候補値を反映する
