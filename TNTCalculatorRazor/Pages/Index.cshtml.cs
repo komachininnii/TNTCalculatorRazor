@@ -322,6 +322,10 @@ public class IndexModel : PageModel
         if (IsVolumeEditAction(act))
             IsEnteralVolumeUserEdited = true;
 
+        // energy 側を操作したら投与量の手動編集フラグを落として pill を消す
+        if (act == "energy")
+            IsEnteralVolumeUserEdited = false;
+
         if (act == "energyreset")
         {
             IsEnergyUserEdited = false;
