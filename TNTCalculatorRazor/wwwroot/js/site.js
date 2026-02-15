@@ -198,7 +198,7 @@ function tntLimitNumber(el) {
         var isMobile = getIsMobileLayout();
         tntLastLayoutIsMobile = isMobile;
 
-        var list = document.querySelectorAll(".enteral-details, .result-details");
+        var list = document.querySelectorAll(".result-details");
         for (var i = 0; i < list.length; i++) {
             var d = list[i];
             if (!d) continue;
@@ -670,8 +670,8 @@ function tntLimitNumber(el) {
 
         if (!isMobile) return;
 
-        // スマホでは result/enteral の open を外す（初期で折りたたむ）
-        var list = document.querySelectorAll(".enteral-details, .result-details");
+        // スマホでは result の open を外す（初期で折りたたむ）
+        var list = document.querySelectorAll(".result-details");
         for (var i = 0; i < list.length; i++) {
             list[i].removeAttribute("open");
         }

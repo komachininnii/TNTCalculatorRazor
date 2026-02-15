@@ -431,7 +431,7 @@
                         <div class="control">
                             <input asp-for="EnteralVolumeInput"
                                 type="number" step="1" inputmode="numeric"
-                           title="手入力可（必要エネルギー入力欄にも反映）"
+                                title="手動編集可"
                                 data-maxint="4" data-maxdec="0"
                                 data-change-action="volume"
                                 data-enter-action="volume" />
@@ -443,10 +443,6 @@
                 
                 @if (Model.EnteralVolume.HasValue)
                 {
-                    <!-- 追加：スマホで折りたたむ領域 -->
-                    <details class="fold enteral-details" open>
-                        <summary>成分・割付候補</summary>
-
                     <div class="enteral-top">
                         <div class="enteral-box">
                             <h4>計算結果</h4>
@@ -483,8 +479,6 @@
                             <dd>@(Model.EnteralWater?.ToString("F0") ?? "-") mL</dd>
                         </dl>
                     </div>
-
-                    </details>
                 }
             </div>
 
