@@ -61,7 +61,7 @@ public static class BmrCalculator
         return new BmrResult
         {
             RawValue = coefficient * weight,
-            Formula = BmrFormulaType.Child_JapanDRI2010
+            Formula = BmrFormulaType.Child_JapanDRI2025
         };
     }
 

@@ -10,7 +10,7 @@ public static class BmrFormulaTypeExtensions
             BmrFormulaType.Infant_KyotoPICU =>
                 "Inf",
 
-            BmrFormulaType.Child_JapanDRI2010 =>
+            BmrFormulaType.Child_JapanDRI2025 =>
                 "DRI",
 
             BmrFormulaType.Adult_HarrisBenedict =>
@@ -27,7 +27,7 @@ public static class BmrFormulaTypeExtensions
         return formula switch
         {
             BmrFormulaType.Infant_KyotoPICU => "乳児簡易式（KPUM小児ICUマニュアル 第7版）",
-            BmrFormulaType.Child_JapanDRI2010 => "小児（厚労省 基礎代謝基準値 2010）",
+            BmrFormulaType.Child_JapanDRI2025 => "小児（厚労省 基礎代謝基準値 2025）",
             BmrFormulaType.Adult_HarrisBenedict => "成人（Harris–Benedict）",
             BmrFormulaType.Adult_Ganpule2007 => "成人（Ganpule 2007）",
             _ => "不明な式"
