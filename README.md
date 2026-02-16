@@ -73,7 +73,7 @@ Specifications, UI behavior, and calculation policies may change as clinical fee
 - 一列表示
 - 必要エネルギー計算
 - 推定 CCr 計算
-- 詳細な計算結果と経腸栄養剤計算は折りたたみ
+- 詳細な計算結果は折りたたみ
 
   → ベッドサイドでの迅速な確認を想定
 
