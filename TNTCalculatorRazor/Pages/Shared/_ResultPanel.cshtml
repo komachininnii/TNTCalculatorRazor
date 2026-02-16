@@ -24,14 +24,12 @@
         EnergyOrderValue = Model.EnergyOrderValue,
         IsEnergyUserEdited = Model.IsEnergyUserEdited,
         EnteralVolumeInput = Model.EnteralVolumeInput, // 投与量の手動入力も拾う
-        IsEnteralVolumeUserEdited = Model.IsEnteralVolumeUserEdited, // ユーザーがEntralVolumeを手動編集した
+        IsEnteralVolumeUserEdited = Model.IsEnteralVolumeUserEdited, // ユーザーがEnteralVolumeを手動編集した
         IsCorrectedBmrBased = (Model.SelectedEnergyOrder == EnergyOrderType.CorrectedBmrBased),
         CorrectedBmrEnergyDisplayKcal = Model.CorrectedBmrEnergyDisplayKcal,
         Kcal25 = Model.Kcal25,
         Kcal30 = Model.Kcal30,
         Kcal35 = Model.Kcal35,
-
-        // ★追加
         EnergyWeightPillText =
             (Model.CorrectedBmrWeightBasis.HasValue && Model.CorrectedBmrWeightUsed.HasValue)
                 ? $"{Model.CorrectedBmrWeightBasis!.Value.ToKindName()}{Model.CorrectedBmrWeightUsed!.Value:F1}kg"
@@ -268,7 +266,7 @@
                     <div>
                         <h4>必要量</h4>
                         <dl class="kv kv-need">
-                            @* 悪目立ちしすぎて削除対象
+                            @* 悪目立ちしすぎて削除
                             <dt>ストレス合計</dt>
                             <dd>
                                 <div class="need-line">

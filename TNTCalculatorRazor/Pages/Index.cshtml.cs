@@ -95,6 +95,7 @@ public class IndexModel : PageModel
     [BindProperty] public EnteralFormulaType? SelectedEnteralFormula { get; set; }
     [BindProperty] public int? EnteralVolumeInput { get; set; }
     [BindProperty] public string? Action { get; set; }
+    [BindProperty] public bool IsEnteralVolumeUserEdited { get; set; }
 
     // ★ 未使用 → 削除候補
     // [BindProperty] public bool HasUserSelectedPackage { get; set; }
@@ -177,7 +178,7 @@ public class IndexModel : PageModel
     //==============================
     // 経腸栄養
     //==============================
-    [BindProperty] public bool IsEnteralVolumeUserEdited { get; set; }
+   
     public int? EnteralVolume { get; private set; }          // mL/day（仕様確定）
     public double? EnteralEnergy { get; private set; }       // kcal/day（表示）
 
