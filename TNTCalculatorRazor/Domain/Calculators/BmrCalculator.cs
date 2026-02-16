@@ -43,7 +43,7 @@ public static class BmrCalculator
         };
     }
 
-
+    // DRI2010→DRI2025：本実装で使用している小児BMR係数は変更なし（表示名のみ更新）
     private static BmrResult CalculateChild( int age, double weight, GenderType gender )
     {
         double coefficient = age switch
