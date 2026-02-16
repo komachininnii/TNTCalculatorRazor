@@ -5,14 +5,18 @@ TNTCalculatorRazor は、必要項目を入力するだけで、必要エネル�
 投与量・成分が自動で表示される計算支援アプリケーションです。
 PC・スマートフォンの両方で利用でき、用途に応じた情報密度と操作性を重視して設計されています。
 
+- 栄養管理：必要エネルギー/蛋白/水分を自動計算（Harris-Benedict, Ganpule, 乳児簡易式 ほか）
+- 腎機能の目安：推定CCr（Cockcroft–Gault）を自動計算
+- 小児：日本人の食事摂取基準（DRI 2025）の区分・考え方を参照して実装（運用に合わせ調整可能）
+
 <h2>Screenshots</h2>
 
 <p>
   <a href="docs/img/screenshot-desktop.png">
-    <img src="docs/img/screenshot-desktop.png" width="70%" alt="Desktop screenshot">
+    <img src="docs/img/screenshot-desktop.png" width="70%" alt="Desktop view: nutrition calculator (energy/protein/water) and enteral nutrition planning">
   </a>
   <a href="docs/img/screenshot-mobile.png">
-    <img src="docs/img/screenshot-mobile.png" height="378" alt="Mobile screenshot">
+    <img src="docs/img/screenshot-mobile.png" height="378" alt="Mobile view: bedside-friendly layout of nutrition calculator results">
   </a>
 </p>
 
