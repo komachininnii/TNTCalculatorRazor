@@ -29,7 +29,14 @@ PC・スマートフォンの両方で利用でき、用途に応じた情報密
 ## Status
 This project is under active development.
 Specifications, UI behavior, and calculation policies may change as clinical feedback is accumulated.
- 
+
+---
+
+## 小児領域の計算について（注記）
+小児の推定必要量は、日本人の食事摂取基準（DRI）の考え方・区分を参照して実装しています。
+一方で、臨床運用で必要となる前提（区分の扱い、丸め、UI上の入力/表示仕様など）は施設・運用によって差が出やすいため、
+必要に応じて Fork して運用に合わせて調整できます。
+
 ---
 
 ## Features
