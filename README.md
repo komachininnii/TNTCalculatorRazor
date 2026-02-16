@@ -169,7 +169,7 @@ Azure Portal→高度なツール→BashまたはSSH
 ### 経腸栄養の計算仕様
 
 経腸栄養の計算ロジックの詳細と、複数製品対応に向けた設計方針。
--[Appendix: 経腸栄養の計算仕様](docs/appendix-enteral-nutrition-calculation.md) 
+- [Appendix: 経腸栄養の計算仕様](docs/appendix-enteral-nutrition.md) 
 
 ### デプロイ・セキュリティ
 
