@@ -213,5 +213,6 @@ JavaScript / Razor Pages の整理・リファクタリング内容のまとめ�
 ## 改変履歴
 詳細な改変履歴は [CHANGELOG.md](./CHANGELOG.md) を参照してください。
 
+---
 
 Keywords: 栄養計算, 経腸栄養, 必要エネルギー, CCr, Cockcroft-Gault, Harris-Benedict, Ganpule
