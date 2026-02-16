@@ -61,7 +61,7 @@ public class BmrCalculatorTests
 
         // Assert
         Assert.Equal(expected, result.RawValue, precision: 1);
-        Assert.Equal(BmrFormulaType.Child_JapanDRI2010, result.Formula);
+        Assert.Equal(BmrFormulaType.Child_JapanDRI2025, result.Formula);
     }
 
     // ========================================
@@ -184,7 +184,7 @@ public class BmrCalculatorTests
 
         // Age = 1 → 小児式
         var child = BmrCalculator.Calculate(1, 10.0, 0, GenderType.Male);
-        Assert.Equal(BmrFormulaType.Child_JapanDRI2010, child.Formula);
+        Assert.Equal(BmrFormulaType.Child_JapanDRI2025, child.Formula);
     }
 
     [Fact]
@@ -192,7 +192,7 @@ public class BmrCalculatorTests
     {
         // Age = 17 → 小児式
         var child = BmrCalculator.Calculate(17, 50.0, 0, GenderType.Male);
-        Assert.Equal(BmrFormulaType.Child_JapanDRI2010, child.Formula);
+        Assert.Equal(BmrFormulaType.Child_JapanDRI2025, child.Formula);
 
         // Age = 18 → 成人式
         var adult = BmrCalculator.Calculate(18, 50.0, 170.0, GenderType.Male);
