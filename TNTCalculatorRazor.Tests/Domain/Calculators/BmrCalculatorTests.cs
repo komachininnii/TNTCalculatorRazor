@@ -49,12 +49,12 @@ public class BmrCalculatorTests
     // ========================================
 
     [Theory]
-    [InlineData(1, 10.0, GenderType.Male, 564.72)]   // 59.512*10 - 30.4
-    [InlineData(2, 12.0, GenderType.Female, 668.704)]  // 58.317*12 - 31.1
-    [InlineData(3, 15.0, GenderType.Male, 844.89)]   // 22.706*15 + 504.3
-    [InlineData(9, 30.0, GenderType.Female, 1095.35)]  // 20.315*30 + 485.9
-    [InlineData(10, 30.0, GenderType.Female, 1094.12)] // 13.384*30 + 692.6
-    [InlineData(15, 50.0, GenderType.Male, 1542.5)]   // 17.686*50 + 658.2
+    [InlineData(1, 10.0, GenderType.Male, 564.72)]      // 59.512*10 - 30.4
+    [InlineData(2, 12.0, GenderType.Female, 668.704)]   // 58.317*12 - 31.1
+    [InlineData(3, 15.0, GenderType.Male, 844.89)]      // 22.706*15 + 504.3
+    [InlineData(9, 30.0, GenderType.Female, 1095.35)]   // 20.315*30 + 485.9
+    [InlineData(10, 30.0, GenderType.Female, 1094.12)]  // 13.384*30 + 692.6
+    [InlineData(15, 50.0, GenderType.Male, 1542.5)]     // 17.686*50 + 658.2
     public void Calculate_小児_Schofield1985( int age, double weight, GenderType gender, double expected )
 
     {
@@ -66,11 +66,11 @@ public class BmrCalculatorTests
         Assert.Equal(BmrFormulaType.Child_Schofield1985, result.Formula);
     }
 
-        // ========================================
-        // 成人（Age >= 18）- Harris-Benedict式
-        // ========================================
+    // ========================================
+    // 成人（Age >= 18）- Harris-Benedict式
+    // ========================================
 
-        [Fact]
+    [Fact]
     public void Calculate_成人男性_標準体格_HarrisBenedict式()
     {
         // 30歳、男性、170cm、65kg
@@ -270,8 +270,8 @@ public class BmrCalculatorTests
     {
         var w = 30.0;
 
-        var age9 = BmrCalculator.Calculate(9, w, 0, GenderType.Female); // 3-10
-        var age10 = BmrCalculator.Calculate(10, w, 0, GenderType.Female); // 10-18
+        var age9 = BmrCalculator.Calculate(9, w, 0, GenderType.Female);     // 3-10
+        var age10 = BmrCalculator.Calculate(10, w, 0, GenderType.Female);   // 10-18
 
         Assert.Equal(BmrFormulaType.Child_Schofield1985, age9.Formula);
         Assert.Equal(BmrFormulaType.Child_Schofield1985, age10.Formula);
