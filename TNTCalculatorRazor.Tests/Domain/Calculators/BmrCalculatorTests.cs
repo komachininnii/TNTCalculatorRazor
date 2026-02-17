@@ -53,6 +53,7 @@ public class BmrCalculatorTests
     [InlineData(2, 12.0, GenderType.Female, 668.704)]  // 58.317*12 - 31.1
     [InlineData(3, 15.0, GenderType.Male, 844.89)]   // 22.706*15 + 504.3
     [InlineData(9, 30.0, GenderType.Female, 1095.35)]  // 20.315*30 + 485.9
+    [InlineData(10, 30.0, GenderType.Female, 1094.12)] // 13.384*30 + 692.6
     [InlineData(15, 50.0, GenderType.Male, 1542.5)]   // 17.686*50 + 658.2
     public void Calculate_小児_Schofield1985( int age, double weight, GenderType gender, double expected )
 
@@ -175,6 +176,12 @@ public class BmrCalculatorTests
     // ========================================
     // 境界値テスト
     // ========================================
+    [Fact]
+    public void Calculate_小児_負の年齢は例外をスロー()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(
+            () => BmrCalculator.Calculate(-1, 10.0, 0, GenderType.Male));
+    }
 
     [Fact]
     public void Calculate_乳児から小児への境界_Age1()
@@ -243,6 +250,18 @@ public class BmrCalculatorTests
 
         Assert.Equal(59.512 * w - 30.4, age2.RawValue, precision: 6);
         Assert.Equal(22.706 * w + 504.3, age3.RawValue, precision: 6);
+        Assert.NotEqual(age2.RawValue, age3.RawValue);
+    }
+
+    [Fact]
+    public void Calculate_小児_Schofield_境界_2から3_Female()
+    {
+        var w = 10.0;
+        var age2 = BmrCalculator.Calculate(2, w, 0, GenderType.Female);
+        var age3 = BmrCalculator.Calculate(3, w, 0, GenderType.Female);
+
+        Assert.Equal(58.317 * w - 31.1, age2.RawValue, precision: 6);
+        Assert.Equal(20.315 * w + 485.9, age3.RawValue, precision: 6);
         Assert.NotEqual(age2.RawValue, age3.RawValue);
     }
 
