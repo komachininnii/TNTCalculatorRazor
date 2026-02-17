@@ -207,4 +207,4 @@ JavaScript / Razor Pages の整理・リファクタリング内容のまとめ�
 
 ---
 
-Keywords: 栄養計算, 経腸栄養, 必要エネルギー, CCr, Cockcroft-Gault, Harris-Benedict, Ganpule
+Keywords: 栄養計算, 経腸栄養, 必要エネルギー, CCr, Cockcroft-Gault, Harris-Benedict, Ganpule, Schofield
