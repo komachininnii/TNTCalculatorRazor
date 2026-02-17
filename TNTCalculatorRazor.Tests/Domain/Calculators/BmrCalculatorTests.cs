@@ -49,26 +49,27 @@ public class BmrCalculatorTests
     // ========================================
 
     [Theory]
-    [InlineData(1, 10.0, GenderType.Male, 610.0)]    // 61.0 × 10 = 610
-    [InlineData(2, 12.0, GenderType.Female, 716.4)]  // 59.7 × 12 = 716.4
-    [InlineData(3, 15.0, GenderType.Male, 822.0)]    // 54.8 × 15 = 822
-    [InlineData(10, 30.0, GenderType.Female, 1044.0)] // 34.8 × 30 = 1044
-    [InlineData(15, 50.0, GenderType.Male, 1350.0)]  // 27.0 × 50 = 1350
-    public void Calculate_小児_日本人食事摂取基準2010( int age, double weight, GenderType gender, double expected )
+    [InlineData(1, 10.0, GenderType.Male, 564.72)]   // 59.512*10 - 30.4
+    [InlineData(2, 12.0, GenderType.Female, 668.704)]  // 58.317*12 - 31.1
+    [InlineData(3, 15.0, GenderType.Male, 844.89)]   // 22.706*15 + 504.3
+    [InlineData(9, 30.0, GenderType.Female, 1095.35)]  // 20.315*30 + 485.9
+    [InlineData(15, 50.0, GenderType.Male, 1542.5)]   // 17.686*50 + 658.2
+    public void Calculate_小児_Schofield1985( int age, double weight, GenderType gender, double expected )
+
     {
         // Act
         var result = BmrCalculator.Calculate(age, weight, 0, gender);
 
         // Assert
-        Assert.Equal(expected, result.RawValue, precision: 1);
-        Assert.Equal(BmrFormulaType.Child_JapanDRI2025, result.Formula);
+        Assert.Equal(expected, result.RawValue, precision: 3);
+        Assert.Equal(BmrFormulaType.Child_Schofield1985, result.Formula);
     }
 
-    // ========================================
-    // 成人（Age >= 18）- Harris-Benedict式
-    // ========================================
+        // ========================================
+        // 成人（Age >= 18）- Harris-Benedict式
+        // ========================================
 
-    [Fact]
+        [Fact]
     public void Calculate_成人男性_標準体格_HarrisBenedict式()
     {
         // 30歳、男性、170cm、65kg
@@ -184,7 +185,7 @@ public class BmrCalculatorTests
 
         // Age = 1 → 小児式
         var child = BmrCalculator.Calculate(1, 10.0, 0, GenderType.Male);
-        Assert.Equal(BmrFormulaType.Child_JapanDRI2025, child.Formula);
+        Assert.Equal(BmrFormulaType.Child_Schofield1985, child.Formula);
     }
 
     [Fact]
@@ -192,7 +193,7 @@ public class BmrCalculatorTests
     {
         // Age = 17 → 小児式
         var child = BmrCalculator.Calculate(17, 50.0, 0, GenderType.Male);
-        Assert.Equal(BmrFormulaType.Child_JapanDRI2025, child.Formula);
+        Assert.Equal(BmrFormulaType.Child_Schofield1985, child.Formula);
 
         // Age = 18 → 成人式
         var adult = BmrCalculator.Calculate(18, 50.0, 170.0, GenderType.Male);
@@ -224,4 +225,56 @@ public class BmrCalculatorTests
         var harris = BmrCalculator.Calculate(30, 50.0, 151.0, GenderType.Female);
         Assert.Equal(BmrFormulaType.Adult_HarrisBenedict, harris.Formula);
     }
+
+    // ========================================
+    // Schofield(1985) 境界（帯切替）テスト
+    // ========================================
+
+    [Fact]
+    public void Calculate_小児_Schofield_境界_2から3()
+    {
+        var w = 10.0;
+
+        var age2 = BmrCalculator.Calculate(2, w, 0, GenderType.Male); // <3
+        var age3 = BmrCalculator.Calculate(3, w, 0, GenderType.Male); // 3-10
+
+        Assert.Equal(BmrFormulaType.Child_Schofield1985, age2.Formula);
+        Assert.Equal(BmrFormulaType.Child_Schofield1985, age3.Formula);
+
+        Assert.Equal(59.512 * w - 30.4, age2.RawValue, precision: 6);
+        Assert.Equal(22.706 * w + 504.3, age3.RawValue, precision: 6);
+        Assert.NotEqual(age2.RawValue, age3.RawValue);
+    }
+
+    [Fact]
+    public void Calculate_小児_Schofield_境界_9から10()
+    {
+        var w = 30.0;
+
+        var age9 = BmrCalculator.Calculate(9, w, 0, GenderType.Female); // 3-10
+        var age10 = BmrCalculator.Calculate(10, w, 0, GenderType.Female); // 10-18
+
+        Assert.Equal(BmrFormulaType.Child_Schofield1985, age9.Formula);
+        Assert.Equal(BmrFormulaType.Child_Schofield1985, age10.Formula);
+
+        Assert.Equal(20.315 * w + 485.9, age9.RawValue, precision: 6);
+        Assert.Equal(13.384 * w + 692.6, age10.RawValue, precision: 6);
+        Assert.NotEqual(age9.RawValue, age10.RawValue);
+    }
+
+    [Fact]
+    public void Calculate_小児から成人への境界_17から18_Schofieldから成人式()
+    {
+        var w = 50.0;
+
+        var age17 = BmrCalculator.Calculate(17, w, 0, GenderType.Male);
+        Assert.Equal(BmrFormulaType.Child_Schofield1985, age17.Formula);
+        Assert.Equal(17.686 * w + 658.2, age17.RawValue, precision: 6);
+
+        var age18 = BmrCalculator.Calculate(18, w, 170.0, GenderType.Male);
+        Assert.True(
+            age18.Formula == BmrFormulaType.Adult_HarrisBenedict ||
+            age18.Formula == BmrFormulaType.Adult_Ganpule2007);
+    }
+
 }

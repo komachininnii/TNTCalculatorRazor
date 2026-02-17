@@ -43,25 +43,34 @@ public static class BmrCalculator
         };
     }
 
-    // DRI2010→DRI2025：本実装で使用している小児BMR係数は変更なし（表示名のみ更新）
+    // 小児：Schofield(1985) 体重ベース（kcal/day）
+    // 境界（仕様固定）：age < 3 / 3 <= age < 10 / 10 <= age < 18
     private static BmrResult CalculateChild( int age, double weight, GenderType gender )
     {
-        double coefficient = age switch
+        // 乳児(age==0)は呼び出し元で除外済みだが、保険で age<0 を弾く
+        if (age < 0) throw new ArgumentOutOfRangeException(nameof(age));
+
+        double raw = age switch
         {
-            <=  2 => gender == GenderType.Male ? 61.0 : 59.7,
-            <=  5 => gender == GenderType.Male ? 54.8 : 52.2,
-            <=  7 => gender == GenderType.Male ? 44.3 : 41.9,
-            <=  9 => gender == GenderType.Male ? 40.8 : 38.3,
-            <= 11 => gender == GenderType.Male ? 37.4 : 34.8,
-            <= 14 => gender == GenderType.Male ? 31.0 : 29.6,
-            <= 17 => gender == GenderType.Male ? 27.0 : 25.3,
-            _ => throw new ArgumentOutOfRangeException()
+            < 3 => gender == GenderType.Male
+                ? (59.512 * weight - 30.4)
+                : (58.317 * weight - 31.1),
+
+            < 10 => gender == GenderType.Male
+                ? (22.706 * weight + 504.3)
+                : (20.315 * weight + 485.9),
+
+            < 18 => gender == GenderType.Male
+                ? (17.686 * weight + 658.2)
+                : (13.384 * weight + 692.6),
+
+            _ => throw new ArgumentOutOfRangeException(nameof(age))
         };
 
         return new BmrResult
         {
-            RawValue = coefficient * weight,
-            Formula = BmrFormulaType.Child_JapanDRI2025
+            RawValue = raw,
+            Formula = BmrFormulaType.Child_Schofield1985
         };
     }
 
