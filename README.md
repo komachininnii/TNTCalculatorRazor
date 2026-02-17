@@ -5,9 +5,8 @@ TNTCalculatorRazor は、必要項目を入力するだけで、必要エネル�
 投与量・成分が自動で表示される計算支援アプリケーションです。
 PC・スマートフォンの両方で利用でき、用途に応じた情報密度と操作性を重視して設計されています。
 
-- 栄養管理：必要エネルギー/蛋白/水分を自動計算（Harris-Benedict, Ganpule, 乳児簡易式 ほか）
+- 栄養管理：必要エネルギー/蛋白/水分を自動計算（Harris-Benedict, Ganpule, Schofield, 乳児簡易式 ほか）
 - 腎機能の目安：推定CCr（Cockcroft–Gault）を自動計算
-- 小児：日本人の食事摂取基準（DRI 2025）の区分・考え方を参照して実装（運用に合わせ調整可能）
 
 <h2>Screenshots</h2>
 
@@ -33,13 +32,6 @@ PC・スマートフォンの両方で利用でき、用途に応じた情報密
 ## Status
 This project is under active development.
 Specifications, UI behavior, and calculation policies may change as clinical feedback is accumulated.
-
----
-
-### 小児領域の計算について
-小児の推定必要量は、日本人の食事摂取基準（DRI）の考え方・区分を参照して実装しています。
-一方で、区分の扱い・丸め・UI上の入力/表示仕様などは施設運用で差が出やすいため、
-必要に応じて Fork して運用に合わせて調整できます。
 
 ---
 
