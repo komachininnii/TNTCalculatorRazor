@@ -58,5 +58,11 @@ public static class EnteralFormulaTable
         };
 
     public static EnteralFormulaComposition Get( EnteralFormulaType type )
-        => _table[type];
+    {
+        if (!_table.TryGetValue(type, out var c))
+            throw new InvalidOperationException(
+                $"EnteralFormulaTable に未登録の製剤です: {type}");
+
+        return c;
+    }
 }
