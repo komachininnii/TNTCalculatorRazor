@@ -177,7 +177,7 @@ public class BmrCalculatorTests
     // 境界値テスト
     // ========================================
     [Fact]
-    public void Calculate_小児_負の年齢は例外をスロー()
+    public void Calculate_負の年齢は例外をスロー()
     {
         Assert.Throws<ArgumentOutOfRangeException>(
             () => BmrCalculator.Calculate(-1, 10.0, 0, GenderType.Male));

@@ -11,6 +11,8 @@ public static class BmrCalculator
         double heightCm,
         GenderType gender )
     {
+        if (age < 0) throw new ArgumentOutOfRangeException(nameof(age));
+
         if (age == 0)
             return CalculateInfant(weightKg, gender);
 
@@ -44,12 +46,9 @@ public static class BmrCalculator
     }
 
     // 小児：Schofield(1985) 体重ベース（kcal/day）
-    // 境界（仕様固定）：age < 3 / 3 <= age < 10 / 10 <= age < 18
+    // 境界：age < 3 / 3 <= age < 10 / 10 <= age < 18
     private static BmrResult CalculateChild( int age, double weight, GenderType gender )
     {
-        // 乳児(age==0)は呼び出し元で除外済みだが、保険で age<0 を弾く
-        if (age < 0) throw new ArgumentOutOfRangeException(nameof(age));
-
         double raw = age switch
         {
             < 3 => gender == GenderType.Male
@@ -60,11 +59,9 @@ public static class BmrCalculator
                 ? (22.706 * weight + 504.3)
                 : (20.315 * weight + 485.9),
 
-            < 18 => gender == GenderType.Male
+            _ => gender == GenderType.Male
                 ? (17.686 * weight + 658.2)
                 : (13.384 * weight + 692.6),
-
-            _ => throw new ArgumentOutOfRangeException(nameof(age))
         };
 
         return new BmrResult
