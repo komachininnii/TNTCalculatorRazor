@@ -14,6 +14,7 @@
 - 補正体重: `CorrectedWeightCalculatorTests`
 - エネルギー/蛋白: `ProteinCalculatorTests`, `ProteinRuleTests`, `WeightForCalculationSelectorTests`
 - 水分: `WaterCalculatorTests`
+- 経腸栄養剤：`EnteralPackageAllocatorTests`, `EnteralFormulaTableTests`, `EnteralPackageTableTests`
 - CCr: `CcrCalculatorTests`, `CcrCreatinineCorrectionRuleTests`, `CcrCalculator_WithCorrection_Tests`
 - 丸め: `RoundingRulesTests`
 - 統合：`IndexIntegrationTests`
