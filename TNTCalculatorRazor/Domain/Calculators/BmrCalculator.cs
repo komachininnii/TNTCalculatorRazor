@@ -16,13 +16,13 @@ public static class BmrCalculator
         if (age == 0)
             return CalculateInfant(weightKg, gender);
 
-        if (age <= 17)
+        if (age < 18)
             return CalculateChild(age, weightKg, gender);
 
         return CalculateAdult(age, weightKg, heightCm, gender);
     }
 
-
+    // 乳児簡易式
     private static BmrResult CalculateInfant(double weight, GenderType gender)
     {
         double raw;
@@ -46,7 +46,6 @@ public static class BmrCalculator
     }
 
     // 小児：Schofield(1985) 体重ベース（kcal/day）
-    // 境界：age < 3 / 3 <= age < 10 / 10 <= age < 18
     private static BmrResult CalculateChild( int age, double weight, GenderType gender )
     {
         double raw = age switch
@@ -77,6 +76,7 @@ public static class BmrCalculator
         double height,
         GenderType gender)
     {
+        // 体重25kg以上かつ身長151cm以上の成人はHarris-Benedict式
         if (weight >= 25 && height >= 151)
         {
             double raw = gender == GenderType.Male
@@ -90,8 +90,10 @@ public static class BmrCalculator
             };
         }
 
+        // それ以外の成人はGanpule式（HBの適用外）
         return CalculateGanpule(age, weight, height, gender);
     }
+
     private static BmrResult CalculateGanpule(
         int age,
         double weight,
