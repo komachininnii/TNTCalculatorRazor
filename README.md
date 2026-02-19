@@ -155,8 +155,8 @@ Azure Portal→高度なツール→BashまたはSSH
 ---
 
 ## 開発者向けメモ（Design Notes）
-本アプリのUIおよび計算仕様は、誤操作防止・臨床的安全性・将来の拡張性を重視して設計している。  
-設計上の判断理由やUI仕様変更の背景は以下にまとめている。
+本アプリのUIおよび計算仕様は、誤操作防止・臨床的安全性・将来の拡張性を重視して設計しています。  
+設計上の判断理由やUI仕様変更の背景は以下にまとめています。
 
 - [UI / 設計判断メモ](docs/ui-decisions.md)
 
@@ -169,36 +169,26 @@ Azure Portal→高度なツール→BashまたはSSH
 ---
 
 ## Appendix
-### 経腸栄養の計算仕様
+補足資料（運用・UI・実装の判断理由）です。
+Appendix は「仕様/運用方針」、Notes は「実装メモ・調整履歴」です。目的に合わせて参照してください。
 
+### 1) 運用・デプロイ
+院内限定情報をソースに混入させないための設計・運用上の注意点。
+- [Appendix: Deployment & Security](docs/appendix-deployment-security.md)
+
+### 2) UI互換（IE11 / モダン / スマホ）
+表示崩れや互換対応に関する詳細な設計判断・調整履歴。
+- [Notes: UI / IE / Mobile 対応メモ](docs/notes-ui-ie-mobile.md)
+
+### 3) クライアント側（JavaScript / 再計算）
+Index内の script を `site.js` に移行した経緯・意図、再計算まわりの実装メモ。
+- [Notes: Client-side JavaScript Design Notes](docs/notes-js.md)
+- [Notes: JS / Form Refactor & Debug Handling Summary](docs/notes-js-form-refactor.md)
+- [Notes: AJAX再計算と結果パネル同期](docs/notes-ajax-recalc.md)
+
+### 4) 経腸栄養
 経腸栄養の計算ロジックの詳細と、複数製品対応に向けた設計方針。
-- [Appendix: 経腸栄養の計算仕様](docs/appendix-enteral-nutrition.md) 
-
-### デプロイ・セキュリティ
-
-院内限定情報をソースに混入させないための設計・運用上の注意点まとめ。
-- [Appendix: Deployment / Security Notes](docs/appendix-deployment-security.md)
-
-### UI互換対応メモ
-
-IE11互換、モダンブラウザ、スマートフォン表示に関する詳細な設計判断・調整履歴は以下を参照。
-- [Appendix: UI / IE / Mobile 対応メモ](docs/appendix-ui-ie-mobile.md)
-
-### JS Design Notes
-
-Index内の script を site.js に移行経緯・意図を記録する補足資料。
-- [Appendix: Client-side JavaScript Design Notes](docs/appendix-js.md)
-
-### JS / Form Refactor & Debug Handling Summary
-
-JavaScript / Razor Pages の整理・リファクタリング内容のまとめ。
-挙動を一切変えずに、可読性・保守性・将来拡張性（複数フォーム対応）を高める。
-- [Appendix: JS / Form Refactor & Debug Handling Summary](docs/appendix-js-form-refactor.md)
-
-### AJAX再計算と結果パネル同期
-
-スマホの戻るボタンで「フォーム再送信の確認」を出さないようにするための実装。
-- [AJAX再計算と結果パネル同期](docs/appendix-ajax-recalc.md)
+- [Appendix: 経腸栄養の計算仕様](docs/appendix-enteral-nutrition.md)
 
 ---
 

@@ -1,8 +1,8 @@
-# Appendix: JS / Form Refactor & Debug Handling Summary
+# Notes: JS / Form Refactor & Debug Handling Summary
 
 ## 概要
-本ドキュメントは **TNTCalculatorRazor** において実施した JavaScript / Razor Pages の整理・リファクタリング内容をまとめた付録です。
-挙動を一切変えずに、可読性・保守性・将来拡張性（複数フォーム対応）を高めることを目的としました。
+本ドキュメントは **TNTCalculatorRazor** において実施した JavaScript / Razor Pages の整理・リファクタリング内容をまとめた付録。
+挙動を一切変えずに、可読性・保守性・将来拡張性（複数フォーム対応）を高めることを目的とした。
 
 ---
 
@@ -19,7 +19,7 @@
 
 ### 1.1 二重読み込みの解消
 - `_Layout.cshtml` における `site.js` の二重読み込みを解消
-- 未使用の jQuery ライブラリを完全削除
+- 未使用の jQuery ライブラリを削除
 
 ### 1.2 inline JavaScript の撤廃
 - Razor ページ内の `onchange="...submit()"` を全廃
@@ -47,8 +47,7 @@ var actionField = form.querySelector('input[name="Action"]');
 ```
 
 ### 2.2 蛋白補正の特殊処理
-- `SelectedProteinCorrection` 変更時に
-  - `IsProteinCorrectionUserEdited` を JS 側で更新
+- `SelectedProteinCorrection` 変更時に `IsProteinCorrectionUserEdited` を JS 側で更新
 - Razor 側にロジックを残さない設計
 
 ---
@@ -69,7 +68,6 @@ function getForm(target) {
 }
 ```
 
-- 現状は 1 フォームでも安全
 - 将来複数フォームになっても JS 変更不要
 
 ---
@@ -118,7 +116,7 @@ DebugWeightLine = "";
 
 ---
 
-## 6. 今後の指針（参考）
+## 6. 今後の指針
 - 新規入力項目は `data-change-action` を付与するだけ
 - inline JS は原則禁止
 - Debug 表示は `#if DEBUG` を基本とする

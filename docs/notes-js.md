@@ -1,7 +1,7 @@
-# Appendix: Client-side JavaScript Design Notes
+# Notes: Client-side JavaScript Design Notes
 
-本ドキュメントは、TNTCalculatorRazor における **client-side JavaScript（site.js）の設計方針・移行経緯・意図** を記録するための補足資料です。  
-将来の改修時に「なぜこの構成になっているのか」「どこを触ると何が起きるのか」を素早く思い出せることを目的としています。
+本ドキュメントは、TNTCalculatorRazor における **client-side JavaScript（site.js）の設計方針・移行経緯・意図** を記録するための補足資料。  
+将来の改修時に「なぜこの構成になっているのか」「どこを触ると何が起きるのか」を素早く思い出せることを目的としている。
 
 ---
 
@@ -34,7 +34,6 @@
 
 ### 2.1 JSは `site.js` に集約する
 
-- `_Layout.cshtml` では **body末尾で1回だけ読み込む**
 - `Index.cshtml` などのページ側には **原則 `<script>` を置かない**
 
 ```html
@@ -128,7 +127,7 @@ if (tag !== "input") return;
 - `details.fold`  
   → 折りたたみUIとして使用（IE11 polyfill対象）
 
-- `details.result-details / enteral-details`  
+- `details.result-details`
   → PCでは初期open、スマホでは初期close
 
 ---
@@ -190,7 +189,6 @@ if (tag !== "input") return;
 
 ## 8. 今後のメンテナンス指針
 
-- `site.js` は **1回だけ読み込む**
 - 新しい入力挙動は必ず `data-*` で宣言
 
 ---

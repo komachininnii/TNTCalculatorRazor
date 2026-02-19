@@ -39,7 +39,7 @@ public sealed class EnteralPackageAllocatorTests
     // ----------------------------
 
     [Theory]
-    [InlineData(1000, new[] { 300, 400 })]    // Meibalance10
+    [InlineData(1000, new[] { 300, 400 })]   // Meibalance10
     [InlineData(850, new[] { 200, 267 })]    // PeptamenPrebio15
     [InlineData(187, new[] { 187 })]         // Inoras16
     [InlineData(999, new[] { 200, 400 })]    // GlucernaRex10

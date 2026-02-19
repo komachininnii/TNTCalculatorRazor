@@ -14,6 +14,8 @@ public static class BodyIndexCalculator
      double weightKg,
      GenderType gender )
     {
+        if (age < 0) throw new ArgumentOutOfRangeException(nameof(age));
+
         double heightM = heightCm / 100.0;
 
         double bmi = weightKg / (heightM * heightM);

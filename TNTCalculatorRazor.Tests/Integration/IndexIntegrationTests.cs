@@ -5,10 +5,16 @@ using TNTCalculatorRazor.Domain.Models;
 using TNTCalculatorRazor.Pages;
 using Xunit;
 
-namespace TNTCalculatorRazor.Tests.Domain.Integration;
+namespace TNTCalculatorRazor.Tests.Integration;
 
 public class IndexIntegrationTests
 {
+    // NOTE（余力枠）:
+    // UI/Index の統合テストは原則最小限。
+    // Domainの単体テストで計算ロジックを担保しつつ、
+    // ここでは CorrectedBmrBased の最重要契約だけを smoke test として固定する。
+    // HTTP依存を避けるため private の再計算メソッドを reflection で呼ぶ。
+
     [Fact]
     // 統合テスト
     public void CorrectedBmrBased_では_EnergyFinalとCorrectedBmrEnergyDisplayKcalが一致する()

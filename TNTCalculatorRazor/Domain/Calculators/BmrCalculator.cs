@@ -45,7 +45,7 @@ public static class BmrCalculator
         };
     }
 
-    // 小児：Schofield(1985) 体重ベース（kcal/day）
+    // 小児：Schofield式
     private static BmrResult CalculateChild( int age, double weight, GenderType gender )
     {
         double raw = age switch
