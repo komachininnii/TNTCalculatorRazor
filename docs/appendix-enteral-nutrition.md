@@ -106,9 +106,12 @@ FatPerKcal = 16.0 / 400.0       // g/kcal
 新しい経腸栄養剤を追加する場合：
 
 1. 製剤の規格を確認（パッケージサイズとカロリー）
-2. 複数規格がある場合、大きい方を基準に選択
-3. 添付文書から成分を転記
-  - 製剤テーブル：`Domain/Tables/EnteralFormulaTable`
-  - 製剤規格：`Domain/Tables/EnteralPackageTable`
-  - 製剤種類：`Domain/Enums/EnteralFormulaType`
-  - テスト：`TestData/EnteralFormulaTestCases`
+2. 複数規格がある場合、大きい方を基準に選択（※アプリ内の前提に合わせる）
+3. 添付文書から成分を転記して反映する
+
+反映先：
+
+- 成分テーブル：`Domain/Tables/EnteralFormulaTable`
+- 規格テーブル：`Domain/Tables/EnteralPackageTable`
+- 製剤Enum：`Domain/Enums/EnteralFormulaType`
+- テスト（運用対象セット）：`TestData/EnteralFormulaTestCases`
