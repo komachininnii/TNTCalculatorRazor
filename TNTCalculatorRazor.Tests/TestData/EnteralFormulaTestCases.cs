@@ -7,7 +7,7 @@ namespace TNTCalculatorRazor.Tests.TestData;
 
 public static class EnteralFormulaTestCases
 {
-    // 運用対象の製剤セット（＝仕様）
+    // 経腸栄養剤のテストケース
     public static IEnumerable<object[]> CurrentFormulas()
     {
         yield return new object[] { EnteralFormulaType.Meibalance10 };

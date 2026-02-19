@@ -108,4 +108,7 @@ FatPerKcal = 16.0 / 400.0       // g/kcal
 1. 製剤の規格を確認（パッケージサイズとカロリー）
 2. 複数規格がある場合、大きい方を基準に選択
 3. 添付文書から成分を転記
-4. `EnteralFormulaTable` に定義を追加
+4. 製剤テーブル：`Domain/Tables/EnteralFormulaTable`
+5. 製剤規格：`Domain/Tables/EnteralPackageTable`
+1. 製剤種類：`Domain/Enums/EnteralFormulaType`
+5. テスト：`TestData/EnteralFormulaTestCases`
