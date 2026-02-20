@@ -197,4 +197,10 @@ Index内の script を `site.js` に移行した経緯・意図、再計算ま�
 
 ---
 
+## Dev log (note)
+開発経緯や設計の意図は note にまとめています。
+https://note.com/komachininnii
+
+---
+
 Keywords: 栄養計算, 経腸栄養, 必要エネルギー, CCr, Cockcroft-Gault, Harris-Benedict, Ganpule, Schofield
