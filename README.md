@@ -5,6 +5,8 @@ TNTCalculatorRazor は、必要項目を入力するだけで、必要エネル�
 投与量・成分が自動で表示される計算支援アプリケーションです。
 PC・スマートフォンの両方で利用でき、用途に応じた情報密度と操作性を重視して設計されています。
 
+本リポジトリの **TNTCalculatorRazor** は、栄養計算支援ツール **TNTCalculator** の現行（Razor Pages）版です。  
+
 - 栄養管理：必要エネルギー/蛋白/水分を自動計算（Harris-Benedict, Ganpule, Schofield, 乳児簡易式 ほか）
 - 腎機能の目安：推定CCr（Cockcroft–Gault）を自動計算
 
