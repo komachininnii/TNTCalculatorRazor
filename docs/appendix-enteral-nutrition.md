@@ -80,12 +80,27 @@
 
 ### データ構造
 
-各製剤の換算係数は「1 kcal あたりの比率」で定義している。
+各製剤の組成は、内部では「1 kcal あたり（per kcal）」の係数で保持する。
+
+- `VolumePerKcal`：mL / kcal  
+- `ProteinPerKcal`：g / kcal  
+- `FatPerKcal`：g / kcal  
+- …（以下同様）
+
+ただし、実コードでは添付文書やメーカー公開情報の「○○ kcal あたり」の値をそのまま入力できるように、
+`PerPack(packKcal, volumeMl, ...)` ヘルパーで **per kcal に正規化**してテーブル化している。
+
 ```csharp
-// 例：1.5倍製剤（267 mL / 400 kcal）
-VolumePerKcal = 267.0 / 400.0   // mL/kcal
-ProteinPerKcal = 14.0 / 400.0   // g/kcal
-FatPerKcal = 16.0 / 400.0       // g/kcal
+// PerPack(packKcal, volume(mL), 蛋白質(g), 脂質(g), 糖質(g), 食塩(g), VitK(µg), 水分(mL))
+[EnteralFormulaType.SampleA] =
+    PerPack(400, 267, 16.0, 12.0, 56.0, 1.22, 28.0, 205);
+```
+内部的には次のように解釈される（例）：
+```csharp
+// packKcal=400 の値を per kcal に正規化
+VolumePerKcal  = 267.0 / 400.0; // mL/kcal
+ProteinPerKcal = 16.0  / 400.0; // g/kcal
+FatPerKcal     = 12.0  / 400.0; // g/kcal
 // ...
 ```
 

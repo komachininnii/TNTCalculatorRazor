@@ -71,4 +71,20 @@ public sealed class EnteralFormulaTableTests
 
         Assert.Throws<InvalidOperationException>(() => EnteralFormulaTable.Get(unknown));
     }
+
+    // 明らかな入力ミス（分母・分子の取り違え）を拾う
+    // packKcal と volumeMl の比が VolumePerKcal と一致することを確認する。
+    [Theory]
+    [MemberData(nameof(EnteralFormulaTestCases.CurrentFormulas_WithPackKcalAndVolume), MemberType = typeof(EnteralFormulaTestCases))]
+    public void VolumePerKcalは_packKcalと容量mLの比に一致する_入力ミス検知(
+        EnteralFormulaType type, double packKcal, double volumeMl )
+    {
+        var c = EnteralFormulaTable.Get(type);
+
+        var expected = volumeMl / packKcal;
+
+        // packKcal/volume の取り違えや、誤って別規格の分母を入れたミスを確実に検知したいので厳密一致。
+        // いずれもテーブル側が "整数/整数" から計算されている前提（PerPack）なので、precisionで十分安定する。
+        Assert.Equal(expected, c.VolumePerKcal, precision: 12);
+    }
 }
