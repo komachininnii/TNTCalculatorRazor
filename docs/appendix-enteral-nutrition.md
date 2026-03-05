@@ -90,12 +90,13 @@
 ただし、実コードでは添付文書やメーカー公開情報の「○○ kcal あたり」の値をそのまま入力できるように、
 `PerPack(packKcal, volumeMl, ...)` ヘルパーで **per kcal に正規化**してテーブル化している。
 
+記述例：
 ```csharp
-// PerPack(packKcal, volume(mL), 蛋白質(g), 脂質(g), 糖質(g), 食塩(g), VitK(µg), 水分(mL))
+// PerPack(packKcal, Volume(mL), 蛋白質(g), 脂質(g), 糖質(g), 食塩(g), VitK(µg), 水分(mL))
 [EnteralFormulaType.SampleA] =
     PerPack(400, 267, 16.0, 12.0, 56.0, 1.22, 28.0, 205);
 ```
-内部的には次のように解釈される（例）：
+内部的には次のように解釈される
 ```csharp
 // packKcal=400 の値を per kcal に正規化
 VolumePerKcal  = 267.0 / 400.0; // mL/kcal
