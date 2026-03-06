@@ -189,8 +189,8 @@ Index内の script を `site.js` に移行した経緯・意図、再計算ま�
 - [Notes: AJAX再計算と結果パネル同期](docs/notes-ajax-recalc.md)
 
 ### 4) 経腸栄養
-経腸栄養の計算ロジックの詳細と、複数製品対応に向けた設計方針。
-- [Appendix: 経腸栄養の計算仕様](docs/appendix-enteral-nutrition.md)
+経腸栄養剤の計算ロジックの詳細と、複数製品対応に向けた設計方針。
+- [Appendix: 経腸栄養剤の計算仕様](docs/appendix-enteral-nutrition.md)
 
 ---
 
