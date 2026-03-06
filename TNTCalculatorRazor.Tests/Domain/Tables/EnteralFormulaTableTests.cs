@@ -8,10 +8,12 @@ using Xunit;
 
 namespace TNTCalculatorRazor.Tests.Domain.Tables;
 
+/// <summary>
+/// 組成値は改訂で変わり得るため固定せず、入力ミス（kcal/容量の取り違え等）を主に検出する。
+/// </summary>
 public sealed class EnteralFormulaTableTests
 {
    
-
     [Theory]
     [MemberData(nameof(EnteralFormulaTestCases.CurrentFormulas), MemberType = typeof(EnteralFormulaTestCases))]
     public void 現行製剤は_PackageTableとFormulaTableの両方に存在する( EnteralFormulaType type )
