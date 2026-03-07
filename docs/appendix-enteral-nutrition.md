@@ -131,7 +131,6 @@ FatPerKcal     = 12.0  / 400.0; // g/kcal
 
 反映先：
 
-- 成分テーブル：`Domain/Tables/EnteralFormulaTable.cs`
-- 規格テーブル：`Domain/Tables/EnteralPackageTable.cs`
+- 統合データソース（成分 + 規格）：`Domain/Tables/EnteralFormulaData.cs`
 - 製剤Enum：`Domain/Enums/EnteralFormulaType.cs`
 - テスト（運用対象セット）：`TestData/EnteralFormulaTestCases.cs`

@@ -34,8 +34,7 @@
 ### 6. 経腸栄養
 - mL→kcal換算: `EnteralEnergyCalculatorTests`
 - 規格割付（候補生成）: `EnteralPackageAllocatorTests`
-- 成分テーブル整合: `EnteralFormulaTableTests`
-- 規格テーブル整合: `EnteralPackageTableTests`
+- 統合データソース整合（成分/規格）: `EnteralFormulaDataTests`
 
 ### 7. 共通ルール
 - 丸め規則: `RoundingRulesTests`
