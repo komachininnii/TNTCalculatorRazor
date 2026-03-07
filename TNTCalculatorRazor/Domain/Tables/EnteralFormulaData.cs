@@ -39,6 +39,7 @@ public static class EnteralFormulaData
         = new()
         {
             // PerPack(packKcal, Volume(mL), 蛋白質(g), 脂質(g), 糖質(g), 食塩(g), VitK(µg), 水分(mL))
+            // Packages: パッケージサイズ(mL)を整数で保持
 
             [EnteralFormulaType.Meibalance10] =
                 new(
@@ -108,7 +109,7 @@ public static class EnteralFormulaData
             [EnteralFormulaType.Inoras16] =
                 new(
                     PerPack(300, 187.5, 12.0, 9.66, 39.79, 0.69, 24.99, 140),
-                    new[] { 187 }), // 実規格は187.5mLだが、旧WebForms互換のため187で固定
+                    new[] { 187 }), // 実規格は187.5mLだが整数指定のため187とする（旧WebForms互換を維持）
 
             [EnteralFormulaType.Elental10] =
                 new(

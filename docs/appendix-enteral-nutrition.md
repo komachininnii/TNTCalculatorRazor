@@ -80,7 +80,9 @@
 
 ### データ構造
 
-各製剤の組成は、内部では「1 kcal あたり（per kcal）」の係数で保持する。
+各製剤は、**組成（Composition）** と **規格候補（Packages）** をまとめた製剤テーブルで管理している。
+
+組成は、内部では「1 kcal あたり（per kcal）」の係数で保持する。
 
 - `VolumePerKcal`：mL / kcal  
 - `ProteinPerKcal`：g / kcal  
@@ -90,11 +92,16 @@
 ただし、実コードでは添付文書やメーカー公開情報の「○○ kcal あたり」の値をそのまま入力できるように、
 `PerPack(packKcal, volumeMl, ...)` ヘルパーで **per kcal に正規化**してテーブル化している。
 
+一方、規格候補（Packages）は、**mL単位のパッケージサイズ一覧**を整数値で保持する。
+
 記述例：
 ```csharp
 // PerPack(packKcal, Volume(mL), 蛋白質(g), 脂質(g), 糖質(g), 食塩(g), VitK(µg), 水分(mL))
+// Packages: パッケージサイズ(mL)を整数で保持
 [EnteralFormulaType.SampleA] =
-    PerPack(400, 267, 16.0, 12.0, 56.0, 1.22, 28.0, 205);
+    new(
+        PerPack(400, 267, 16.0, 12.0, 56.0, 1.22, 28.0, 205),
+        new[] { 200, 267 }),
 ```
 内部的には次のように解釈される
 ```csharp
@@ -103,7 +110,11 @@ VolumePerKcal  = 267.0 / 400.0; // mL/kcal
 ProteinPerKcal = 16.0  / 400.0; // g/kcal
 FatPerKcal     = 12.0  / 400.0; // g/kcal
 // ...
+
+// Packages は mL 単位の規格候補をそのまま保持
+Packages = [200, 267];
 ```
+※イノラスは実規格が 187.5mL だが、Packages は整数管理のため 187 として扱っている（旧WebForms互換）。
 
 ### 設計意図
 
@@ -126,11 +137,12 @@ FatPerKcal     = 12.0  / 400.0; // g/kcal
 新しい経腸栄養剤を追加する場合：
 
 1. 製剤の規格を確認（パッケージサイズとカロリー）
-2. 複数規格がある場合、大きい方を基準に選択（※アプリ内の前提に合わせる）
+2. 複数規格がある場合、アプリ内で割付候補を優先したい規格を決める（推奨：本数を抑えやすい大きい方の規格）
 3. 添付文書から成分を転記して反映する
+4. パッケージ規格は整数（mL）で入力する
 
 反映先：
 
-- 統合データソース（成分 + 規格）：`Domain/Tables/EnteralFormulaData.cs`
+- 製剤テーブル（成分 + 規格）：`Domain/Tables/EnteralFormulaData.cs`
 - 製剤Enum：`Domain/Enums/EnteralFormulaType.cs`
 - テスト（運用対象セット）：`TestData/EnteralFormulaTestCases.cs`
