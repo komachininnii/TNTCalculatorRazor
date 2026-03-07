@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using TNTCalculatorRazor.Domain.Enums;
 using TNTCalculatorRazor.Domain.Tables;
 using TNTCalculatorRazor.Tests.TestData;
@@ -9,7 +10,7 @@ namespace TNTCalculatorRazor.Tests.Domain.Tables;
 /// <summary>
 /// 組成値は改訂で変わり得るため固定せず、入力ミス（kcal/容量の取り違え等）を主に検出する。
 /// </summary>
-public sealed class EnteralFormulaTableTests
+public sealed class EnteralFormulaDataTests
 {
     [Theory]
     [MemberData(nameof(EnteralFormulaTestCases.CurrentFormulas), MemberType = typeof(EnteralFormulaTestCases))]
@@ -63,14 +64,6 @@ public sealed class EnteralFormulaTableTests
         Assert.InRange(ratio, 0.0, 1.0);
     }
 
-    [Fact]
-    public void 未登録の製剤は例外_将来の登録漏れ検知()
-    {
-        var unknown = (EnteralFormulaType)(-1);
-
-        Assert.Throws<InvalidOperationException>(() => EnteralFormulaData.GetComposition(unknown));
-    }
-
     // 明らかな入力ミス（分母・分子の取り違え）を拾う
     // packKcal と volumeMl の比が VolumePerKcal と一致することを確認する。
     [Theory]
@@ -85,5 +78,38 @@ public sealed class EnteralFormulaTableTests
         // packKcal/volume の取り違えや、誤って別規格の分母を入れたミスを確実に検知したいので厳密一致。
         // いずれもテーブル側が "整数/整数" から計算されている前提（PerPack）なので、precisionで十分安定する。
         Assert.Equal(expected, c.VolumePerKcal, precision: 12);
+    }
+
+    [Theory]
+    [MemberData(nameof(EnteralFormulaTestCases.CurrentFormulas), MemberType = typeof(EnteralFormulaTestCases))]
+    public void 現行製剤で規格を取得でき_規格は正で昇順かつ重複なし( EnteralFormulaType type )
+    {
+        var vols = EnteralFormulaData.GetPackages(type);
+
+        Assert.NotNull(vols);
+        Assert.NotEmpty(vols);
+        Assert.All(vols, v => Assert.True(v > 0));
+
+        // GetPackages内でOrderByしているので昇順のはず
+        Assert.True(vols.SequenceEqual(vols.OrderBy(x => x)));
+        Assert.Equal(vols.Count, vols.Distinct().Count());
+    }
+
+    [Fact]
+    public void Inorasは旧WebForms互換で187固定()
+    {
+        var vols = EnteralFormulaData.GetPackages(EnteralFormulaType.Inoras16);
+
+        Assert.Single(vols);
+        Assert.Equal(187, vols[0]);
+    }
+
+    [Fact]
+    public void 未登録の製剤は例外_将来の登録漏れ検知()
+    {
+        var unknown = (EnteralFormulaType)(-1);
+
+        Assert.Throws<InvalidOperationException>(() => EnteralFormulaData.GetComposition(unknown));
+        Assert.Throws<InvalidOperationException>(() => EnteralFormulaData.GetPackages(unknown));
     }
 }
