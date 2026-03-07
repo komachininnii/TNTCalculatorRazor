@@ -26,7 +26,7 @@ public sealed class EnteralFormulaTableTests
     [MemberData(nameof(EnteralFormulaTestCases.CurrentFormulas), MemberType = typeof(EnteralFormulaTestCases))]
     public void 係数は有限で_負にならず_VolumePerKcalは正( EnteralFormulaType type )
     {
-        var c = EnteralFormulaTable.Get(type);
+        var c = EnteralFormulaData.GetComposition(type);
 
         var values = new[]
         {
@@ -54,7 +54,7 @@ public sealed class EnteralFormulaTableTests
     [MemberData(nameof(EnteralFormulaTestCases.CurrentFormulas), MemberType = typeof(EnteralFormulaTestCases))]
     public void 水分比は0から1の範囲( EnteralFormulaType type )
     {
-        var c = EnteralFormulaTable.Get(type);
+        var c = EnteralFormulaData.GetComposition(type);
 
         // Water/Volume は “容量中の水分割合” のはずなので 0～1 を期待
         Assert.True(c.VolumePerKcal > 0.0);
@@ -68,7 +68,7 @@ public sealed class EnteralFormulaTableTests
     {
         var unknown = (EnteralFormulaType)(-1);
 
-        Assert.Throws<InvalidOperationException>(() => EnteralFormulaTable.Get(unknown));
+        Assert.Throws<InvalidOperationException>(() => EnteralFormulaData.GetComposition(unknown));
     }
 
     // 明らかな入力ミス（分母・分子の取り違え）を拾う
@@ -78,7 +78,7 @@ public sealed class EnteralFormulaTableTests
     public void VolumePerKcalは_packKcalと容量mLの比に一致する_入力ミス検知(
         EnteralFormulaType type, double packKcal, double volumeMl )
     {
-        var c = EnteralFormulaTable.Get(type);
+        var c = EnteralFormulaData.GetComposition(type);
 
         var expected = volumeMl / packKcal;
 

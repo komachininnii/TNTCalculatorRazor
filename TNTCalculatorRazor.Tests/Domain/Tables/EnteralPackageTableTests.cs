@@ -15,7 +15,7 @@ public sealed class EnteralPackageTableTests
     [MemberData(nameof(EnteralFormulaTestCases.CurrentFormulas), MemberType = typeof(EnteralFormulaTestCases))]
     public void Get_現行製剤で取得でき_規格は正で昇順かつ重複なし( EnteralFormulaType type )
     {
-        var vols = EnteralPackageTable.Get(type);
+        var vols = EnteralFormulaData.GetPackages(type);
 
         Assert.NotNull(vols);
         Assert.NotEmpty(vols);
@@ -31,7 +31,7 @@ public sealed class EnteralPackageTableTests
     [Fact]
     public void Inorasは旧WebForms互換で187固定()
     {
-        var vols = EnteralPackageTable.Get(EnteralFormulaType.Inoras16);
+        var vols = EnteralFormulaData.GetPackages(EnteralFormulaType.Inoras16);
 
         Assert.Single(vols);
         Assert.Equal(187, vols[0]);
@@ -43,7 +43,7 @@ public sealed class EnteralPackageTableTests
         // enumに存在しない値を無理やり作る（将来の追加漏れ検知にも効く）
         var unknown = (EnteralFormulaType)(-1);
 
-        var ex = Assert.Throws<InvalidOperationException>(() => EnteralPackageTable.Get(unknown));
+        var ex = Assert.Throws<InvalidOperationException>(() => EnteralFormulaData.GetPackages(unknown));
         Assert.Contains("未登録", ex.Message);
     }
 }
