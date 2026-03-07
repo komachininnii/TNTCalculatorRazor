@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using TNTCalculatorRazor.Domain.Enums;
 using TNTCalculatorRazor.Domain.Tables;
 using TNTCalculatorRazor.Tests.TestData;
@@ -13,16 +11,15 @@ namespace TNTCalculatorRazor.Tests.Domain.Tables;
 /// </summary>
 public sealed class EnteralFormulaTableTests
 {
-   
     [Theory]
     [MemberData(nameof(EnteralFormulaTestCases.CurrentFormulas), MemberType = typeof(EnteralFormulaTestCases))]
-    public void 現行製剤は_PackageTableとFormulaTableの両方に存在する( EnteralFormulaType type )
+    public void 現行製剤は_統合データから組成と規格を取得できる( EnteralFormulaType type )
     {
-        var packs = EnteralPackageTable.Get(type);
-        var comp = EnteralFormulaTable.Get(type);
+        var info = EnteralFormulaData.Get(type);
 
-        Assert.NotEmpty(packs);
-        Assert.NotNull(comp);
+        Assert.NotNull(info.Composition);
+        Assert.NotNull(info.Packages);
+        Assert.NotEmpty(info.Packages);
     }
 
     [Theory]
@@ -50,7 +47,7 @@ public sealed class EnteralFormulaTableTests
         }
 
         // “kcal あたり”の体積が0はまずあり得ない（分母ミス/入力漏れ検知）
-        Assert.True(c.VolumePerKcal > 0.0, $"VolumePerKcal should be > 0 ({type})");
+        Assert.InRange(c.VolumePerKcal, double.Epsilon, 1.0);
     }
 
     [Theory]
