@@ -1,4 +1,4 @@
-# Testing
+# テスト方針 /  xUnit Tests
 
 ## 方針
 - 計算ロジックの正しさは Domain のユニットテストで担保する（UI/Indexの統合テストは原則余力枠）。
