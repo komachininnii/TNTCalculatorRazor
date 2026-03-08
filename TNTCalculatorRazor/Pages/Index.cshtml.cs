@@ -652,8 +652,7 @@ public class IndexModel : PageModel
 
         // 蛋白
         double weightForProtein =
-            WeightForCalculationSelector.Select(
-                WeightUsage.Protein,
+            ProteinWeightSelector.Select(
                 Age!.Value,
                 Weight!.Value,
                 CorrectedWeight.Value,

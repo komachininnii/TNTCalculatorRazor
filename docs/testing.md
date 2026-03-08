@@ -16,7 +16,7 @@
 ### 2. 体重・体格指標
 - 標準体重: `StandardWeightCalculatorTests`
 - 補正体重: `CorrectedWeightCalculatorTests`
-- 計算に使う体重の選択: `WeightForCalculationSelectorTests`
+- 計算に使う体重の選択: `ProteinWeightSelectorTests`
 - 体格指標（BMI/肥満度・BSA）: `BodyIndexCalculatorTests`, `BodySurfaceAreaCalculatorTests`
 
 ### 3. 必要蛋白量
@@ -44,4 +44,4 @@
 
 ## 補足
 - CCrは常に実測体重を使用する。
-- Energy/Proteinは原則CorrectedWeight（Proteinは例外疾患で標準体重、小児は実測体重）。
+- Energyは主にCorrectedWeightを用いる（乳児EEAは実測体重）。Proteinは例外疾患で標準体重、小児は実測体重、その他はCorrectedWeightを用いる。
