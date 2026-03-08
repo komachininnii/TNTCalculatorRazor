@@ -11,16 +11,16 @@
 ## 主要テスト
 ### 1. 必要エネルギー
 - BMR（基礎代謝）: `BmrCalculatorTests`
-- エネルギー算出（指示量/デフォルト）: `EnergyOrderDefaultsTableTests`
+- エネルギー算出（疾患のデフォルト）: `EnergyOrderDefaultsTableTests`
 
 ### 2. 体重・体格指標
 - 標準体重: `StandardWeightCalculatorTests`
 - 補正体重: `CorrectedWeightCalculatorTests`
-- 計算に使う体重の選択: `ProteinWeightSelectorTests`
 - 体格指標（BMI/肥満度・BSA）: `BodyIndexCalculatorTests`, `BodySurfaceAreaCalculatorTests`
 
 ### 3. 必要蛋白量
 - 蛋白計算: `ProteinCalculatorTests`
+- 蛋白計算に使う体重の選択: `ProteinWeightSelectorTests`
 - 疾患・条件による蛋白ルール: `ProteinRuleTests`
 
 ### 4. 必要水分量
@@ -44,4 +44,4 @@
 
 ## 補足
 - CCrは常に実測体重を使用する。
-- Energyは主にCorrectedWeightを用いる（乳児EEAは実測体重）。Proteinは例外疾患で標準体重、小児は実測体重、その他はCorrectedWeightを用いる。
+- Proteinは例外疾患で標準体重、小児は実測体重、その他はCorrectedWeightを用いる。
