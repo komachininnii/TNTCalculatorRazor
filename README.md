@@ -156,6 +156,13 @@ Azure Portal→高度なツール→BashまたはSSH
 
 ---
 
+## 中核計算仕様
+基礎代謝量（BMR）、必要エネルギー、必要水分量、蛋白補正、推定CCr など、  
+中核となる計算仕様の概要は以下のドキュメントにまとめています。  
+- [docs/spec-core-calculations.md](docs/spec-core-calculations.md)
+
+---
+
 ## 開発者向けメモ（Design Notes）
 本アプリのUIおよび計算仕様は、誤操作防止・臨床的安全性・将来の拡張性を重視して設計しています。  
 設計上の判断理由やUI仕様変更の背景は以下にまとめています。
@@ -166,12 +173,12 @@ Azure Portal→高度なツール→BashまたはSSH
 
 - [用語集：基礎代謝量・体重関連の整理](docs/glossary-bmr-weight-terminology.md)
 
-- [xUnit Tests](docs/testing.md)
+- [テスト方針 / xUnit Tests](docs/testing.md)
  
 ---
 
 ## Appendix
-補足資料（運用・UI・実装の判断理由）です。
+補足資料（運用・UI・実装の判断理由）です。  
 Appendix は「仕様/運用方針」、Notes は「実装メモ・調整履歴」です。目的に合わせて参照してください。
 
 ### 1) 運用・デプロイ

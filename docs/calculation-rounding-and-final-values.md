@@ -85,7 +85,7 @@ WaterFinal = RoundingRules.CeilMl(WaterRaw.Value);
 
 ---
 
-## 経腸栄養（Enteral）
+## 経腸栄養剤（Enteral）
 
 - 入力（kcal / mL）に応じて Raw を計算
 - 丸めは Final 相当の値を作る段階でのみ行う

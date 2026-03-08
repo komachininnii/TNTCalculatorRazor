@@ -31,10 +31,10 @@
 - Cr補正ルール: `CcrCreatinineCorrectionRuleTests`
 - CCr計算（補正込み）: `CcrCalculator_WithCorrection_Tests`
 
-### 6. 経腸栄養
+### 6. 経腸栄養剤
 - mL→kcal換算: `EnteralEnergyCalculatorTests`
 - 規格割付（候補生成）: `EnteralPackageAllocatorTests`
-- 統合データソース整合（成分/規格）: `EnteralFormulaDataTests`
+- 製剤テーブル整合: `EnteralFormulaDataTests`
 
 ### 7. 共通ルール
 - 丸め規則: `RoundingRulesTests`
