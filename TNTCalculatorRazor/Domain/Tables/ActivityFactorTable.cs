@@ -16,7 +16,7 @@ public static class ActivityFactorTable
             ActivityFactorType.Rehabilitation15 => 1.5,
             ActivityFactorType.Rehabilitation16 => 1.6,
             ActivityFactorType.Rehabilitation17 => 1.7,
-            _ => 1.0
+            _ => throw new ArgumentOutOfRangeException(nameof(type), type, "未定義の活動係数です。")
         };
     }
 }

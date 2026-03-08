@@ -27,6 +27,6 @@ public static class StressFactorTable
             StressFactorType.Burn40 => 1.85,
             StressFactorType.Burn100 => 2.05,
 
-            _ => 1.0
+            _ => throw new ArgumentOutOfRangeException(nameof(type), type, "未定義のストレス係数です。")
         };
 }
