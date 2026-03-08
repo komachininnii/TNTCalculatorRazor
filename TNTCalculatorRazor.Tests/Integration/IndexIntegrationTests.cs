@@ -1,7 +1,9 @@
 ﻿using System.Reflection;
 using Microsoft.Extensions.Options;
+using TNTCalculatorRazor.Domain.Calculators;
 using TNTCalculatorRazor.Domain.Enums;
 using TNTCalculatorRazor.Domain.Models;
+using TNTCalculatorRazor.Domain.Rules;
 using TNTCalculatorRazor.Pages;
 using Xunit;
 
@@ -41,6 +43,87 @@ public class IndexIntegrationTests
         Assert.True(page.CorrectedBmrEnergyDisplayKcal.HasValue);
         Assert.True(page.EnergyFinal.HasValue);
         Assert.Equal(page.CorrectedBmrEnergyDisplayKcal!.Value, page.EnergyFinal!.Value);
+    }
+
+    [Fact]
+    public void 成人腎疾患では_蛋白は標準体重を使い_Energyは補正体重連動のまま計算される()
+    {
+        var page = CreatePage();
+        page.Age = 40;
+        page.Height = 170.0;
+        page.Weight = 90.0;
+        page.Gender = GenderType.Male;
+        page.SelectedDisease = DiseaseType.RenalFailure;
+        page.SelectedEnergyOrder = EnergyOrderType.CorrectedBmrBased;
+
+        InvokePrivate(page, "RecalcAll");
+
+        Assert.Equal(BmrWeightBasisType.Adjusted, page.CorrectedBmrWeightBasis);
+        Assert.NotNull(page.BodyIndex);
+        Assert.NotNull(page.CorrectedWeight);
+        Assert.NotNull(page.ProteinFinal);
+        Assert.NotNull(page.EnergyFinal);
+
+        var standardWeight = page.BodyIndex!.StandardWeight;
+        var expectedProtein = RoundingRules.RoundGram1dp(
+            ProteinCalculator.Calculate(
+                age: page.Age!.Value,
+                weightForProtein: standardWeight,
+                stressFactor: page.StressTotal,
+                proteinCorrect: 0.7,
+                disease: page.SelectedDisease));
+
+        Assert.Equal(expectedProtein, page.ProteinFinal);
+        Assert.NotEqual(standardWeight, page.CorrectedWeight!.Value);
+        Assert.Equal(page.CorrectedBmrEnergyDisplayKcal, page.EnergyFinal);
+    }
+
+    [Fact]
+    public void 発熱と褥瘡補正があると_StressTotalと最終Energyが一貫して増加する()
+    {
+        var baseline = CreatePage();
+        baseline.Age = 35;
+        baseline.Height = 165.0;
+        baseline.Weight = 60.0;
+        baseline.Gender = GenderType.Female;
+        baseline.SelectedEnergyOrder = EnergyOrderType.CorrectedBmrBased;
+        baseline.ActivityFactor = ActivityFactorType.Sitting;
+        baseline.StressFactor = StressFactorType.MildStress;
+
+        InvokePrivate(baseline, "RecalcAll");
+
+        var stressed = CreatePage();
+        stressed.Age = baseline.Age;
+        stressed.Height = baseline.Height;
+        stressed.Weight = baseline.Weight;
+        stressed.Gender = baseline.Gender;
+        stressed.SelectedEnergyOrder = baseline.SelectedEnergyOrder;
+        stressed.ActivityFactor = baseline.ActivityFactor;
+        stressed.StressFactor = baseline.StressFactor;
+        stressed.SelectedBodyTemperature = BodyTemperatureLevel.Fever39;
+        stressed.SelectedPressureUlcer = PressureUlcerLevel.D3;
+
+        InvokePrivate(stressed, "RecalcAll");
+
+        Assert.Equal(baseline.StressTotal + 0.8, stressed.StressTotal, precision: 5);
+        Assert.True(stressed.EnergyFinal > baseline.EnergyFinal);
+
+        var expectedEnergy = RoundingRules.RoundKcalToInt(
+            BmrCalculator.Calculate(
+                stressed.Age!.Value,
+                stressed.CorrectedWeight!.Value,
+                stressed.Height!.Value,
+                stressed.Gender).RawValue
+            * 1.2 // ActivityFactorType.Sitting
+            * stressed.StressTotal);
+
+        Assert.Equal(expectedEnergy, stressed.EnergyFinal);
+    }
+
+    private static IndexModel CreatePage()
+    {
+        var options = Options.Create(new InternalManualOptions { Enabled = false, Url = "" });
+        return new IndexModel(options);
     }
 
     private static void InvokePrivate( object obj, string methodName )
