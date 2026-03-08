@@ -97,7 +97,7 @@
 記述例：
 ```csharp
 // PerPack(packKcal, Volume(mL), 蛋白質(g), 脂質(g), 糖質(g), 食塩(g), VitK(µg), 水分(mL))
-// Packages: パッケージサイズ(mL)を整数で保持
+// Packages: パッケージサイズ(mL)を整数で記述
 [EnteralFormulaType.SampleA] =
     new(
         PerPack(400, 267, 16.0, 12.0, 56.0, 1.22, 28.0, 205),

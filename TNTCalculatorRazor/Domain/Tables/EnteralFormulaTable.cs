@@ -39,7 +39,7 @@ public static class EnteralFormulaTable
         = new()
         {
             // PerPack(packKcal, Volume(mL), 蛋白質(g), 脂質(g), 糖質(g), 食塩(g), VitK(µg), 水分(mL))
-            // Packages: パッケージサイズ(mL)を整数で保持
+            // Packages: パッケージ規格サイズ(mL)を整数で保持（例：200, 267）
 
             [EnteralFormulaType.Meibalance10] =
                 new(
