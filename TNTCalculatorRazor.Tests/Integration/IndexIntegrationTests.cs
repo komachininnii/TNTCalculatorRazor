@@ -53,7 +53,9 @@ public class IndexIntegrationTests
         page.Height = 170.0;
         page.Weight = 90.0;
         page.Gender = GenderType.Male;
+        // UI同期後状態を前提に、疾患と蛋白補正を明示セット
         page.SelectedDisease = DiseaseType.RenalFailure;
+        page.SelectedProteinCorrection = ProteinCorrectionType.CKD3bTo5;
         page.SelectedEnergyOrder = EnergyOrderType.CorrectedBmrBased;
 
         InvokePrivate(page, "RecalcAll");
@@ -63,6 +65,7 @@ public class IndexIntegrationTests
         Assert.NotNull(page.CorrectedWeight);
         Assert.NotNull(page.ProteinFinal);
         Assert.NotNull(page.EnergyFinal);
+        Assert.Equal(ProteinCorrectionType.CKD3bTo5, page.SelectedProteinCorrection);
 
         var standardWeight = page.BodyIndex!.StandardWeight;
         var expectedProtein = RoundingRules.RoundGram1dp(
