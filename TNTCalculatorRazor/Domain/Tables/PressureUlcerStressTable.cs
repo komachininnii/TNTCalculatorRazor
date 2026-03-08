@@ -12,7 +12,7 @@ public static class PressureUlcerStressTable
             PressureUlcerLevel.D3 => 0.2,
             PressureUlcerLevel.D4 => 0.3,
             PressureUlcerLevel.D5 => 0.4,
-            _ => throw new ArgumentOutOfRangeException(nameof(level), level, "未定義の褥瘡補正です。")
+            _ => 0.0
         };
     }
 }

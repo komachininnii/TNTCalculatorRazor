@@ -57,11 +57,13 @@ public sealed class FactorAndStressTablesTests
     }
 
     [Fact]
-    public void TemperatureStressTable_GetAddition_未定義値は例外をスローする()
+    public void TemperatureStressTable_GetAddition_未定義値は0を返す()
     {
         var unknown = (BodyTemperatureLevel)(-1);
 
-        Assert.Throws<ArgumentOutOfRangeException>(() => TemperatureStressTable.GetAddition(unknown));
+        var actual = TemperatureStressTable.GetAddition(unknown);
+
+        Assert.Equal(0.0, actual, 6);
     }
 
     [Theory]
@@ -76,10 +78,12 @@ public sealed class FactorAndStressTablesTests
     }
 
     [Fact]
-    public void PressureUlcerStressTable_GetAddition_未定義値は例外をスローする()
+    public void PressureUlcerStressTable_GetAddition_未定義値は0を返す()
     {
         var unknown = (PressureUlcerLevel)(-1);
 
-        Assert.Throws<ArgumentOutOfRangeException>(() => PressureUlcerStressTable.GetAddition(unknown));
+        var actual = PressureUlcerStressTable.GetAddition(unknown);
+
+        Assert.Equal(0.0, actual, 6);
     }
 }

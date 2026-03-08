@@ -12,7 +12,7 @@ public static class TemperatureStressTable
             BodyTemperatureLevel.Fever38 => 0.4,
             BodyTemperatureLevel.Fever39 => 0.6,
             BodyTemperatureLevel.Fever40 => 0.8,
-            _ => throw new ArgumentOutOfRangeException(nameof(level), level, "未定義の体温補正です。")
+            _ => 0.0
         };
     }
 }
