@@ -6,7 +6,7 @@ using TNTCalculatorRazor.Domain.Models;
 
 namespace TNTCalculatorRazor.Domain.Tables;
 
-public static class EnteralFormulaData
+public static class EnteralFormulaTable
 {
     /// <summary>
     /// 添付文書の「○○kcal あたり」をそのまま書けるようにするヘルパー。
@@ -121,7 +121,7 @@ public static class EnteralFormulaData
     {
         if (!_table.TryGetValue(type, out var info))
             throw new InvalidOperationException(
-                $"EnteralFormulaData に未登録の製剤です: {type}");
+                $"EnteralFormulaTable に未登録の製剤です: {type}");
 
         return info;
     }
