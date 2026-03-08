@@ -159,7 +159,7 @@ Azure Portal→高度なツール→BashまたはSSH
 ## 中核計算仕様
 基礎代謝量（BMR）、必要エネルギー、必要水分量、蛋白補正、推定CCr など、  
 中核となる計算仕様の概要は以下のドキュメントにまとめています。  
-- [docs/spec-core-calculations.md](docs/spec-core-calculations.md)
+- [計算仕様の概要](docs/spec-core-calculations.md)
 
 ---
 
