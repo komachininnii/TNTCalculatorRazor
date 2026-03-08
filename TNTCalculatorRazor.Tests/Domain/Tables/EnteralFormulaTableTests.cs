@@ -105,6 +105,18 @@ public sealed class EnteralFormulaTableTests
     }
 
     [Fact]
+    public void GetPackagesの戻り値を変更しても内部テーブルは破壊されない()
+    {
+        var first = EnteralFormulaTable.GetPackages(EnteralFormulaType.Meibalance10).ToArray();
+
+        first[0] = 999;
+
+        var second = EnteralFormulaTable.GetPackages(EnteralFormulaType.Meibalance10);
+
+        Assert.Equal(new[] { 300, 400 }, second);
+    }
+
+    [Fact]
     public void 未登録の製剤は例外_将来の登録漏れ検知()
     {
         var unknown = (EnteralFormulaType)(-1);
