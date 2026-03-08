@@ -10,13 +10,13 @@ namespace TNTCalculatorRazor.Tests.Domain.Tables;
 /// <summary>
 /// 組成値は改訂で変わり得るため固定せず、入力ミス（kcal/容量の取り違え等）を主に検出する。
 /// </summary>
-public sealed class EnteralFormulaDataTests
+public sealed class EnteralFormulaTableTests
 {
     [Theory]
     [MemberData(nameof(EnteralFormulaTestCases.CurrentFormulas), MemberType = typeof(EnteralFormulaTestCases))]
     public void 現行製剤は_統合データから組成と規格を取得できる( EnteralFormulaType type )
     {
-        var info = EnteralFormulaData.Get(type);
+        var info = EnteralFormulaTable.Get(type);
 
         Assert.NotNull(info.Composition);
         Assert.NotNull(info.Packages);
@@ -27,7 +27,7 @@ public sealed class EnteralFormulaDataTests
     [MemberData(nameof(EnteralFormulaTestCases.CurrentFormulas), MemberType = typeof(EnteralFormulaTestCases))]
     public void 係数は有限で_負にならず_VolumePerKcalは正( EnteralFormulaType type )
     {
-        var c = EnteralFormulaData.GetComposition(type);
+        var c = EnteralFormulaTable.GetComposition(type);
 
         var values = new[]
         {
@@ -55,7 +55,7 @@ public sealed class EnteralFormulaDataTests
     [MemberData(nameof(EnteralFormulaTestCases.CurrentFormulas), MemberType = typeof(EnteralFormulaTestCases))]
     public void 水分比は0から1の範囲( EnteralFormulaType type )
     {
-        var c = EnteralFormulaData.GetComposition(type);
+        var c = EnteralFormulaTable.GetComposition(type);
 
         // Water/Volume は “容量中の水分割合” のはずなので 0～1 を期待
         Assert.True(c.VolumePerKcal > 0.0);
@@ -71,7 +71,7 @@ public sealed class EnteralFormulaDataTests
     public void VolumePerKcalは_packKcalと容量mLの比に一致する_入力ミス検知(
         EnteralFormulaType type, double packKcal, double volumeMl )
     {
-        var c = EnteralFormulaData.GetComposition(type);
+        var c = EnteralFormulaTable.GetComposition(type);
 
         var expected = volumeMl / packKcal;
 
@@ -84,7 +84,7 @@ public sealed class EnteralFormulaDataTests
     [MemberData(nameof(EnteralFormulaTestCases.CurrentFormulas), MemberType = typeof(EnteralFormulaTestCases))]
     public void 現行製剤で規格を取得でき_規格は正で昇順かつ重複なし( EnteralFormulaType type )
     {
-        var vols = EnteralFormulaData.GetPackages(type);
+        var vols = EnteralFormulaTable.GetPackages(type);
 
         Assert.NotNull(vols);
         Assert.NotEmpty(vols);
@@ -98,7 +98,7 @@ public sealed class EnteralFormulaDataTests
     [Fact]
     public void Inorasは旧WebForms互換で187固定()
     {
-        var vols = EnteralFormulaData.GetPackages(EnteralFormulaType.Inoras16);
+        var vols = EnteralFormulaTable.GetPackages(EnteralFormulaType.Inoras16);
 
         Assert.Single(vols);
         Assert.Equal(187, vols[0]);
@@ -109,7 +109,7 @@ public sealed class EnteralFormulaDataTests
     {
         var unknown = (EnteralFormulaType)(-1);
 
-        Assert.Throws<InvalidOperationException>(() => EnteralFormulaData.GetComposition(unknown));
-        Assert.Throws<InvalidOperationException>(() => EnteralFormulaData.GetPackages(unknown));
+        Assert.Throws<InvalidOperationException>(() => EnteralFormulaTable.GetComposition(unknown));
+        Assert.Throws<InvalidOperationException>(() => EnteralFormulaTable.GetPackages(unknown));
     }
 }

@@ -721,8 +721,8 @@ public class IndexModel : PageModel
         }
 
         var formula = SelectedEnteralFormula.Value;
-        var comp = EnteralFormulaData.GetComposition(formula);
-        var packageVolumes = EnteralFormulaData.GetPackages(formula);
+        var comp = EnteralFormulaTable.GetComposition(formula);
+        var packageVolumes = EnteralFormulaTable.GetPackages(formula);
 
         PackageVolumeOptions = packageVolumes
             .Select(v => new SelectListItem($"{v} mL", v.ToString()))
