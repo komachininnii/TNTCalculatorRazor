@@ -24,7 +24,7 @@
 - 疾患・条件による蛋白ルール: `ProteinRuleTests`
 
 ### 4. 必要水分量
--水分計算: `WaterCalculatorTests`
+- 水分計算: `WaterCalculatorTests`
 
 ### 5. 腎機能（推定CCr）
 - CCr計算（基本）: `CcrCalculatorTests`
