@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using TNTCalculatorRazor.Domain.Enums;
+using TNTCalculatorRazor.Domain.Models;
 using TNTCalculatorRazor.Domain.Tables;
 using TNTCalculatorRazor.Tests.TestData;
 using Xunit;
@@ -102,6 +103,19 @@ public sealed class EnteralFormulaTableTests
 
         Assert.Single(vols);
         Assert.Equal(187, vols[0]);
+    }
+
+    [Fact]
+    public void EnteralFormulaInfoはpackagesを防御的コピーして保持する()
+    {
+        var packages = new[] { 300, 400 };
+        var info = new EnteralFormulaInfo(
+            new EnteralFormulaComposition(1, 1, 1, 1, 1, 1, 1),
+            packages);
+
+        packages[0] = 999;
+
+        Assert.Equal(new[] { 300, 400 }, info.Packages);
     }
 
     [Fact]

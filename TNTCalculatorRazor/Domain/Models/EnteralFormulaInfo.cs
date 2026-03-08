@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace TNTCalculatorRazor.Domain.Models;
 
@@ -10,6 +12,6 @@ public sealed class EnteralFormulaInfo
     public EnteralFormulaInfo( EnteralFormulaComposition composition, IReadOnlyList<int> packages )
     {
         Composition = composition;
-        Packages = packages;
+        Packages = new ReadOnlyCollection<int>(packages.ToArray());
     }
 }
