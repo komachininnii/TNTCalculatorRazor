@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using TNTCalculatorRazor.Domain.Enums;
+using TNTCalculatorRazor.Domain.Models;
 using TNTCalculatorRazor.Domain.Tables;
 using TNTCalculatorRazor.Tests.TestData;
 using Xunit;
@@ -105,15 +106,16 @@ public sealed class EnteralFormulaTableTests
     }
 
     [Fact]
-    public void GetPackagesの戻り値を変更しても内部テーブルは破壊されない()
+    public void EnteralFormulaInfoはpackagesを防御的コピーして保持する()
     {
-        var first = EnteralFormulaTable.GetPackages(EnteralFormulaType.Meibalance10).ToArray();
+        var packages = new[] { 300, 400 };
+        var info = new EnteralFormulaInfo(
+            new EnteralFormulaComposition(1, 1, 1, 1, 1, 1, 1),
+            packages);
 
-        first[0] = 999;
+        packages[0] = 999;
 
-        var second = EnteralFormulaTable.GetPackages(EnteralFormulaType.Meibalance10);
-
-        Assert.Equal(new[] { 300, 400 }, second);
+        Assert.Equal(new[] { 300, 400 }, info.Packages);
     }
 
     [Fact]
