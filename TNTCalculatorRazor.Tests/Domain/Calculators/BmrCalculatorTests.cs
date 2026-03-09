@@ -111,11 +111,11 @@ public class BmrCalculatorTests
     }
 
     // ========================================
-    // 成人（Age >= 18）- Ganpule式（低体重・低身長）
+    // 成人（Age >= 18）- Ganpuleらの式（低体重・低身長）
     // ========================================
 
     [Fact]
-    public void Calculate_成人_低体重_Ganpule式()
+    public void Calculate_成人_低体重_Ganpuleらの式()
     {
         // 条件: weight < 25 OR height < 151
         // 30歳、男性、160cm、20kg（低体重）
@@ -127,7 +127,7 @@ public class BmrCalculatorTests
     }
 
     [Fact]
-    public void Calculate_成人_低身長_Ganpule式()
+    public void Calculate_成人_低身長_Ganpuleらの式()
     {
         // 30歳、女性、145cm、50kg（低身長）
 
@@ -141,7 +141,7 @@ public class BmrCalculatorTests
     [InlineData(25, 20.0, 160.0, GenderType.Male)]    // 低体重（< 25kg）
     [InlineData(25, 50.0, 145.0, GenderType.Female)]  // 低身長（< 151cm）
     [InlineData(25, 20.0, 145.0, GenderType.Male)]    // 両方
-    public void Calculate_成人_Ganpule式適用条件( int age, double weight, double height, GenderType gender )
+    public void Calculate_成人_Ganpuleらの式適用条件( int age, double weight, double height, GenderType gender )
     {
         var result = BmrCalculator.Calculate(age, weight, height, gender);
 

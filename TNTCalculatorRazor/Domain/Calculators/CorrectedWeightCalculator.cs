@@ -21,9 +21,10 @@ public static class CorrectedWeightCalculator
         };
     }
     // 調整体重の計算
+    // Adjusted body weight = standardWeight + (actualWeight − standardWeight) × 0.25
     public static double CalculateAdjustedWeight( double actualWeight, double standardWeight )
-         => (actualWeight - standardWeight) * 0.25 + standardWeight;
- 
+        => standardWeight + (actualWeight - standardWeight) * 0.25;
+
     public static BmrWeightBasisType GetBasis( int age, double obesityDegree )
     {
         if (age == 0) return BmrWeightBasisType.Actual;                 // 乳児は無条件で実測体重

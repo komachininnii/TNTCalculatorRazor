@@ -90,7 +90,7 @@ public static class BmrCalculator
             };
         }
 
-        // それ以外の成人はGanpule式（HBの適用外）
+        // それ以外の成人はGanpuleらの式（HBの適用外）
         return CalculateGanpule(age, weight, height, gender);
     }
 
