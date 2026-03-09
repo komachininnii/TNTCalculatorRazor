@@ -1,9 +1,13 @@
 ﻿@using System.Reflection
 @{
-    var asm = Assembly.GetExecutingAssembly();
-    var info = asm.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
-    var appVersion = string.IsNullOrWhiteSpace(info) ? "" : info.Split('+')[0];
+    var version =
+         Assembly.GetEntryAssembly()!
+             .GetCustomAttribute<AssemblyInformationalVersionAttribute>()!
+             .InformationalVersion;
+
+    var appVersion = version.Split('+')[0];
 }
+
 @{
     var isPrivacyPage = Context.Request.Path.StartsWithSegments("/Privacy");
 }

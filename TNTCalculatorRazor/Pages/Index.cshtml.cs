@@ -15,29 +15,6 @@ using TNTCalculatorRazor.Domain.Models;
 
 public class IndexModel : PageModel
 {
-    public string AppVersion
-    {
-        get
-        {
-            var info =
-                Assembly.GetExecutingAssembly()
-                    .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
-                    .InformationalVersion;
-
-            if (!string.IsNullOrWhiteSpace(info))
-            {
-                // 例: "0.9.0-beta.1+abcdef..." → "0.9.0-beta.1"
-                var cut = info.Split('+')[0];
-                return cut;
-            }
-
-            // フォールバック（数値版しかない場合）
-            var v = Assembly.GetExecutingAssembly().GetName().Version;
-            if (v is null) return "";
-            return $"{v.Major}.{v.Minor}.{v.Build}";
-        }
-    }
-    
     // コンストラクタ
     public IndexModel( IOptions<InternalManualOptions> manualOptions )
     {
