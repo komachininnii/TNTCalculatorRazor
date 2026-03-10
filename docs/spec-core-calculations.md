@@ -256,10 +256,3 @@
 9. DuBois D, DuBois EF. A formula to estimate the approximate surface area if height and weight be known. *Arch Intern Med* 17(6_2): 863-871, 1916
 10. Holliday MA, Segar WE. The maintenance need for water in parenteral fluid therapy. *Pediatrics* 19(5): 823-832, 1957
 11. Cockcroft DW, Gault MH. Prediction of creatinine clearance from serum creatinine. *Nephron* 16(1): 31-41, 1976
-
----
-
-## 位置づけ
-
-この文書は、TNTCalculator の中核計算仕様の概要をまとめたものです。  
-詳細な変更理由や実装経緯は Design Notes / note 側に分け、ここでは現時点の仕様の全体像を俯瞰できることを優先しています。
