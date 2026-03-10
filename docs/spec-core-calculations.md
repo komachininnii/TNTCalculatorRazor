@@ -249,10 +249,11 @@
 2. Harris JA, Benedict FG. A biometric study of basal metabolism in man. *Proc Natl Acad Sci* 4(12): 370-373, 1918
 3. Ganpule AA, Tanaka S, et al. Interindividual variability in sleeping metabolic rate in Japanese subjects. *Eur J Clin Nutr* 61(11): 1256-1261, 2007
 4. Schofield WN. Predicting basal metabolic rate, new standards and review of previous work. *Hum Nutr Clin Nutr* 39(Suppl 1): 5-41, 1985
-5. 乳児BMR簡易推定式 KPUM小児ICUマニュアル 改訂第7版
-6. 日本人の食事摂取基準（2025年版） 厚生労働省
-7. 山田陽介. 推定エネルギー必要量とは何かを考察する. 臨床栄養 144(7): 1068-1076, 2024
-8. 日本小児内分泌学会 性別･身長別標準体重 https://jspe.umin.jp/medical/taikaku.html
-9. DuBois D, DuBois EF. A formula to estimate the approximate surface area if height and weight be known. *Arch Intern Med* 17(6_2): 863-871, 1916
-10. Holliday MA, Segar WE. The maintenance need for water in parenteral fluid therapy. *Pediatrics* 19(5): 823-832, 1957
-11. Cockcroft DW, Gault MH. Prediction of creatinine clearance from serum creatinine. *Nephron* 16(1): 31-41, 1976
+5. KPUM小児ICUマニュアル 改訂第7版. 京都府立医科大学麻酔科学教室/京都府立医科大学附属病院集中治療部 編. 永井書店, 2017
+6. 厚生労働省. 日本人の食事摂取基準（2025年版）
+7. 静脈経腸栄養ガイドライン 第3版. 日本静脈経腸栄養学会（現：日本臨床栄養代謝学会）編. 照林社, 2013
+8. 山田陽介. 推定エネルギー必要量とは何かを考察する. 臨床栄養 144(7): 1068-1076, 2024
+9. 日本小児内分泌学会. 性別･身長別標準体重. https://jspe.umin.jp/medical/taikaku.html (参照2026-03-10)
+10. DuBois D, DuBois EF. A formula to estimate the approximate surface area if height and weight be known. *Arch Intern Med* 17(6_2): 863-871, 1916
+11. Holliday MA, Segar WE. The maintenance need for water in parenteral fluid therapy. *Pediatrics* 19(5): 823-832, 1957
+12. Cockcroft DW, Gault MH. Prediction of creatinine clearance from serum creatinine. *Nephron* 16(1): 31-41, 1976
