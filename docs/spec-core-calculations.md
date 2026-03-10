@@ -251,7 +251,7 @@
 4. Schofield WN. Predicting basal metabolic rate, new standards and review of previous work. *Hum Nutr Clin Nutr* 39 Suppl 1:5-41, 1985
 5. 乳児BMR簡易計算式 KPUM小児ICUマニュアル 改訂第7版
 6. 日本人の食事摂取基準（2025年版） 厚生労働省
-7. 山田陽介. 推定エネルギー必要量とは何かを考察する 臨床栄養 144:1068-1076, 2024
+7. 山田陽介. 推定エネルギー必要量とは何かを考察する. 臨床栄養 144:1068-1076, 2024
 8. 日本小児内分泌学会 性別･身長別標準体重 https://jspe.umin.jp/medical/taikaku.html
 9. DuBois D, DuBois EF. A formula to estimate the approximate surface area if height and weight be known. *Arch Intern Med* 17:863-871, 1916
 10. Holliday MA, Segar WE. The maintenance need for water in parenteral fluid therapy. *Pediatrics* 19:823-832, 1957
