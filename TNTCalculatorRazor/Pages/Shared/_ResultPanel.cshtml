@@ -147,32 +147,135 @@
                 <summary>結果（詳細）</summary>
 
             <div class="card result-card">
-                <h3>結果</h3>
+                <h3>必要量と参考</h3>
 
                 <div class="two-col">
                     <div>
-                        <!-- "kv kv-tight" 2行表示から"kv kv-need"1行表示に変更 -->
+                        <h4>必要量</h4>
                         <dl class="kv kv-need">
-                        <dt>基礎代謝量</dt>
-                        <dd class="dd-inline">
-                            @if (Model.ActualBmrDisplayKcal.HasValue)
+                            <dt>必要エネルギー</dt>
+                            <dd>
+                                @if (Model.EnergyFinal.HasValue)
+                                {
+                                    <strong>@Model.EnergyFinal.Value.ToString()</strong>
+                                    <span class="unit">kcal</span>
+                                }
+                                else
+                                {
+                                    <span class="muted">-</span>
+                                    <span class="unit">kcal</span>
+                                }
+                            </dd>
+
+                            <dt>蛋白</dt>
+                            <dd>
+                                @if (!string.IsNullOrEmpty(Model.ProteinDisplayText))
+                                {
+                                    <strong>@Model.ProteinDisplayText</strong>
+                                    <span class="unit">g</span>
+                                }
+                                else
+                                {
+                                    <span class="muted">-</span>
+                                    <span class="unit">g</span>
+                                }
+
+                                @if (Model.SelectedProteinCorrection != ProteinCorrectionType.None)
+                                {
+                                    <span class="pill mini" style="margin-left:6px;">
+                                        @(
+                                          Model.SelectedProteinCorrection switch
+                                          {
+                                              ProteinCorrectionType.CKD3bTo5 => "補正0.7",
+                                              ProteinCorrectionType.LiverCirrhosisPoor => "補正0.5",
+                                              _ => "補正"
+                                          }
+                                         )
+                                    </span>
+                                }
+                            </dd>
+
+                            <dt>水分</dt>
+                            <dd>
+                            @if (!string.IsNullOrEmpty(Model.WaterDisplay))
                             {
-                                <strong>@Model.ActualBmrDisplayKcal.Value</strong>
-                            
-                                <span class="unit">kcal</span>
+                                <strong>@Model.WaterDisplay.ToString()</strong>
+                                <span class="unit">mL</span>
                             }
                             else
                             {
                                 <span class="muted">-</span>
-                            
-                                <span class="unit">kcal</span>
+                                <span class="unit">mL</span>
                             }
-                            
+                            @if (Model.WaterFeverCorrected)
+                            {
+                                <span class="pill mini" style="margin-left:6px;">発熱</span>
+                            }
+                            </dd>
+
+                            <dt>推定CCr</dt>
+                            <dd>
+                                @if (Model.CcrActual.HasValue)
+                                {
+                                    @* 補正後があれば補正値を主役にする *@
+                                    var ccrMain = Model.CcrCorrected ?? Model.CcrActual;
+
+                                    <strong>@ccrMain.Value.ToString("F1")</strong>
+                                    <span class="unit">mL/min</span>
+                                    
+                                    @* 参照：補正がある場合のみ、補正前を pill で表示 *@
+                                    @if (Model.CcrCorrected.HasValue)
+                                    {
+                                        <span class="pill" style="margin-left:6px;">
+                                            @($"補正前 {Model.CcrActual.Value.ToString("F1")}")
+                                        </span>
+                                    }
+
+                                    @* 注記（補正条件など） *@
+                                    @if (!string.IsNullOrWhiteSpace(Model.CcrNote))
+                                    {
+                                        <div class="muted small" style="margin-top:4px; line-height:1.2;">
+                                            @Model.CcrNote
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="muted">-</span>
+                                    <span class="unit">mL/min</span>
+                                }
+                            </dd>
+                        </dl>
+                        @if (Model.IsHemodialysis)
+                        {
+                            <div class="muted small">※水分は目安（DW・体重推移で判断）</div>
+                        }
+                        @if (Model.SelectedDisease == DiseaseType.LiverCirrhosis && Model.IsHepaticEncephalopathy)
+                        {
+                            <div class="muted small">※肝不全用アミノ酸製剤の併用を検討</div>
+                        }
+                    </div>
+
+                    <div>
+                        <h4>参考</h4>
+                        <dl class="kv kv-need">
+                            <dt>基礎代謝量</dt>
+                            <dd class="dd-inline">
+                                @if (Model.ActualBmrDisplayKcal.HasValue)
+                                {
+                                    <strong>@Model.ActualBmrDisplayKcal.Value</strong>
+                                    <span class="unit">kcal</span>
+                                }
+                                else
+                                {
+                                    <span class="muted">-</span>
+                                    <span class="unit">kcal</span>
+                                }
+
                                 <span class="pill mini trunc" title="@Model.ActualBmrFormulaDisplayLong">
                                     @(!string.IsNullOrWhiteSpace(Model.ActualBmrFormulaDisplay) ? Model.ActualBmrFormulaDisplay : "算出法")
                                 </span>
-
-                        </dd>
+                            </dd>
 
                             <dt>BMI</dt>
                             <dd>
@@ -227,128 +330,7 @@
                                     <span class="unit">m²</span>
                                 }
                             </dd>
-
-                            <dt>推定CCr</dt>
-                            <dd>
-                                @if (Model.CcrActual.HasValue)
-                                {
-                                    @* 補正後があれば補正値を主役にする *@
-                                    var ccrMain = Model.CcrCorrected ?? Model.CcrActual;
-
-                                    <strong>@ccrMain.Value.ToString("F1")</strong>
-                                    <span class="unit">mL/min</span>
-                                    
-                                    @* 参照：補正がある場合のみ、補正前を pill で表示 *@
-                                    @if (Model.CcrCorrected.HasValue)
-                                    {
-                                        <span class="pill" style="margin-left:6px;">
-                                            @($"補正前 {Model.CcrActual.Value.ToString("F1")}")
-                                        </span>
-                                    }
-
-                                    @* 注記（補正条件など） *@
-                                    @if (!string.IsNullOrWhiteSpace(Model.CcrNote))
-                                    {
-                                        <div class="muted small" style="margin-top:4px; line-height:1.2;">
-                                            @Model.CcrNote
-                                        </div>
-                                    }
-                                }
-                                else
-                                {
-                                    <span class="muted">-</span>
-                                    <span class="unit">mL/min</span>
-                                }
-                            </dd>
                         </dl>
-                    </div>
-
-                    <div>
-                        <h4>必要量</h4>
-                        <dl class="kv kv-need">
-                            @* 悪目立ちしすぎて削除
-                            <dt>ストレス合計</dt>
-                            <dd>
-                                <div class="need-line">
-                                    @Model.StressTotal.ToString("F1")
-                                    <span class="pill mini">基礎 @Model.StressBase.ToString("F2")</span>
-                                </div>
-
-                                <div class="need-line">
-                                    <span class="pill mini">熱 @Model.StressTemperature.ToString("F1")</span>
-                                    <span class="pill mini">褥 @Model.StressPressureUlcer.ToString("F1")</span>
-                                </div>
-                            </dd>
-                            *@
-
-                            <dt>必要エネルギー</dt>
-                            <dd>
-                                @if (Model.EnergyFinal.HasValue)
-                                {
-                                    <strong>@Model.EnergyFinal.Value.ToString()</strong>
-                                    <span class="unit">kcal</span>
-                                }
-                                else
-                                {
-                                    <span class="muted">-</span>
-                                    <span class="unit">kcal</span>
-                                }
-                            </dd>
-
-                            <dt>蛋白</dt>
-                            <dd>
-                                @if (!string.IsNullOrEmpty(Model.ProteinDisplayText))
-                                {
-                                    <strong>@Model.ProteinDisplayText</strong>
-                                    <span class="unit">g</span>
-                                }
-                                else
-                                {
-                                    <span class="muted">-</span>
-                                    <span class="unit">g</span>
-                                }
-                            
-                                @if (Model.SelectedProteinCorrection != ProteinCorrectionType.None)
-                                {
-                                    <span class="pill mini" style="margin-left:6px;">
-                                        @(
-                                          Model.SelectedProteinCorrection switch
-                                          {
-                                              ProteinCorrectionType.CKD3bTo5 => "補正0.7",
-                                              ProteinCorrectionType.LiverCirrhosisPoor => "補正0.5",
-                                              _ => "補正"
-                                          }
-                                         )
-                                    </span>
-                                }
-                            </dd>
-
-                            <dt>水分</dt>
-                            <dd>
-                            @if (!string.IsNullOrEmpty(Model.WaterDisplay))
-                            {
-                                <strong>@Model.WaterDisplay.ToString()</strong>
-                                <span class="unit">mL</span>
-                            }
-                            else
-                            {
-                                <span class="muted">-</span>
-                                <span class="unit">mL</span>
-                            }
-                            @if (Model.WaterFeverCorrected)
-                            {
-                                <span class="pill mini" style="margin-left:6px;">発熱</span>
-                            }
-                            </dd>
-                        </dl>
-                        @if (Model.IsHemodialysis)
-                        {
-                            <div class="muted small">※水分は目安（DW・体重推移で判断）</div>
-                        }
-                        @if (Model.SelectedDisease == DiseaseType.LiverCirrhosis && Model.IsHepaticEncephalopathy)
-                        {
-                            <div class="muted small">※肝不全用アミノ酸製剤の併用を検討</div>
-                        }
                     </div>
                 </div>
 
