@@ -152,9 +152,9 @@
                 <div class="two-col">
                     <div>
                         <h4>主要結果</h4>
-                        <div class="need-energy-row" role="group" aria-label="必要エネルギー">
-                            <div class="need-energy-label">必要エネルギー</div>
-                            <div class="need-energy-value">
+                        <dl class="kv kv-need">
+                            <dt class="need-energy-emph">必要エネルギー</dt>
+                            <dd class="need-energy-emph">
                                 @if (Model.EnergyFinal.HasValue)
                                 {
                                     <strong>@Model.EnergyFinal.Value.ToString()</strong>
@@ -165,9 +165,8 @@
                                     <span class="muted">-</span>
                                     <span class="unit">kcal/day</span>
                                 }
-                            </div>
-                        </div>
-                        <dl class="kv kv-need">
+                            </dd>
+
                             <dt>蛋白</dt>
                             <dd>
                                 @if (!string.IsNullOrEmpty(Model.ProteinDisplayText))

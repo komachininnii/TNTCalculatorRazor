@@ -267,39 +267,18 @@ details summary {
     }
 
 
-/* 結果カード：必要エネルギーを1行ブロックとして控えめに強調 */
-.need-energy-row {
-    display: flex;
-    align-items: baseline;
-    background: #f6f9fc;
-    border: 1px solid #dfe8f1;
-    border-radius: 4px;
-    padding: 6px 2px;
-    margin: 0 0 8px 0;
+/* 結果カード：必要エネルギーはタイポグラフィのみで強調 */
+.kv.kv-need dt.need-energy-emph,
+.kv.kv-need dd.need-energy-emph {
+    font-size: 1.03em;
+    font-weight: 600;
 }
 
-.need-energy-label {
-    width: 7.5em;
-    white-space: nowrap;
-    margin-right: 12px;
+.kv.kv-need dd.need-energy-emph strong {
+    font-size: 1.08em;
+    font-weight: 700;
 }
 
-.need-energy-value {
-    min-width: 0;
-}
-
-@media (max-width: 520px) {
-    .need-energy-row {
-        display: block;
-        padding: 6px 2px;
-    }
-
-    .need-energy-label {
-        width: auto;
-        margin-right: 0;
-        margin-bottom: 4px;
-    }
-}
 /* ストレス合計の内訳表示用 */
 .need-line {
     display: flex;
