@@ -78,7 +78,7 @@ body {
 }
 
     .control input, .control select {
-        padding: 6px 8px;
+        padding: 6px 2px;
         min-height: 34px;
         border: 1px solid #ccc;
         border-radius: 8px;
@@ -267,28 +267,38 @@ details summary {
     }
 
 
-/* 結果カード：必要エネルギーを控えめに強調 */
-.kv.kv-need dt.need-energy-emph,
-.kv.kv-need dd.need-energy-emph {
+/* 結果カード：必要エネルギーを1行ブロックとして控えめに強調 */
+.need-energy-row {
+    display: flex;
+    align-items: baseline;
     background: #f6f9fc;
-    border-top: 1px solid #dfe8f1;
-    border-bottom: 1px solid #dfe8f1;
-    padding-top: 6px;
-    padding-bottom: 6px;
+    border: 1px solid #dfe8f1;
+    border-radius: 4px;
+    padding: 6px 2px;
+    margin: 0 0 8px 0;
 }
 
-.kv.kv-need dt.need-energy-emph {
-    border-left: 1px solid #dfe8f1;
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px;
-    padding-left: 8px;
+.need-energy-label {
+    width: 7.5em;
+    white-space: nowrap;
+    margin-right: 12px;
 }
 
-.kv.kv-need dd.need-energy-emph {
-    border-right: 1px solid #dfe8f1;
-    border-top-right-radius: 6px;
-    border-bottom-right-radius: 6px;
-    padding-right: 8px;
+.need-energy-value {
+    min-width: 0;
+}
+
+@media (max-width: 520px) {
+    .need-energy-row {
+        display: block;
+        padding: 6px 2px;
+    }
+
+    .need-energy-label {
+        width: auto;
+        margin-right: 0;
+        margin-bottom: 4px;
+    }
 }
 /* ストレス合計の内訳表示用 */
 .need-line {
