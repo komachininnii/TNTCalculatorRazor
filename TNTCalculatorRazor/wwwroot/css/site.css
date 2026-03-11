@@ -266,6 +266,30 @@ details summary {
         min-width: 0;
     }
 
+
+/* 結果カード：必要エネルギーを控えめに強調 */
+.kv.kv-need dt.need-energy-emph,
+.kv.kv-need dd.need-energy-emph {
+    background: #f6f9fc;
+    border-top: 1px solid #dfe8f1;
+    border-bottom: 1px solid #dfe8f1;
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+
+.kv.kv-need dt.need-energy-emph {
+    border-left: 1px solid #dfe8f1;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+    padding-left: 8px;
+}
+
+.kv.kv-need dd.need-energy-emph {
+    border-right: 1px solid #dfe8f1;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+    padding-right: 8px;
+}
 /* ストレス合計の内訳表示用 */
 .need-line {
     display: flex;

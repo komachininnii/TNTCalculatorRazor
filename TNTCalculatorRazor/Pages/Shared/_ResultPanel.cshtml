@@ -147,23 +147,23 @@
                 <summary>結果（詳細）</summary>
 
             <div class="card result-card">
-                <h3>必要量と参考</h3>
+                <h3>結果</h3>
 
                 <div class="two-col">
                     <div>
-                        <h4>必要量</h4>
+                        <h4>主要結果</h4>
                         <dl class="kv kv-need">
-                            <dt>必要エネルギー</dt>
-                            <dd>
+                            <dt class="need-energy-emph">必要エネルギー</dt>
+                            <dd class="need-energy-emph">
                                 @if (Model.EnergyFinal.HasValue)
                                 {
                                     <strong>@Model.EnergyFinal.Value.ToString()</strong>
-                                    <span class="unit">kcal</span>
+                                    <span class="unit">kcal/day</span>
                                 }
                                 else
                                 {
                                     <span class="muted">-</span>
-                                    <span class="unit">kcal</span>
+                                    <span class="unit">kcal/day</span>
                                 }
                             </dd>
 
