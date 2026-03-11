@@ -643,6 +643,28 @@ details summary {
         }
 }
 
+
+.result-summary-mobile {
+    display: none;
+}
+
+@media (max-width: 980px) {
+    .result-summary-desktop {
+        display: none;
+    }
+
+    .result-summary-mobile {
+        display: inline;
+    }
+
+    .result-card .two-col {
+        grid-template-columns: 1fr;
+    }
+
+    .result-card .major-results-col {
+        display: none;
+    }
+}
 /* かなり狭い端末だけ少し圧縮（モダンのみ適用） */
 @media (max-width: 430px) {
     @supports (display: grid) {
