@@ -648,6 +648,10 @@ details summary {
     display: none;
 }
 
+.ccr-mobile-supplement {
+    display: none;
+}
+
 @media (max-width: 980px) {
     .result-summary-desktop {
         display: none;
@@ -657,12 +661,27 @@ details summary {
         display: inline;
     }
 
+    .result-card > h3,
+    .result-card .reference-col > h4 {
+        display: none;
+    }
+
     .result-card .two-col {
         grid-template-columns: 1fr;
     }
 
     .result-card .major-results-col {
         display: none;
+    }
+
+    .ccr-mobile-supplement {
+        display: block;
+        margin-top: 8px;
+    }
+
+    .ccr-mobile-supplement-title {
+        font-weight: 600;
+        margin-bottom: 2px;
     }
 }
 /* かなり狭い端末だけ少し圧縮（モダンのみ適用） */

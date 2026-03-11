@@ -144,7 +144,7 @@
 
             <!-- 以下、既存の結果（詳細）カードや経腸栄養カードが続く -->
             <details class="fold result-details" open>
-                <summary><span class="result-summary-desktop">結果（詳細）</span><span class="result-summary-mobile">結果（参考項目）</span></summary>
+                <summary><span class="result-summary-desktop">結果（詳細）</span><span class="result-summary-mobile">結果（参考・補足）</span></summary>
 
             <div class="card result-card">
                 <h3>結果</h3>
@@ -256,7 +256,7 @@
                         }
                     </div>
 
-                    <div>
+                    <div class="reference-col">
                         <h4>参考</h4>
                         <dl class="kv kv-need">
                             <dt>基礎代謝量</dt>
@@ -331,6 +331,24 @@
                                 }
                             </dd>
                         </dl>
+
+                        @if (Model.CcrCorrected.HasValue || !string.IsNullOrWhiteSpace(Model.CcrNote))
+                        {
+                            <div class="ccr-mobile-supplement muted small">
+                                <div class="ccr-mobile-supplement-title">推定CCr（補足）</div>
+                                @if (Model.CcrCorrected.HasValue && Model.CcrActual.HasValue)
+                                {
+                                    <div>
+                                        補正前 <strong>@Model.CcrActual.Value.ToString("F1")</strong>
+                                        <span class="unit">mL/min</span>
+                                    </div>
+                                }
+                                @if (!string.IsNullOrWhiteSpace(Model.CcrNote))
+                                {
+                                    <div style="margin-top:4px; line-height:1.2;">@Model.CcrNote</div>
+                                }
+                            </div>
+                        }
                     </div>
                 </div>
 
