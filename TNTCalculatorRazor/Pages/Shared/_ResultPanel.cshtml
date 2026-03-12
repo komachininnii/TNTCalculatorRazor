@@ -246,14 +246,6 @@
                                 }
                             </dd>
                         </dl>
-                        @if (Model.IsHemodialysis)
-                        {
-                            <div class="muted small">※水分は目安（DW・体重推移で判断）</div>
-                        }
-                        @if (Model.SelectedDisease == DiseaseType.LiverCirrhosis && Model.IsHepaticEncephalopathy)
-                        {
-                            <div class="muted small">※肝不全用アミノ酸製剤の併用を検討</div>
-                        }
                     </div>
 
                     <div class="reference-col">
