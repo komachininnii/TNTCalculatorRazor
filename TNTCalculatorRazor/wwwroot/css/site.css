@@ -672,8 +672,8 @@ details summary {
 
     .result-card .two-col > div + div {
         border-left: 1px solid #e3e8ed;
-        padding-left: 12px;
-        margin-left: 8px;
+        padding-left: 2px;
+        margin-left: 6px;
     }
 }
 
