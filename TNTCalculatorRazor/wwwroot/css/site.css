@@ -670,19 +670,10 @@ details summary {
         margin-top: 10px;
     }
 
-    .result-card .two-col {
-        position: relative;
-    }
-
-    .result-card .two-col::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 50%;
-        width: 1px;
-        background: #e3e8ed;
-        transform: translateX(-0.5px);
+    .result-card .two-col > div + div {
+        border-left: 1px solid #e3e8ed;
+        padding-left: 12px;
+        margin-left: 8px;
     }
 }
 
@@ -711,6 +702,12 @@ details summary {
 
     .result-card .two-col {
         grid-template-columns: 1fr;
+    }
+
+    .result-card .two-col > div + div {
+        border-left: none;
+        padding-left: 0;
+        margin-left: 0;
     }
 
     .result-card .major-results-col {
