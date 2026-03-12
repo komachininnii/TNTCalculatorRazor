@@ -670,11 +670,24 @@ details summary {
         margin-top: 10px;
     }
 
+    /* 結果カラムの仕切り線。
+       IE系は主要結果との間隔が狭いので広めに取る。
+       実機確認で margin-left: 30px を採用 */
     .result-card .two-col > div + div {
         border-left: 1px solid #e3e8ed;
-        padding-left: 2px;
-        margin-left: 6px;
+        padding-left: 6px;
+        margin-left: 30px;
     }
+}
+
+@supports (display: grid) {
+  @media (min-width: 981px) {
+    /* モダン系は元々広いので padding-left と margin-left を詰める */
+    .result-card .two-col > div + div {
+      padding-left: 2px;
+      margin-left: 6px;
+    }
+  }
 }
 
 @media (max-width: 980px) {
