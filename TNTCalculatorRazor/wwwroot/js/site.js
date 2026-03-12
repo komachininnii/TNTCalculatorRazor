@@ -210,6 +210,19 @@ function tntLimitNumber(el) {
                 if ("open" in d) d.open = true;
             }
         }
+
+        var refs = document.querySelectorAll(".result-card .reference-fold");
+        for (var j = 0; j < refs.length; j++) {
+            var r = refs[j];
+            if (!r) continue;
+            if (isMobile) {
+                if (r.setAttribute) r.setAttribute("open", "open");
+                if ("open" in r) r.open = true;
+            } else {
+                if (r.removeAttribute) r.removeAttribute("open");
+                if ("open" in r) r.open = false;
+            }
+        }
     }
 
     window.tntSetResultDetailsOpenByLayout = setResultDetailsOpenByLayout;
