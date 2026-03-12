@@ -652,6 +652,25 @@ details summary {
     display: none;
 }
 
+.reference-fold > summary {
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.reference-fold-body {
+    margin-top: 8px;
+}
+
+@media (min-width: 981px) {
+    .reference-fold > summary {
+        margin-bottom: 0;
+    }
+
+    .reference-fold-body {
+        margin-top: 10px;
+    }
+}
+
 @media (max-width: 980px) {
     .result-summary-desktop {
         display: none;
@@ -662,8 +681,17 @@ details summary {
     }
 
     .result-card > h3,
-    .result-card .reference-col > h4 {
+    .result-card .reference-fold > summary {
         display: none;
+    }
+
+    .result-card .reference-fold {
+        display: block;
+    }
+
+    .result-card .reference-fold > .reference-fold-body {
+        display: block;
+        margin-top: 0;
     }
 
     .result-card .two-col {
@@ -1487,5 +1515,4 @@ details summary {
     align-items: center;
     vertical-align: middle; /* 念のため */
 }
-
 
