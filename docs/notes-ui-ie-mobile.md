@@ -56,49 +56,22 @@ TNTCalculatorRazor において実施した **IE11（IEモード）／モダン�
 
 ---
 
-## 4. 肥満度スケールと null 問題（解決済）
+## 4. 妊娠チェック（Female限定）
 
-~~### 4.1 問題~~
-
-~~- `BmrWeightBasis` が null のまま評価され、常に実測体重に落ちるケースが発生~~
-
-~~### 4.2 対応~~
-
-~~- **順序保証**を明示~~
-
-```csharp
-//旧設計での対応例
-// 1) basis 決定
-CorrectedBmrWeightBasis = AdjustedWeightCalculator.GetBasis(...);
-
-// 2) AdjustedWeight 算出
-AdjustedWeight = ...;
-
-// 3) CorrectedWeight 選択
-CorrectedWeight = CorrectedBmrWeightBasis.Value switch { ... };
-```
-※ 現在は CalculateCorrectedWeight() により
-計算結果の確定と null 問題は Domain 側で解消されている。
-CorrectedBmrWeightBasis は UI 表示（pill）用の派生情報。
-
----
-
-## 5. 妊娠チェック（Female限定）
-
-### 5.1 仕様
+### 4.1 仕様
 
 - 性別が Female かつ 年齢18～55 のときのみ表示
 - 水分量計算のみに影響
 - 毎回説明を出さず、`title` で補足
 
-### 5.2 IndexModel
+### 4.2 IndexModel
 
 ```csharp
 [BindProperty]
 public bool IsPregnant { get; set; } = false;
 ```
 
-### 5.3 Razor
+### 4.3 Razor
 
 ```cshtml
  @{
@@ -122,9 +95,9 @@ public bool IsPregnant { get; set; } = false;
 
 ---
 
-## 6. セクション見出し（section-head）
+## 5. セクション見出し（section-head）
 
-### 6.1 見出し文字の割れ対策
+### 5.1 見出し文字の割れ対策
 
 ```css
 .card .section-head h3 {
@@ -148,7 +121,7 @@ public bool IsPregnant { get; set; } = false;
 
 ---
 
-## 7. IE用カード仕切り線
+## 6. IE用カード仕切り線
 
 ### 方針
 
@@ -179,9 +152,9 @@ public bool IsPregnant { get; set; } = false;
 
 ---
 
-## 8. スマホ横はみ出し対策
+## 7. スマホ横はみ出し対策
 
-### 8.1 基本セット（site.css 末尾）
+### 7.1 基本セット（site.css 末尾）
 
 ```css
 /* === smartphone overflow fix === */
@@ -206,7 +179,7 @@ public bool IsPregnant { get; set; } = false;
 }
 ```
 
-### 8.2 sel-wide の最終調整
+### 7.2 sel-wide の最終調整
 
 ```css
 .field-compact .control select.sel-wide {
@@ -219,7 +192,7 @@ public bool IsPregnant { get; set; } = false;
   }
 }
 ```
-### 8.3 モダン/スマホでもカード上線を出す
+### 7.3 モダン/スマホでもカード上線を出す
 
 IE だけで上線を出していた影響でモダンの上線が消えたため、末尾で上書き。
 
@@ -241,7 +214,7 @@ IE だけで上線を出していた影響でモダンの上線が消えたた�
     実装の検証の結果、`margin-top` を 0px にして確定した。
 
 
-### 8.4 1カラム時の列仕切りの残存解除
+### 7.4 1カラム時の列仕切りの残存解除
 
 1 カラム時に IE 用の border/padding が main に残り、左列だけ細く見えるため強制解除。
 
@@ -262,7 +235,7 @@ IE だけで上線を出していた影響でモダンの上線が消えたた�
 }
 ```
 
-### 8.5 IEでフッターが右にはみ出す問題の対策
+### 7.5 IEでフッターが右にはみ出す問題の対策
 ```css
     @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
         /* 横スクロール封じ込め（IE特有のはみ出し対策） */
