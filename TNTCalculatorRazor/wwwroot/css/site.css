@@ -669,6 +669,12 @@ details summary {
     .reference-fold-body {
         margin-top: 10px;
     }
+
+    .result-card .two-col > div + div {
+        border-left: 1px solid #e3e8ed;
+        padding-left: 12px;
+        margin-left: 8px;
+    }
 }
 
 @media (max-width: 980px) {
@@ -696,6 +702,12 @@ details summary {
 
     .result-card .two-col {
         grid-template-columns: 1fr;
+    }
+
+    .result-card .two-col > div + div {
+        border-left: none;
+        padding-left: 0;
+        margin-left: 0;
     }
 
     .result-card .major-results-col {
@@ -1492,14 +1504,6 @@ details summary {
         }
 }
 
-/* スマホ：result-details / enteral-details の “一瞬openで描画” を隠してからJSで表示 */
-/* enteral-detailsは廃止 */
-@media (max-width: 980px) {
-    html:not(.tnt-ready) details.result-details {
-        visibility: hidden;
-    }
-}
-
 /* ヘルプ用 */
 .help-content img {
     max-width: 100%;
@@ -1515,4 +1519,3 @@ details summary {
     align-items: center;
     vertical-align: middle; /* 念のため */
 }
-
