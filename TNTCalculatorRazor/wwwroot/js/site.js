@@ -194,34 +194,43 @@ function tntLimitNumber(el) {
         return (w <= 980);
     }
 
+    function setFoldOpenState(el, isOpen, isLegacyDetails) {
+        if (!el) return;
+
+        if (isOpen) {
+            if (el.setAttribute) el.setAttribute("open", "open");
+            if ("open" in el) el.open = true;
+        } else {
+            if (el.removeAttribute) el.removeAttribute("open");
+            if ("open" in el) el.open = false;
+        }
+
+        if (!isLegacyDetails) return;
+
+        for (var i = 0; i < el.children.length; i++) {
+            var child = el.children[i];
+            if (child.tagName && child.tagName.toLowerCase() === "summary") continue;
+            child.style.display = isOpen ? "" : "none";
+        }
+    }
+
     function setResultDetailsOpenByLayout() {
         var isMobile = getIsMobileLayout();
         tntLastLayoutIsMobile = isMobile;
+        var isLegacyDetails = !("open" in document.createElement("details"));
 
         var list = document.querySelectorAll(".result-details");
         for (var i = 0; i < list.length; i++) {
             var d = list[i];
             if (!d) continue;
-            if (isMobile) {
-                if (d.removeAttribute) d.removeAttribute("open");
-                if ("open" in d) d.open = false;
-            } else {
-                if (d.setAttribute) d.setAttribute("open", "open");
-                if ("open" in d) d.open = true;
-            }
+            setFoldOpenState(d, !isMobile, isLegacyDetails);
         }
 
         var refs = document.querySelectorAll(".result-card .reference-fold");
         for (var j = 0; j < refs.length; j++) {
             var r = refs[j];
             if (!r) continue;
-            if (isMobile) {
-                if (r.setAttribute) r.setAttribute("open", "open");
-                if ("open" in r) r.open = true;
-            } else {
-                if (r.removeAttribute) r.removeAttribute("open");
-                if ("open" in r) r.open = false;
-            }
+            setFoldOpenState(r, isMobile, isLegacyDetails);
         }
     }
 
