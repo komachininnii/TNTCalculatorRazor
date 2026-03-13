@@ -130,32 +130,6 @@ Komachininnii (tyama)
 
 ---
 
-## トラブルシューティング
-エラー発生時のログ確認方法。
-
-### Azureでのログの確認
-Azure Portal→高度なツール→BashまたはSSH
-
-- ログファイル一覧
-   ```bash
-  ls -lh /home/LogFiles/*docker.log
-  ```
-
-- ログを監視する：終了はCTRL+C
-  ```bash
-  tail -f /home/LogFiles/*docker.log
-  ```
-- エラーだけ拾う
-  ```bash
-  grep -i error /home/LogFiles/*docker.log
-  ```
-### Windows IIS環境でのログの確認
-- Windowsイベントビューアー
-  - Windowsログ→アプリケーション
-  - ソースが「IIS AspNetCore Module V2」のものを探す
-
----
-
 ## 中核計算仕様
 基礎代謝量（BMR）、必要エネルギー、必要水分量、蛋白補正、推定CCr など、  
 中核となる計算仕様の概要は以下のドキュメントにまとめています。  
@@ -181,7 +155,7 @@ Azure Portal→高度なツール→BashまたはSSH
 補足資料（運用・設計判断）です。現行保守に必要な情報のみを掲載しています。
 
 ### 1) 運用・デプロイ
-院内限定情報をソースに混入させないための設計・運用上の注意点。
+院内限定情報をソースに混入させないための設計・運用上の注意点と、障害時の基本的なログ確認方法。
 - [Appendix: Deployment & Security](docs/appendix-deployment-security.md)
 
 ### 2) 経腸栄養剤
