@@ -178,24 +178,13 @@ Azure Portal→高度なツール→BashまたはSSH
 ---
 
 ## Appendix
-補足資料（運用・UI・実装の判断理由）です。  
-Appendix は「仕様/運用方針」、Notes は「実装メモ・調整履歴」です。目的に合わせて参照してください。
+補足資料（運用・設計判断）です。現行保守に必要な情報のみを掲載しています。
 
 ### 1) 運用・デプロイ
 院内限定情報をソースに混入させないための設計・運用上の注意点。
 - [Appendix: Deployment & Security](docs/appendix-deployment-security.md)
 
-### 2) UI互換（IE11 / モダン / スマホ）
-表示崩れや互換対応に関する詳細な設計判断・調整履歴。
-- [Notes: UI / IE / Mobile 対応メモ](docs/notes-ui-ie-mobile.md)
-
-### 3) クライアント側（JavaScript / 再計算）
-Index内の script を `site.js` に移行した経緯・意図、再計算まわりの実装メモ。
-- [Notes: Client-side JavaScript Design Notes](docs/notes-js.md)
-- [Notes: JS / Form Refactor & Debug Handling Summary](docs/notes-js-form-refactor.md)
-- [Notes: AJAX再計算と結果パネル同期](docs/notes-ajax-recalc.md)
-
-### 4) 経腸栄養剤
+### 2) 経腸栄養剤
 経腸栄養剤の計算ロジックの詳細と、複数製品対応に向けた設計方針。
 - [Appendix: 経腸栄養剤の計算仕様](docs/appendix-enteral-nutrition.md)
 
