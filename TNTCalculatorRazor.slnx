@@ -6,10 +6,6 @@
     <File Path="docs/appendix-enteral-nutrition.md" />
     <File Path="docs/calculation-rounding-and-final-values.md" />
     <File Path="docs/glossary-bmr-weight-terminology.md" />
-    <File Path="docs/notes-ajax-recalc.md" />
-    <File Path="docs/notes-js-form-refactor.md" />
-    <File Path="docs/notes-js.md" />
-    <File Path="docs/notes-ui-ie-mobile.md" />
     <File Path="docs/spec-core-calculations.md" />
     <File Path="docs/testing.md" />
     <File Path="docs/ui-decisions.md" />
