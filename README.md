@@ -155,10 +155,14 @@ Komachininnii (tyama)
 補足資料（運用・設計判断）です。現行保守に必要な情報のみを掲載しています。
 
 ### 1) 運用・デプロイ
-院内限定情報をソースに混入させないための設計・運用上の注意点と、障害時の基本的なログ確認方法。
+院内限定情報をソースに混入させないための設計・運用上の注意点。
 - [Appendix: Deployment & Security](docs/appendix-deployment-security.md)
 
-### 2) 経腸栄養剤
+### 2) トラブルシューティング
+障害時のログ確認方法。
+- [Appendix: Troubleshooting](docs/appendix-troubleshooting.md)
+
+### 3) 経腸栄養剤
 経腸栄養剤の計算ロジックの詳細と、複数製品対応に向けた設計方針。
 - [Appendix: 経腸栄養剤の計算仕様](docs/appendix-enteral-nutrition.md)
 
