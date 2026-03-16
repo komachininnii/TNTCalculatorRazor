@@ -194,8 +194,6 @@ function tntLimitNumber(el) {
         return action + (action.indexOf("?") >= 0 ? "&" : "?") + "handler=Recalc";
     }
 
-    var tntLastLayoutIsMobile = null;
-
     function getIsMobileLayout() {
         return getIsMobileLayoutByMediaQuery();
     }
@@ -222,7 +220,6 @@ function tntLimitNumber(el) {
 
     function setResultDetailsOpenByLayout() {
         var isMobile = getIsMobileLayout();
-        tntLastLayoutIsMobile = isMobile;
         var isLegacyDetails = !("open" in document.createElement("details"));
 
         var list = document.querySelectorAll(".result-details");
@@ -242,15 +239,11 @@ function tntLimitNumber(el) {
 
     window.tntSetResultDetailsOpenByLayout = setResultDetailsOpenByLayout;
 
-    // ── 追加 ──
-    // resize時のブレークポイント変化検出＋fold同期。
-    // getIsMobileLayout / tntLastLayoutIsMobile はこのIIFE内スコープなので
-    // ここでラップして公開する。
+    // resize / media query change時に、現在レイアウトへ常に正規化する。
+    // 遷移方向（mobile->desktop / desktop->mobile）に依存せず、
+    // その時点の最終状態を毎回適用する。
     window.tntHandleResizeLayout = function () {
-        var isMobile = getIsMobileLayout();
-        if (tntLastLayoutIsMobile !== isMobile) {
-            setResultDetailsOpenByLayout();
-        }
+        setResultDetailsOpenByLayout();
     };
 
     function readJsonScript(dataEl) {
