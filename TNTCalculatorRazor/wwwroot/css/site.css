@@ -470,16 +470,18 @@ details summary {
         align-items: flex-start;
     }
 
-        .layout > .main {
-            flex: 0 0 48%;
-            margin-right: 16px; /* gap 代替 */
-            min-width: 0;
-        }
-    
-        .layout > .summary {
-            flex: 1 1 auto;
-            min-width: 0;
-        }
+      .layout > .main {
+        flex: 0 0 48%;
+        margin-right: 16px; /* gap 代替 */
+        min-width: 0;
+        overflow: hidden;
+      }
+
+      .layout > .summary {
+        flex: 1 1 auto;
+        min-width: 0;
+        overflow: hidden;
+      }
 
     /* === IE11でも画面が狭いときは1段積みにする === */
     @media (max-width: 980px) {
@@ -505,56 +507,69 @@ details summary {
         position: static;
     }
     /* === モダン（Edge/スマホ）だけ grid + sticky + スマホ挙動 === */
-    @supports (display: grid) {
-    /* IE用 margin-top をモダンでは無効化（タブレット帯は後の@mediaで上書きされる） */
-      .layout > .summary {
-          margin-top: 0;
-      }
-
-      /* 2カラム(grid)の基本 */
-      .layout {
-          display: grid;
-          grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-          gap: 12px;
-          align-items: start;
-      }
-      /* 右カラムを見やすく（PC幅では sticky） */
-      .summary {
-          position: sticky;
-          top: 12px;
-      }
-      /* スマホ(～720)：1カラムに */
-      @media (max-width: 720px) {
-          .layout {
-              grid-template-columns: 1fr;
-              gap: 0px;
-          }
-          /* スマホは sticky を解除して自然に下へ */
-          .summary {
-             position: static;
-             margin-top: 0px; /* スマホ時のsummary top marginを削る */
-          }
-          /* 結果（参照）の2カラムをスマホで縦にする（モダンのみ） */
-          .two-col {
-              display: block;
-          }
-
-          .two-col > div {
-              margin-top: 10px;
-          }
-
-          .two-col > div:first-child {
-              margin-top: 0;
-          }
+@supports (display: grid) {
+  /* IE用 margin-top をモダンでは無効化（タブレット帯は後の@mediaで上書きされる） */
+  .layout > .summary {
+    margin-top: 0;
+  }
+  /* 2カラム(grid)の基本 */
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 12px;
+    align-items: start;
+  }
+    /* 新規追加 */
+    .layout > .main,
+    .layout > .summary {
+      overflow: hidden;
+      min-width: 0;
     }
-      /* タブレット(721px〜980px)：右カラムを下げたい（スマホ720以下とは競合させない） */
-      @media (min-width: 721px) and (max-width: 980px) {
-          .summary {
-              margin-top: 24px;
-              position: static; /* タブレット帯はstickyを止めたいなら */
-          }
-      }
+  /* 右カラムを見やすく（PC幅では sticky） */
+  .summary {
+    position: sticky;
+    top: 12px;
+  }
+  /* モダンブラウザでは 980px 付近で結果欄が重なりやすいため、
+   見た目の崩れ防止として 1024px で 1列化する。
+   ただしこれはレイアウト上の調整であり、JS の mobile 判定（980px）は変更しない。 */
+  @media (max-width: 1024px) {
+    .layout {
+      grid-template-columns: 1fr;
+      gap: 0;
     }
+
+    .summary {
+      margin-top: 0;
+      position: static;
+    }
+  }
+  /* スマホ(～720) */
+  @media (max-width: 720px) {
+    .layout {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+
+    .summary {
+      position: static;
+      margin-top: 0;
+    }
+  }
+  /* 結果（参照）の2カラムをスマホで縦にする（モダンのみ） */
+  .two-col {
+    display: block;
+  }
+
+    .two-col > div {
+      margin-top: 10px;
+    }
+
+      .two-col > div:first-child {
+        margin-top: 0;
+      }
+}
+  
    
     /* スマホでは経腸栄養カードを弱く見せる　*/
     @media (max-width: 980px) {
