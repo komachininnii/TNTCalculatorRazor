@@ -157,6 +157,17 @@ function tntLimitNumber(el) {
 (function () {
     "use strict";
 
+    var MOBILE_LAYOUT_MEDIA_QUERY = "(max-width: 980px)";
+
+    function getIsMobileLayoutByMediaQuery() {
+        if (window.matchMedia) {
+            return window.matchMedia(MOBILE_LAYOUT_MEDIA_QUERY).matches;
+        }
+
+        var w = document.documentElement.clientWidth || document.body.clientWidth;
+        return (w <= 980);
+    }
+
     // Enter直後のblur二重送信を防ぐ
     var tntSkipNextBlurSubmit = false;
 
@@ -186,12 +197,7 @@ function tntLimitNumber(el) {
     var tntLastLayoutIsMobile = null;
 
     function getIsMobileLayout() {
-        if (window.matchMedia) {
-            return window.matchMedia("(max-width: 980px)").matches;
-        }
-
-        var w = document.documentElement.clientWidth || document.body.clientWidth;
-        return (w <= 980);
+        return getIsMobileLayoutByMediaQuery();
     }
 
     function setFoldOpenState(el, isOpen, isLegacyDetails) {
@@ -692,14 +698,7 @@ function tntLimitNumber(el) {
     "use strict";
 
     function tntInitMobileDetailsAndHint() {
-        var isMobile = false;
-
-        if (window.matchMedia) {
-            isMobile = window.matchMedia("(max-width: 980px)").matches;
-        } else {
-            var w = document.documentElement.clientWidth || document.body.clientWidth;
-            isMobile = (w <= 980);
-        }
+        var isMobile = getIsMobileLayoutByMediaQuery();
 
         if (!isMobile) return;
 
@@ -804,12 +803,27 @@ function tntLimitNumber(el) {
                 window.tntApplyFormStateFromPanel(panel);
             }
         }
-        // 6) ウィンドウリサイズで layout変更を検出し、details開閉状態を更新する
-        window.addEventListener("resize", function () {
-            if (window.tntHandleResizeLayout) {
-                window.tntHandleResizeLayout();
+        // 6) ブレークポイント変化で layout変更を検出し、details開閉状態を更新する
+        if (window.matchMedia) {
+            var mql = window.matchMedia(MOBILE_LAYOUT_MEDIA_QUERY);
+            var onLayoutChange = function () {
+                if (window.tntHandleResizeLayout) {
+                    window.tntHandleResizeLayout();
+                }
+            };
+
+            if (mql.addEventListener) {
+                mql.addEventListener("change", onLayoutChange);
+            } else if (mql.addListener) {
+                mql.addListener(onLayoutChange);
             }
-        });
+        } else {
+            window.addEventListener("resize", function () {
+                if (window.tntHandleResizeLayout) {
+                    window.tntHandleResizeLayout();
+                }
+            });
+        }
     });
 
 })();
