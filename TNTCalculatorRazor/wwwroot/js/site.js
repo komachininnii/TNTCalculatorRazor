@@ -197,6 +197,12 @@ function tntLimitNumber(el) {
     function setFoldOpenState(el, isOpen, isLegacyDetails) {
         if (!el) return;
 
+        // IE11 polyfill のクロージャ同期（フックがあれば優先）
+        if (isLegacyDetails && typeof el._tntSetOpen === "function") {
+            el._tntSetOpen(isOpen);
+            return;
+        }
+
         if (isOpen) {
             if (el.setAttribute) el.setAttribute("open", "open");
             if ("open" in el) el.open = true;
@@ -769,6 +775,13 @@ function tntLimitNumber(el) {
                     apply(isOpen);
                     return false;
                 };
+
+                // ── 追加：外部から isOpen を同期するためのフック ──
+                d._tntSetOpen = function (open) {
+                    isOpen = open;
+                    apply(isOpen);
+                };
+
             })(details[i]);
         }
     }
