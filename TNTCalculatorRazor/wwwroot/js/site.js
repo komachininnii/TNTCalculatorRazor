@@ -236,6 +236,17 @@ function tntLimitNumber(el) {
 
     window.tntSetResultDetailsOpenByLayout = setResultDetailsOpenByLayout;
 
+    // ── 追加 ──
+    // resize時のブレークポイント変化検出＋fold同期。
+    // getIsMobileLayout / tntLastLayoutIsMobile はこのIIFE内スコープなので
+    // ここでラップして公開する。
+    window.tntHandleResizeLayout = function () {
+        var isMobile = getIsMobileLayout();
+        if (tntLastLayoutIsMobile !== isMobile) {
+            setResultDetailsOpenByLayout();
+        }
+    };
+
     function readJsonScript(dataEl) {
         if (!dataEl) return "";
         return dataEl.textContent || dataEl.innerText || dataEl.text || dataEl.innerHTML || "";
@@ -795,9 +806,8 @@ function tntLimitNumber(el) {
         }
         // 6) ウィンドウリサイズで layout変更を検出し、details開閉状態を更新する
         window.addEventListener("resize", function () {
-            var isMobile = getIsMobileLayout();
-            if (tntLastLayoutIsMobile !== isMobile && window.tntSetResultDetailsOpenByLayout) {
-                window.tntSetResultDetailsOpenByLayout();
+            if (window.tntHandleResizeLayout) {
+                window.tntHandleResizeLayout();
             }
         });
     });
