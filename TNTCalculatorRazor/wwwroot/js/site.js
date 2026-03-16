@@ -235,6 +235,31 @@ function tntLimitNumber(el) {
             if (!r) continue;
             setFoldOpenState(r, isMobile, isLegacyDetails);
         }
+
+        // open属性だけでなく、表示に影響する状態も現在レイアウトへ明示的に正規化する。
+        var majors = document.querySelectorAll(".result-card .major-results-col");
+        for (var k = 0; k < majors.length; k++) {
+            var major = majors[k];
+            if (!major) continue;
+            major.hidden = false;
+            major.style.display = isMobile ? "none" : "";
+        }
+
+        var refCols = document.querySelectorAll(".result-card .reference-col");
+        for (var m = 0; m < refCols.length; m++) {
+            var refCol = refCols[m];
+            if (!refCol) continue;
+            refCol.hidden = false;
+            refCol.style.display = "";
+        }
+
+        var refBodies = document.querySelectorAll(".result-card .reference-fold > .reference-fold-body");
+        for (var n = 0; n < refBodies.length; n++) {
+            var body = refBodies[n];
+            if (!body) continue;
+            body.hidden = false;
+            body.style.display = isMobile ? "block" : "";
+        }
     }
 
     window.tntSetResultDetailsOpenByLayout = setResultDetailsOpenByLayout;
