@@ -687,7 +687,8 @@ details summary {
 
     /* 結果カラムの仕切り線。
        IE系は主要結果との間隔が狭いので広めに取る。
-       実機確認で margin-left: 30px を採用 */
+       実機確認で margin-left: 30px を採用。
+       色は意図的に薄め (#e3e8ed)。液晶劣化端末で不可視の事例あり（2026-03）だが実用上問題なし、現状維持。 */
     .result-card .two-col > div + div {
         border-left: 1px solid #e3e8ed;
         padding-left: 6px;
