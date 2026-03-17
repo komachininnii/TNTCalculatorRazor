@@ -1122,41 +1122,41 @@ details summary {
             clear: both;
         }
     /* === モダンだけ grid に戻す（float解除もここで行う） === */
-    @supports (display: grid) {
-        .kv.kv-2col {
-            display: grid;
-            grid-template-columns: 3em 1fr 3em 1fr; /* PCは2列（dt dd dt dd） */
-            column-gap: 10px;
-            row-gap: 6px;
-        }
-            /* IE11フォールバックの解除（重要） */
-            .kv.kv-2col dt,
-            .kv.kv-2col dd {
-                float: none;
-                clear: none;
-                width: auto;
-                margin: 0;
-                padding: 0;
-                min-width: 0;
-            }
-
-            .kv.kv-2col dd {
-                min-width: 0;
-                white-space: nowrap; /* これは残してOK。不要なら削除可 */
-            }
-
-            .kv.kv-2col::after {
-                content: none;
-                display: none;
-                clear: none;
-            }
-        /* スマホは1列に戻す（これを @supports の中に置くのがポイント） */
-        @media (max-width: 520px) {
-            .kv.kv-2col {
-                grid-template-columns: 8.5em 1fr;
-            }
-        }
+@supports (display: grid) {
+  .kv.kv-2col {
+    display: grid;
+    grid-template-columns: max-content 1fr max-content 1fr; /* ← dt列幅をコンテンツに合わせる */
+    column-gap: 10px;
+    row-gap: 6px;
+  }
+    /* IE11フォールバックの解除（重要） */
+    .kv.kv-2col dt,
+    .kv.kv-2col dd {
+      float: none;
+      clear: none;
+      width: auto;
+      margin: 0;
+      padding: 0;
+      min-width: 0;
     }
+
+    .kv.kv-2col dd {
+      min-width: 0;
+      white-space: nowrap; /* これは残してOK。不要なら削除可 */
+    }
+
+    .kv.kv-2col::after {
+      content: none;
+      display: none;
+      clear: none;
+    }
+  /* スマホは1列に戻す（これを @supports の中に置くのがポイント） */
+  @media (max-width: 520px) {
+    .kv.kv-2col {
+      grid-template-columns: 8.5em 1fr;
+    }
+  }
+}
 
     .enteral-bottom {
         margin-top: 10px;
