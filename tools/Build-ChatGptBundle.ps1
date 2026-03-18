@@ -236,6 +236,7 @@ Write-Info "OutputDir: $outDir"
 
 $gitInfo = Get-GitInfo -Root $solutionRoot
 $testFiles = @()
+$docsFiles = @()
 
 # ------------------------------------
 # 1) C# Core
@@ -429,7 +430,52 @@ if (@($testFiles).Count -gt 0) {
 }
 
 # ------------------------------------
-# 6) Project Map
+# 6) Docs
+# ------------------------------------
+$docsRoot = Join-Path $solutionRoot "docs"
+
+$rootDocCandidates = @(
+    (Join-Path $solutionRoot "README.md"),
+    (Join-Path $solutionRoot "CHANGELOG.md")
+)
+
+$rootDocFiles = foreach ($path in $rootDocCandidates | Select-Object -Unique) {
+    if (Test-Path -LiteralPath $path) {
+        Get-Item -LiteralPath $path
+    }
+}
+
+$nestedDocFiles = @()
+if (Test-Path -LiteralPath $docsRoot) {
+    $nestedDocFiles = Get-MatchingFiles -Root $docsRoot -IncludeExtensions @(".md") -Predicate {
+        param($f)
+        $rel = Get-RelativePathSafe -BasePath $docsRoot -TargetPath $f.FullName
+        if ($rel -match '\\(bin|obj)\\') { return $false }
+        return $true
+    }
+}
+
+$docsFiles = @($rootDocFiles + $nestedDocFiles | Sort-Object FullName -Unique)
+
+if (@($docsFiles).Count -gt 0) {
+    $docsBuilder = New-Object System.Text.StringBuilder
+    [void]$docsBuilder.AppendLine("# 06_Docs")
+    [void]$docsBuilder.AppendLine("Generated: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')")
+    [void]$docsBuilder.AppendLine("SolutionRoot: $solutionRoot")
+    [void]$docsBuilder.AppendLine("DocsRoot: $docsRoot")
+    [void]$docsBuilder.AppendLine("FileCount: $(@($docsFiles).Count)")
+    [void]$docsBuilder.AppendLine("")
+
+    foreach ($file in $docsFiles) {
+        if ($VerboseMode) { Write-Info "DOC 追加: $($file.FullName)" }
+        Append-FileBlock -Builder $docsBuilder -RepoRootPath $solutionRoot -File $file
+    }
+
+    Save-TextFileUtf8NoBom -Path (Join-Path $outDir "06_Docs.txt") -Content $docsBuilder.ToString()
+}
+
+# ------------------------------------
+# 7) Project Map
 # ------------------------------------
 $mapBuilder = New-Object System.Text.StringBuilder
 [void]$mapBuilder.AppendLine("# 00_Project_Map")
@@ -480,6 +526,9 @@ if ($gitInfo.IsGitRepo) {
 [void]$mapBuilder.AppendLine("- 04_Scripts.txt : JS 一式")
 if (@($testFiles).Count -gt 0) {
     [void]$mapBuilder.AppendLine("- 05_Tests.txt : xUnit などのテストコード")
+}
+if (@($docsFiles).Count -gt 0) {
+    [void]$mapBuilder.AppendLine("- 06_Docs.txt : README / CHANGELOG / docs 配下の文書")
 }
 [void]$mapBuilder.AppendLine("")
 
@@ -541,6 +590,15 @@ if (@($testFiles).Count -gt 0) {
     [void]$mapBuilder.AppendLine("")
 }
 
+if (@($docsFiles).Count -gt 0) {
+    [void]$mapBuilder.AppendLine("### Docs")
+    foreach ($f in $docsFiles) {
+        $rel = Get-RelativePathSafe -BasePath $solutionRoot -TargetPath $f.FullName
+        [void]$mapBuilder.AppendLine("- $rel")
+    }
+    [void]$mapBuilder.AppendLine("")
+}
+
 Save-TextFileUtf8NoBom -Path (Join-Path $outDir "00_Project_Map.md") -Content $mapBuilder.ToString()
 
 Write-Info "生成完了"
@@ -553,4 +611,7 @@ Write-Host "  - 03_Styles.txt"
 Write-Host "  - 04_Scripts.txt"
 if (@($testFiles).Count -gt 0) {
     Write-Host "  - 05_Tests.txt"
+}
+if (@($docsFiles).Count -gt 0) {
+    Write-Host "  - 06_Docs.txt"
 }
