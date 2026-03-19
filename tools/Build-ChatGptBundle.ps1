@@ -192,7 +192,7 @@ function Append-FileBlock {
             $content = Get-Content -LiteralPath $File.FullName -Raw
         }
         catch {
-            $content = "[[“Ç‚İ‚İ¸”s: $($_.Exception.Message)]]"
+            $content = "[[èª­ã¿è¾¼ã¿å¤±æ•—: $($_.Exception.Message)]]"
         }
     }
 
@@ -212,12 +212,12 @@ function Save-TextFileUtf8NoBom {
 
 $solutionRoot = Normalize-Path $RepoRoot
 if (-not (Test-Path -LiteralPath $solutionRoot)) {
-    throw "RepoRoot ‚ª‘¶İ‚µ‚Ü‚¹‚ñ: $solutionRoot"
+    throw "RepoRoot ãŒå­˜åœ¨ã—ã¾ã›ã‚“: $solutionRoot"
 }
 
 $appRoot = Join-Path $solutionRoot $AppProjectName
 if (-not (Test-Path -LiteralPath $appRoot)) {
-    throw "ƒAƒvƒŠ ƒvƒƒWƒFƒNƒg‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ: $appRoot"
+    throw "ã‚¢ãƒ—ãƒª ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“: $appRoot"
 }
 
 $testsRoot = Join-Path $solutionRoot $TestProjectName
@@ -230,7 +230,7 @@ if (Test-Path -LiteralPath $testsRoot) {
     Write-Info "TestsRoot: $testsRoot"
 }
 else {
-    Write-WarnMsg "Tests project ‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ: $testsRoot"
+    Write-WarnMsg "Tests project ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“: $testsRoot"
 }
 Write-Info "OutputDir: $outDir"
 
@@ -269,7 +269,7 @@ $csharpBuilder = New-Object System.Text.StringBuilder
 [void]$csharpBuilder.AppendLine("")
 
 foreach ($file in $csharpFiles) {
-    if ($VerboseMode) { Write-Info "C# ’Ç‰Á: $($file.FullName)" }
+    if ($VerboseMode) { Write-Info "C# è¿½åŠ : $($file.FullName)" }
     Append-FileBlock -Builder $csharpBuilder -RepoRootPath $solutionRoot -File $file
 }
 
@@ -287,14 +287,14 @@ if (Test-Path -LiteralPath $mainPagePath) {
     $razorFiles += Get-Item -LiteralPath $mainPagePath
 }
 else {
-    Write-WarnMsg "MainPage ‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ: $mainPagePath"
+    Write-WarnMsg "MainPage ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“: $mainPagePath"
 }
 
 if (Test-Path -LiteralPath $mainPageModelPath) {
     $razorFiles += Get-Item -LiteralPath $mainPageModelPath
 }
 else {
-    Write-WarnMsg "MainPageModel ‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ: $mainPageModelPath"
+    Write-WarnMsg "MainPageModel ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“: $mainPageModelPath"
 }
 
 $commonRazorFiles = Get-MatchingFiles -Root $appRoot -IncludeExtensions @(".cshtml", ".cs") -Predicate {
@@ -338,7 +338,7 @@ $razorBuilder = New-Object System.Text.StringBuilder
 [void]$razorBuilder.AppendLine("")
 
 foreach ($file in $razorFiles) {
-    if ($VerboseMode) { Write-Info "Razor ’Ç‰Á: $($file.FullName)" }
+    if ($VerboseMode) { Write-Info "Razor è¿½åŠ : $($file.FullName)" }
     Append-FileBlock -Builder $razorBuilder -RepoRootPath $solutionRoot -File $file
 }
 
@@ -365,7 +365,7 @@ $cssBuilder = New-Object System.Text.StringBuilder
 [void]$cssBuilder.AppendLine("")
 
 foreach ($file in $cssFiles) {
-    if ($VerboseMode) { Write-Info "CSS ’Ç‰Á: $($file.FullName)" }
+    if ($VerboseMode) { Write-Info "CSS è¿½åŠ : $($file.FullName)" }
     Append-FileBlock -Builder $cssBuilder -RepoRootPath $solutionRoot -File $file
 }
 
@@ -392,7 +392,7 @@ $jsBuilder = New-Object System.Text.StringBuilder
 [void]$jsBuilder.AppendLine("")
 
 foreach ($file in $jsFiles) {
-    if ($VerboseMode) { Write-Info "JS ’Ç‰Á: $($file.FullName)" }
+    if ($VerboseMode) { Write-Info "JS è¿½åŠ : $($file.FullName)" }
     Append-FileBlock -Builder $jsBuilder -RepoRootPath $solutionRoot -File $file
 }
 
@@ -422,7 +422,7 @@ if (@($testFiles).Count -gt 0) {
     [void]$testsBuilder.AppendLine("")
 
     foreach ($file in $testFiles) {
-        if ($VerboseMode) { Write-Info "TEST ’Ç‰Á: $($file.FullName)" }
+        if ($VerboseMode) { Write-Info "TEST è¿½åŠ : $($file.FullName)" }
         Append-FileBlock -Builder $testsBuilder -RepoRootPath $solutionRoot -File $file
     }
 
@@ -467,7 +467,7 @@ if (@($docsFiles).Count -gt 0) {
     [void]$docsBuilder.AppendLine("")
 
     foreach ($file in $docsFiles) {
-        if ($VerboseMode) { Write-Info "DOC ’Ç‰Á: $($file.FullName)" }
+        if ($VerboseMode) { Write-Info "DOC è¿½åŠ : $($file.FullName)" }
         Append-FileBlock -Builder $docsBuilder -RepoRootPath $solutionRoot -File $file
     }
 
@@ -520,15 +520,15 @@ if ($gitInfo.IsGitRepo) {
 
 [void]$mapBuilder.AppendLine("## Bundle contents")
 [void]$mapBuilder.AppendLine("")
-[void]$mapBuilder.AppendLine("- 01_CSharp_Core.txt : Calculator / Selector / Rule / Enum / Model / Helper / Program ‚È‚Ç")
-[void]$mapBuilder.AppendLine("- 02_Razor_UI.txt : Main Page, PageModel, Shared Layout, ViewImports ‚È‚Ç")
-[void]$mapBuilder.AppendLine("- 03_Styles.txt : CSS ˆê®")
-[void]$mapBuilder.AppendLine("- 04_Scripts.txt : JS ˆê®")
+[void]$mapBuilder.AppendLine("- 01_CSharp_Core.txt : Calculator / Selector / Rule / Enum / Model / Helper / Program ãªã©")
+[void]$mapBuilder.AppendLine("- 02_Razor_UI.txt : Main Page, PageModel, Shared Layout, ViewImports ãªã©")
+[void]$mapBuilder.AppendLine("- 03_Styles.txt : CSS ä¸€å¼")
+[void]$mapBuilder.AppendLine("- 04_Scripts.txt : JS ä¸€å¼")
 if (@($testFiles).Count -gt 0) {
-    [void]$mapBuilder.AppendLine("- 05_Tests.txt : xUnit ‚È‚Ç‚ÌƒeƒXƒgƒR[ƒh")
+    [void]$mapBuilder.AppendLine("- 05_Tests.txt : xUnit ãªã©ã®ãƒ†ã‚¹ãƒˆã‚³ãƒ¼ãƒ‰")
 }
 if (@($docsFiles).Count -gt 0) {
-    [void]$mapBuilder.AppendLine("- 06_Docs.txt : README / CHANGELOG / docs ”z‰º‚Ì•¶‘")
+    [void]$mapBuilder.AppendLine("- 06_Docs.txt : README / CHANGELOG / docs é…ä¸‹ã®æ–‡æ›¸")
 }
 [void]$mapBuilder.AppendLine("")
 
@@ -541,13 +541,13 @@ if (@($docsFiles).Count -gt 0) {
 [void]$mapBuilder.AppendLine("## Suggested prompt template")
 [void]$mapBuilder.AppendLine("")
 [void]$mapBuilder.AppendLine("[Prompt Template]")
-[void]$mapBuilder.AppendLine("Œ»Û:")
-[void]$mapBuilder.AppendLine("ÄŒ»è‡:")
-[void]$mapBuilder.AppendLine("Šú‘Ò“®ì:")
-[void]$mapBuilder.AppendLine("ÀÛ‚Ì“®ì:")
-[void]$mapBuilder.AppendLine("Å‹ß•ÏX‚µ‚½‰ÓŠ:")
-[void]$mapBuilder.AppendLine("‚Ü‚¸Œ©‚Ä‚Ù‚µ‚¢ƒtƒ@ƒCƒ‹:")
-[void]$mapBuilder.AppendLine("•â‘«:")
+[void]$mapBuilder.AppendLine("ç¾è±¡:")
+[void]$mapBuilder.AppendLine("å†ç¾æ‰‹é †:")
+[void]$mapBuilder.AppendLine("æœŸå¾…å‹•ä½œ:")
+[void]$mapBuilder.AppendLine("å®Ÿéš›ã®å‹•ä½œ:")
+[void]$mapBuilder.AppendLine("æœ€è¿‘å¤‰æ›´ã—ãŸç®‡æ‰€:")
+[void]$mapBuilder.AppendLine("ã¾ãšè¦‹ã¦ã»ã—ã„ãƒ•ã‚¡ã‚¤ãƒ«:")
+[void]$mapBuilder.AppendLine("è£œè¶³:")
 [void]$mapBuilder.AppendLine("")
 
 [void]$mapBuilder.AppendLine("## File list summary")
@@ -601,9 +601,9 @@ if (@($docsFiles).Count -gt 0) {
 
 Save-TextFileUtf8NoBom -Path (Join-Path $outDir "00_Project_Map.md") -Content $mapBuilder.ToString()
 
-Write-Info "¶¬Š®—¹"
-Write-Info "o—Íæ: $outDir"
-Write-Info "ì¬ƒtƒ@ƒCƒ‹:"
+Write-Info "ç”Ÿæˆå®Œäº†"
+Write-Info "å‡ºåŠ›å…ˆ: $outDir"
+Write-Info "ä½œæˆãƒ•ã‚¡ã‚¤ãƒ«:"
 Write-Host "  - 00_Project_Map.md"
 Write-Host "  - 01_CSharp_Core.txt"
 Write-Host "  - 02_Razor_UI.txt"

@@ -368,3 +368,4 @@ appsettings.Production.json
 appsettings.Staging.json
 appsettings.*.Production.json
 _chatgpt_bundle/
+.claude/worktrees/
