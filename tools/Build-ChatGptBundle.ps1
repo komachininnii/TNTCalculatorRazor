@@ -1,32 +1,43 @@
+# =============================================================================
+# Build-ChatGptBundle.ps1
+# ChatGPT へ貼り付けるためのソースコードバンドルを生成するスクリプト。
+# リポジトリ内の C#、Razor、CSS、JS、テスト、ドキュメントを
+# カテゴリ別テキストファイルにまとめて出力する。
+# =============================================================================
+
 param(
-    [string]$RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path,
-    [string]$OutputDir = "_chatgpt_bundle",
-    [string]$AppProjectName = "TNTCalculatorRazor",
-    [string]$TestProjectName = "TNTCalculatorRazor.tests",
-    [string]$MainPage = "Pages\Index.cshtml",
-    [string]$MainPageModel = "Pages\Index.cshtml.cs",
-    [switch]$IncludeAllPages,
-    [switch]$VerboseMode
+    [string]$RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path,  # リポジトリのルートパス
+    [string]$OutputDir = "_chatgpt_bundle",                                  # 出力先ディレクトリ名
+    [string]$AppProjectName = "TNTCalculatorRazor",                          # アプリプロジェクト名
+    [string]$TestProjectName = "TNTCalculatorRazor.tests",                   # テストプロジェクト名
+    [string]$MainPage = "Pages\Index.cshtml",                                # メインページの Razor ファイル
+    [string]$MainPageModel = "Pages\Index.cshtml.cs",                        # メインページの PageModel ファイル
+    [switch]$IncludeAllPages,                                                # 全ページを含めるか
+    [switch]$VerboseMode                                                     # 詳細ログを出力するか
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
+# 情報メッセージをシアン色で出力するヘルパー
 function Write-Info {
     param([string]$Message)
     Write-Host "[INFO] $Message" -ForegroundColor Cyan
 }
 
+# 警告メッセージを黄色で出力するヘルパー
 function Write-WarnMsg {
     param([string]$Message)
     Write-Host "[WARN] $Message" -ForegroundColor Yellow
 }
 
+# パスを絶対パスに正規化する
 function Normalize-Path {
     param([string]$Path)
     return [System.IO.Path]::GetFullPath($Path)
 }
 
+# BasePath を基準にした TargetPath の相対パスを安全に取得する
 function Get-RelativePathSafe {
     param(
         [string]$BasePath,
@@ -44,6 +55,7 @@ function Get-RelativePathSafe {
     }
 }
 
+# ディレクトリが存在しなければ作成する
 function Ensure-Directory {
     param([string]$Path)
     if (-not (Test-Path -LiteralPath $Path)) {
@@ -51,6 +63,7 @@ function Ensure-Directory {
     }
 }
 
+# git コマンドが利用可能かどうかを判定する
 function Test-GitAvailable {
     try {
         $null = Get-Command git -ErrorAction Stop
@@ -61,6 +74,7 @@ function Test-GitAvailable {
     }
 }
 
+# リポジトリの Git 情報（ブランチ名、コミット、ステータス等）を取得する
 function Get-GitInfo {
     param([string]$Root)
 
@@ -79,6 +93,7 @@ function Get-GitInfo {
     try {
         Push-Location $Root
 
+        # git 出力の文字化けを防ぐため UTF-8 に統一
         try {
             $utf8 = New-Object System.Text.UTF8Encoding $false
             $OutputEncoding = $utf8
@@ -117,12 +132,14 @@ function Get-GitInfo {
     }
 }
 
+# 指定ディレクトリ配下から対象拡張子のファイルを再帰的に取得する（除外ディレクトリを考慮）
 function Get-AllFiles {
     param(
         [string]$Root,
         [string[]]$IncludeExtensions
     )
 
+    # バンドルに含めない中間生成物・依存パッケージ等のディレクトリ
     $excludedDirNames = @(
         "bin",
         "obj",
@@ -151,6 +168,7 @@ function Get-AllFiles {
         }
 }
 
+# 条件（Predicate）に合致するファイルをソート済みで返す
 function Get-MatchingFiles {
     param(
         [string]$Root,
@@ -165,6 +183,7 @@ function Get-MatchingFiles {
     )
 }
 
+# 1 ファイル分の区切りヘッダーと内容を StringBuilder に追記する
 function Append-FileBlock {
     param(
         [System.Text.StringBuilder]$Builder,
@@ -200,6 +219,7 @@ function Append-FileBlock {
     [void]$Builder.AppendLine("")
 }
 
+# BOM なし UTF-8 でテキストファイルを保存する
 function Save-TextFileUtf8NoBom {
     param(
         [string]$Path,
@@ -210,6 +230,9 @@ function Save-TextFileUtf8NoBom {
     [System.IO.File]::WriteAllText($Path, $Content, $utf8NoBom)
 }
 
+# =============================================
+# メイン処理: パスの検証と出力先の準備
+# =============================================
 $solutionRoot = Normalize-Path $RepoRoot
 if (-not (Test-Path -LiteralPath $solutionRoot)) {
     throw "RepoRoot が存在しません: $solutionRoot"
@@ -239,7 +262,7 @@ $testFiles = @()
 $docsFiles = @()
 
 # ------------------------------------
-# 1) C# Core
+# 1) C# Core — モデル・サービス・ヘルパー等のビジネスロジック
 # ------------------------------------
 $csharpFiles = Get-MatchingFiles -Root $appRoot -IncludeExtensions @(".cs") -Predicate {
     param($f)
@@ -276,10 +299,11 @@ foreach ($file in $csharpFiles) {
 Save-TextFileUtf8NoBom -Path (Join-Path $outDir "01_CSharp_Core.txt") -Content $csharpBuilder.ToString()
 
 # ------------------------------------
-# 2) Razor UI
+# 2) Razor UI — メインページ・共有レイアウト・ViewImports 等
 # ------------------------------------
 $razorFiles = @()
 
+# メインページとその PageModel を最優先で追加
 $mainPagePath = Join-Path $appRoot $MainPage
 $mainPageModelPath = Join-Path $appRoot $MainPageModel
 
@@ -297,6 +321,7 @@ else {
     Write-WarnMsg "MainPageModel が見つかりません: $mainPageModelPath"
 }
 
+# 共有レイアウト・ViewImports・ViewStart を収集
 $commonRazorFiles = Get-MatchingFiles -Root $appRoot -IncludeExtensions @(".cshtml", ".cs") -Predicate {
     param($f)
     $rel = Get-RelativePathSafe -BasePath $appRoot -TargetPath $f.FullName
@@ -309,6 +334,7 @@ $commonRazorFiles = Get-MatchingFiles -Root $appRoot -IncludeExtensions @(".csht
 }
 $razorFiles += $commonRazorFiles
 
+# -IncludeAllPages 指定時は Pages 配下の全 Razor ファイルを追加
 if ($IncludeAllPages) {
     $allPageFiles = Get-MatchingFiles -Root $appRoot -IncludeExtensions @(".cshtml", ".cs") -Predicate {
         param($f)
@@ -325,6 +351,7 @@ if ($IncludeAllPages) {
     $razorFiles += $allPageFiles
 }
 
+# 重複を排除してソート
 $razorFiles = @($razorFiles | Sort-Object FullName -Unique)
 
 $razorBuilder = New-Object System.Text.StringBuilder
@@ -345,7 +372,7 @@ foreach ($file in $razorFiles) {
 Save-TextFileUtf8NoBom -Path (Join-Path $outDir "02_Razor_UI.txt") -Content $razorBuilder.ToString()
 
 # ------------------------------------
-# 3) CSS
+# 3) CSS — カスタムスタイルシート（lib 配下のサードパーティは除外）
 # ------------------------------------
 $cssFiles = Get-MatchingFiles -Root $appRoot -IncludeExtensions @(".css") -Predicate {
     param($f)
@@ -372,7 +399,7 @@ foreach ($file in $cssFiles) {
 Save-TextFileUtf8NoBom -Path (Join-Path $outDir "03_Styles.txt") -Content $cssBuilder.ToString()
 
 # ------------------------------------
-# 4) JS
+# 4) JS — カスタムスクリプト（lib 配下のサードパーティは除外）
 # ------------------------------------
 $jsFiles = Get-MatchingFiles -Root $appRoot -IncludeExtensions @(".js") -Predicate {
     param($f)
@@ -399,7 +426,7 @@ foreach ($file in $jsFiles) {
 Save-TextFileUtf8NoBom -Path (Join-Path $outDir "04_Scripts.txt") -Content $jsBuilder.ToString()
 
 # ------------------------------------
-# 5) Tests
+# 5) Tests — テストプロジェクト内の C# ファイル
 # ------------------------------------
 if (Test-Path -LiteralPath $testsRoot) {
     $testFiles = Get-MatchingFiles -Root $testsRoot -IncludeExtensions @(".cs") -Predicate {
@@ -430,10 +457,11 @@ if (@($testFiles).Count -gt 0) {
 }
 
 # ------------------------------------
-# 6) Docs
+# 6) Docs — README・CHANGELOG および docs 配下のマークダウン
 # ------------------------------------
 $docsRoot = Join-Path $solutionRoot "docs"
 
+# リポジトリ直下の主要ドキュメント
 $rootDocCandidates = @(
     (Join-Path $solutionRoot "README.md"),
     (Join-Path $solutionRoot "CHANGELOG.md")
@@ -475,7 +503,7 @@ if (@($docsFiles).Count -gt 0) {
 }
 
 # ------------------------------------
-# 7) Project Map
+# 7) Project Map — バンドル全体の目次・Git 情報・ファイル一覧を生成
 # ------------------------------------
 $mapBuilder = New-Object System.Text.StringBuilder
 [void]$mapBuilder.AppendLine("# 00_Project_Map")
@@ -601,6 +629,7 @@ if (@($docsFiles).Count -gt 0) {
 
 Save-TextFileUtf8NoBom -Path (Join-Path $outDir "00_Project_Map.md") -Content $mapBuilder.ToString()
 
+# 完了メッセージと生成されたファイル一覧を表示
 Write-Info "生成完了"
 Write-Info "出力先: $outDir"
 Write-Info "作成ファイル:"
