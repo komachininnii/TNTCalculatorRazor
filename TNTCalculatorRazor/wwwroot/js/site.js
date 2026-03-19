@@ -160,6 +160,8 @@ function tntLimitNumber(el) {
     // Enter直後のblur二重送信を防ぐ
     var tntSkipNextBlurSubmit = false;
 
+    // イベント発火元から対象フォームを解決する。
+    // 明示指定がなければ data-tnt-form → 先頭form の順で取得する。
     function getForm(target) {
         return (target && target.form) || document.querySelector("form[data-tnt-form]") || document.querySelector("form");
     }
@@ -177,6 +179,7 @@ function tntLimitNumber(el) {
         return typeof window.fetch === "function" && typeof window.FormData !== "undefined";
     }
 
+    // Recalcハンドラー付きURLを生成する（action未指定時は現在URLを使用）
     function buildRecalcUrl(form) {
         var action = (form && form.getAttribute) ? form.getAttribute("action") : "";
         if (!action) action = window.location.href;
@@ -253,6 +256,7 @@ function tntLimitNumber(el) {
         }
     };
 
+    // サーバーから返したJSON文字列をscript要素から読み取る。
     function readJsonScript(dataEl) {
         if (!dataEl) return "";
         return dataEl.textContent || dataEl.innerText || dataEl.text || dataEl.innerHTML || "";
@@ -542,6 +546,7 @@ function tntLimitNumber(el) {
     function trim(v) { return v ? v.replace(/^\s+|\s+$/g, "") : ""; }
 
 
+    // 「必要エネルギーを再設定」リンクの処理
     document.addEventListener("click", function (e) {
         e = e || window.event;
         var t = e.target || e.srcElement;
@@ -807,7 +812,7 @@ function tntLimitNumber(el) {
         if (window.tntSetResultDetailsOpenByLayout) {
             window.tntSetResultDetailsOpenByLayout();
         }
-        // 5) 結果パネルからエラー情報を左カラムへ反映する
+        // 5) 結果パネルからエネルギー情報・フォーム状態を左カラムへ反映する
         if (window.tntApplyFormStateFromPanel) {
             var panel = document.getElementById("resultPanel");
             if (panel) {
