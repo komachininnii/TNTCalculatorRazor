@@ -1,16 +1,16 @@
 # Copilot Instructions
 
-## General
+## 一般
 
-- If First-chance exceptions appear in Visual Studio but do not affect the application, ignore them; they are Visual Studio IDE behavior.
+- Visual Studio でファーストチャンス例外が表示されてもアプリの動作に影響しない場合は無視してよい。Visual Studio IDE 固有の挙動である。
 
 ---
 
-## Coding Style
+## コーディングスタイル
 
-### Enum-based static method pattern
+### Enum ベースの static メソッドパターン
 
-Factor tables and lookup logic use `static` classes with a single `Get(EnumType)` method and a `switch` expression. Every unhandled enum value must throw `ArgumentOutOfRangeException`.
+係数テーブルおよびルックアップロジックは、`static` クラスに `switch` 式を持つ単一のメソッドとして実装する。未定義の enum 値には必ず `ArgumentOutOfRangeException` をスローする。
 
 ```csharp
 public static class SomeFactorTable
@@ -24,19 +24,31 @@ public static class SomeFactorTable
 }
 ```
 
-### Default factor values
+### テーブルのメソッド名と未定義値の扱い
+
+係数の種類によってメソッド名と未定義値の扱いが異なる。
+
+| 種別 | メソッド名 | 未定義値の扱い |
+|---|---|---|
+| 積算係数（multiplier） | `Get(EnumType)` | `ArgumentOutOfRangeException` をスロー |
+| 加算係数（additive） | `GetAddition(EnumType)` | `0.0` を返す（安全側フォールバック） |
+
+加算係数テーブルで未定義値が `0.0` になるのは意図した設計であり、
+「加算しない＝影響なし」が安全側のため例外ではなく `0.0` で返す。
+
+### 係数のデフォルト値
 
 - **積算係数（multiplier factor）** のデフォルト値は `1.0`
 - **加算係数（additive factor）** のデフォルト値は `0`
 
 ---
 
-## IE11 Compatibility
+## IE11 互換性
 
 IE11 サポートが必須。CSS 新機能（CSS Grid の一部、`gap` 等）は `@supports` ガードで包み、IE 側フォールバックを先に記述する。
 
 ```css
-/* IE fallback — flex で横並び、狭い画面は flex-direction: column で縦積み */
+/* IE フォールバック — flex で横並び、狭い画面は flex-direction: column で縦積み */
 .layout {
     display: flex;
     align-items: flex-start;
@@ -58,7 +70,7 @@ IE11 サポートが必須。CSS 新機能（CSS Grid の一部、`gap` 等）�
 
 ---
 
-## Testing
+## テスト
 
 - 計算ロジックの正しさは **Domain ユニットテスト** で担保する。
 - UI / Index の統合テストは余力枠（`IndexIntegrationTests`）。
@@ -67,7 +79,7 @@ IE11 サポートが必須。CSS 新機能（CSS Grid の一部、`gap` 等）�
 
 ---
 
-## Documentation
+## ドキュメント管理
 
 変更・判断を記録するドキュメント：
 
@@ -81,7 +93,7 @@ UI の設計判断（CSS 調整・表示方針の変更など）は `docs/ui-dec
 
 ---
 
-## Logging
+## ロギング
 
 Azure App Service Linux F1 プランで運用。Application Insights は使用しない。
 
