@@ -100,6 +100,7 @@ Azure App Service Linux F1 プランで運用。Application Insights は使用�
 - **最小構成**：`Program.cs` の startup try/catch と `AppDomain` / `TaskScheduler` ハンドラを維持する。
 - 本番では `AddDebug()` を使わず、Console エラーを `docker.log` に出力する。
   - 確認: `grep /home/LogFiles/*docker.log`
-- ログレベルは **Error 以上のみ** を永続化する（`LogLevel.Error`）。
+- ログレベルは **Information 以上** を出力する（`LogLevel.Information`）。
+  Error / Critical は Console 経由で `docker.log` に永続化される。
 - Windows / IIS 環境では `builder.Logging.AddEventLog()` を使用する。
 - ログ保持期間は 7 日間。
