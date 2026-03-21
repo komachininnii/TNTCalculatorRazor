@@ -36,14 +36,19 @@ public static class SomeFactorTable
 IE11 サポートが必須。CSS 新機能（CSS Grid の一部、`gap` 等）は `@supports` ガードで包み、IE 側フォールバックを先に記述する。
 
 ```css
-/* IE fallback (no @supports) */
-.layout { display: block; }
-
+/* IE fallback — flex で横並び、狭い画面は flex-direction: column で縦積み */
+.layout {
+    display: flex;
+    align-items: flex-start;
+}
+@media (max-width: 980px) {
+    .layout { flex-direction: column; }
+}
 @supports (display: grid) {
     .layout {
         display: grid;
-        grid-template-columns: 1.05fr 0.95fr;
-        gap: 16px;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 12px;
     }
 }
 ```
