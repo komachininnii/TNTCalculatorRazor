@@ -20,6 +20,7 @@
 
 ### 3. 必要蛋白量
 - 蛋白計算: `ProteinCalculatorTests`
+- 蛋白補正係数テーブル: `FactorAndStressTablesTests`（`ProteinCorrectionFactorTable` ケース）
 - 蛋白計算に使う体重の選択: `ProteinWeightSelectorTests`
 - 疾患・条件による蛋白ルール: `ProteinRuleTests`
 
