@@ -465,6 +465,7 @@ $docsRoot = Join-Path $solutionRoot "docs"
 $rootDocCandidates = @(
     (Join-Path $solutionRoot "README.md"),
     (Join-Path $solutionRoot "CHANGELOG.md")
+    (Join-Path $solutionRoot ".github\copilot-instructions.md")  # GitHub Copilot / AI向けコーディング指示書
 )
 
 $rootDocFiles = foreach ($path in $rootDocCandidates | Select-Object -Unique) {
@@ -556,7 +557,7 @@ if (@($testFiles).Count -gt 0) {
     [void]$mapBuilder.AppendLine("- 05_Tests.txt : xUnit などのテストコード")
 }
 if (@($docsFiles).Count -gt 0) {
-    [void]$mapBuilder.AppendLine("- 06_Docs.txt : README / CHANGELOG / docs 配下の文書")
+    [void]$mapBuilder.AppendLine("- 06_Docs.txt : README / CHANGELOG / .github/copilot-instructions.md / docs 配下の文書")
 }
 [void]$mapBuilder.AppendLine("")
 
