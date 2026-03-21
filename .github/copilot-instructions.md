@@ -32,6 +32,7 @@ public static class SomeFactorTable
 |---|---|---|
 | 積算係数（multiplier） | `Get(EnumType)` | `ArgumentOutOfRangeException` をスロー |
 | 加算係数（additive） | `GetAddition(EnumType)` | `0.0` を返す（安全側フォールバック） |
+| デフォルト選択（selector） | `GetDefault(EnumType)` | 安全な enum 値を返す（`CorrectedBmrBased` 等） |
 
 加算係数テーブルで未定義値が `0.0` になるのは意図した設計であり、
 「加算しない＝影響なし」が安全側のため例外ではなく `0.0` で返す。
@@ -39,7 +40,7 @@ public static class SomeFactorTable
 ### 係数のデフォルト値
 
 - **積算係数（multiplier factor）** のデフォルト値は `1.0`
-- **加算係数（additive factor）** のデフォルト値は `0`
+- **加算係数（additive factor）** のデフォルト値は `0.0`
 
 ---
 
