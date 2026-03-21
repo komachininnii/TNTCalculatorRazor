@@ -10,7 +10,10 @@
 
 ### Enum ベースの static メソッドパターン
 
-係数テーブルおよびルックアップロジックは、`static` クラスに `switch` 式を持つ単一のメソッドとして実装する。未定義の enum 値には必ず `ArgumentOutOfRangeException` をスローする。
+係数テーブルおよびルックアップロジックは、`static` クラスの単一メソッドとして実装する。  
+ロジックは原則 `switch` 式だが、複数条件（年齢＋疾患等）が必要な場合は `if` との組み合わせも許容する。  
+積算係数（`Get`）では未定義の enum 値に `ArgumentOutOfRangeException` をスローする。  
+加算係数（`GetAddition`）・デフォルト選択（`GetDefault`）の扱いは下表を参照。
 
 ```csharp
 public static class SomeFactorTable
@@ -32,7 +35,7 @@ public static class SomeFactorTable
 |---|---|---|
 | 積算係数（multiplier） | `Get(EnumType)` | `ArgumentOutOfRangeException` をスロー |
 | 加算係数（additive） | `GetAddition(EnumType)` | `0.0` を返す（安全側フォールバック） |
-| デフォルト選択（selector） | `GetDefault(EnumType)` | 安全な enum 値を返す（`CorrectedBmrBased` 等） |
+| デフォルト選択（selector） | `GetDefault(...)` | 安全な enum 値を返す（引数は文脈に応じて複数可）
 
 加算係数テーブルで未定義値が `0.0` になるのは意図した設計であり、
 「加算しない＝影響なし」が安全側のため例外ではなく `0.0` で返す。
