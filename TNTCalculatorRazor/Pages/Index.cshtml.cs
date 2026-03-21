@@ -619,13 +619,7 @@ public class IndexModel : PageModel
         EnergyFinal = RoundingRules.RoundKcalToInt(selected);
 
         // 蛋白補正係数
-        double proteinCorrect =
-            SelectedProteinCorrection switch
-            {
-                ProteinCorrectionType.CKD3bTo5 => 0.7,
-                ProteinCorrectionType.LiverCirrhosisPoor => 0.5,
-                _ => 1.0
-            };
+        double proteinCorrect = ProteinCorrectionFactorTable.Get(SelectedProteinCorrection);
 
         // 蛋白
         double weightForProtein =

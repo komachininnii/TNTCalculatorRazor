@@ -86,4 +86,22 @@ public sealed class FactorAndStressTablesTests
 
         Assert.Equal(0.0, actual, 6);
     }
+
+    [Theory]
+    [InlineData(ProteinCorrectionType.None,               1.0)]
+    [InlineData(ProteinCorrectionType.CKD3bTo5,           0.7)]
+    [InlineData(ProteinCorrectionType.LiverCirrhosisPoor, 0.5)]
+    public void ProteinCorrectionFactorTable_Get_正常な列挙値は期待値を返す(
+        ProteinCorrectionType type, double expected)
+    {
+        var actual = ProteinCorrectionFactorTable.Get(type);
+        Assert.Equal(expected, actual, 6);
+    }
+
+    [Fact]
+    public void ProteinCorrectionFactorTable_Get_未定義値は例外をスローする()
+    {
+        var unknown = (ProteinCorrectionType)(-1);
+        Assert.Throws<ArgumentOutOfRangeException>(() => ProteinCorrectionFactorTable.Get(unknown));
+    }
 }
