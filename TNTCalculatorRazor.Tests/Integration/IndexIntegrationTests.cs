@@ -123,6 +123,25 @@ public class IndexIntegrationTests
         Assert.Equal(expectedEnergy, stressed.EnergyFinal);
     }
 
+    [Fact]
+    public void 不正なProteinCorrection値でも_RecalcAllは完走し_Noneへ正規化される()
+    {
+        var page = CreatePage();
+        page.Age = 45;
+        page.Height = 170.0;
+        page.Weight = 70.0;
+        page.Gender = GenderType.Male;
+        page.SelectedDisease = DiseaseType.None;
+        page.SelectedEnergyOrder = EnergyOrderType.CorrectedBmrBased;
+        page.SelectedProteinCorrection = (ProteinCorrectionType)999;
+
+        var ex = Record.Exception(() => InvokePrivate(page, "RecalcAll"));
+
+        Assert.Null(ex);
+        Assert.Equal(ProteinCorrectionType.None, page.SelectedProteinCorrection);
+        Assert.NotNull(page.ProteinFinal);
+    }
+
     private static IndexModel CreatePage()
     {
         var options = Options.Create(new InternalManualOptions { Enabled = false, Url = "" });
