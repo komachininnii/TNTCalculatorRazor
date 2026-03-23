@@ -291,6 +291,7 @@ public class IndexModel : PageModel
 
     private void RecalcAll()
     {
+        //  [BindProperty] の enum を定義済み値へ正規化（不正 POST 対策）
         NormalizeBoundEnums();
 
         var act = Act;
@@ -416,6 +417,9 @@ public class IndexModel : PageModel
         RecalcEnteral();
     }
 
+    // ==============================
+    // 入力正規化
+    // ==============================
     private void NormalizeBoundEnums()
     {
         if (!Enum.IsDefined(typeof(ProteinCorrectionType), SelectedProteinCorrection))
