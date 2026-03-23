@@ -291,6 +291,8 @@ public class IndexModel : PageModel
 
     private void RecalcAll()
     {
+        NormalizeBoundEnums();
+
         var act = Act;
 
         // 0) ユーザー編集フラグ（保持型）
@@ -412,6 +414,64 @@ public class IndexModel : PageModel
 
         // 6) 経腸栄養（kcal↔mL 同期、成分、割付候補）
         RecalcEnteral();
+    }
+
+    private void NormalizeBoundEnums()
+    {
+        if (!Enum.IsDefined(typeof(ProteinCorrectionType), SelectedProteinCorrection))
+        {
+            SelectedProteinCorrection = ProteinCorrectionType.None;
+            ClearModelState(nameof(SelectedProteinCorrection));
+        }
+
+        if (!Enum.IsDefined(typeof(DiseaseType), SelectedDisease))
+        {
+            SelectedDisease = DiseaseType.None;
+            ClearModelState(nameof(SelectedDisease));
+        }
+
+        if (!Enum.IsDefined(typeof(ActivityFactorType), ActivityFactor))
+        {
+            ActivityFactor = ActivityFactorType.BedriddenComa;
+            ClearModelState(nameof(ActivityFactor));
+        }
+
+        if (!Enum.IsDefined(typeof(StressFactorType), StressFactor))
+        {
+            StressFactor = StressFactorType.Normal;
+            ClearModelState(nameof(StressFactor));
+        }
+
+        if (!Enum.IsDefined(typeof(BodyTemperatureLevel), SelectedBodyTemperature))
+        {
+            SelectedBodyTemperature = BodyTemperatureLevel.Normal;
+            ClearModelState(nameof(SelectedBodyTemperature));
+        }
+
+        if (!Enum.IsDefined(typeof(PressureUlcerLevel), SelectedPressureUlcer))
+        {
+            SelectedPressureUlcer = PressureUlcerLevel.None;
+            ClearModelState(nameof(SelectedPressureUlcer));
+        }
+
+        if (!Enum.IsDefined(typeof(EnergyOrderType), SelectedEnergyOrder))
+        {
+            SelectedEnergyOrder = EnergyOrderType.CorrectedBmrBased;
+            ClearModelState(nameof(SelectedEnergyOrder));
+        }
+
+        if (SelectedEnteralFormula.HasValue
+            && !Enum.IsDefined(typeof(EnteralFormulaType), SelectedEnteralFormula.Value))
+        {
+            SelectedEnteralFormula = null;
+            ClearModelState(nameof(SelectedEnteralFormula));
+        }
+
+        if (!Enum.IsDefined(typeof(GenderType), Gender))
+        {
+            Gender = GenderType.Male;
+            ClearModelState(nameof(Gender));
+        }
     }
 
 
