@@ -142,6 +142,25 @@ public class IndexIntegrationTests
         Assert.NotNull(page.ProteinFinal);
     }
 
+    [Fact]
+    public void 不正なGender値でも_RecalcAllは完走し_Maleへ正規化される()
+    {
+        var page = CreatePage();
+        page.Age = 45;
+        page.Height = 170.0;
+        page.Weight = 70.0;
+        page.Gender = (GenderType)999;
+        page.SelectedDisease = DiseaseType.None;
+        page.SelectedEnergyOrder = EnergyOrderType.CorrectedBmrBased;
+        page.SelectedProteinCorrection = ProteinCorrectionType.None;
+
+        var ex = Record.Exception(() => InvokePrivate(page, "RecalcAll"));
+
+        Assert.Null(ex);
+        Assert.Equal(GenderType.Male, page.Gender);
+        Assert.NotNull(page.ProteinFinal);
+    }
+
     private static IndexModel CreatePage()
     {
         var options = Options.Create(new InternalManualOptions { Enabled = false, Url = "" });
