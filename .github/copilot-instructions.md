@@ -48,6 +48,12 @@ public static class SomeFactorTable
 
 ---
 
+## 入力境界の防御方針
+- `[BindProperty]` で受け取る enum 値は `RecalcAll()` 冒頭の`NormalizeBoundEnums()` で正規化する。
+- Domain 層の `throw` は維持する。
+
+---
+
 ## IE11 互換性
 
 IE11 サポートが必須。CSS 新機能（CSS Grid の一部、`gap` 等）は `@supports` ガードで包み、IE 側フォールバックを先に記述する。  
