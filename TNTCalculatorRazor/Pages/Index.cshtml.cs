@@ -293,6 +293,7 @@ public class IndexModel : PageModel
     {
         //  [BindProperty] の enum を定義済み値へ正規化（不正 POST 対策）
         NormalizeBoundEnums();
+        NormalizePregnancyState();
 
         var act = Act;
 
@@ -478,6 +479,18 @@ public class IndexModel : PageModel
         }
     }
 
+    private void NormalizePregnancyState()
+    {
+        if (Gender != GenderType.Female || !Age.HasValue || Age.Value < 18 || Age.Value > 55)
+        {
+            if (IsPregnant)
+            {
+                IsPregnant = false;
+                ClearModelState(nameof(IsPregnant));
+            }
+        }
+    }
+
 
     // ==============================
     // 5) 同期処理をメソッド化（追加）
@@ -575,10 +588,6 @@ public class IndexModel : PageModel
        
         if (!CanCalcBase(addErrors))
             return;
-
-        if (Gender != GenderType.Female || !Age.HasValue || Age.Value < 18 || Age.Value > 55)
-            IsPregnant = false;
-
 
         // BMR / 体格 / BSA
         // 実測体重BMR
