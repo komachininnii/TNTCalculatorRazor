@@ -20,6 +20,16 @@
 - IE系では `details` の開閉表示同期に注意（`open` 属性だけに依存しない）。
 - モバイルでは「主結果は常時把握、参考値は必要時展開」を維持する。
 
+### 1-4. 不正 POST に対する enum 正規化方針
+
+`[BindProperty]` で受け取った enum 値は、整数として任意の値を POST できるため、  
+ドメイン層に到達する前に `RecalcAll()` 冒頭の `NormalizeBoundEnums()` で一括正規化する。
+
+- 正規化は **silently fallback**（ModelState エラーにしない）  
+  → 臨床ツールとして計算結果を返すことを優先
+- `ClearModelState(nameof(...))` を必ず呼ぶことで、Razor の ModelState 優先問題を回避
+- ドメイン層の `throw` は「正しい入力に対して計算精度を保証する」責務であり変更しない
+
 ---
 
 ## 2. Key shifts / 重要な転換点
