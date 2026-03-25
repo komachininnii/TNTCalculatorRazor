@@ -161,6 +161,74 @@ public class IndexIntegrationTests
         Assert.NotNull(page.ProteinFinal);
     }
 
+    [Fact]
+    public void 男性で妊娠フラグがtrueでも_RecalcAllでfalseに正規化される()
+    {
+        var page = CreatePage();
+        page.Age = 30;
+        page.Height = 170.0;
+        page.Weight = 70.0;
+        page.Gender = GenderType.Male;
+        page.IsPregnant = true;
+        page.SelectedEnergyOrder = EnergyOrderType.CorrectedBmrBased;
+
+        var ex = Record.Exception(() => InvokePrivate(page, "RecalcAll"));
+
+        Assert.Null(ex);
+        Assert.False(page.IsPregnant);
+    }
+
+    [Fact]
+    public void 女性でも年齢が17歳なら妊娠フラグは_RecalcAllでfalseに正規化される()
+    {
+        var page = CreatePage();
+        page.Age = 17;
+        page.Height = 160.0;
+        page.Weight = 50.0;
+        page.Gender = GenderType.Female;
+        page.IsPregnant = true;
+        page.SelectedEnergyOrder = EnergyOrderType.CorrectedBmrBased;
+
+        var ex = Record.Exception(() => InvokePrivate(page, "RecalcAll"));
+
+        Assert.Null(ex);
+        Assert.False(page.IsPregnant);
+    }
+
+    [Fact]
+    public void 女性30歳で妊娠フラグtrueは_RecalcAll後も保持される()
+    {
+        var page = CreatePage();
+        page.Age = 30;
+        page.Height = 160.0;
+        page.Weight = 50.0;
+        page.Gender = GenderType.Female;
+        page.IsPregnant = true;
+        page.SelectedEnergyOrder = EnergyOrderType.CorrectedBmrBased;
+
+        var ex = Record.Exception(() => InvokePrivate(page, "RecalcAll"));
+
+        Assert.Null(ex);
+        Assert.True(page.IsPregnant);
+    }
+
+    [Fact]
+    public void 年齢未入力で妊娠フラグtrueでも_RecalcAllでfalseに正規化される()
+    {
+        var page = CreatePage();
+        page.Age = null;
+        page.Height = 160.0;
+        page.Weight = 50.0;
+        page.Gender = GenderType.Female;
+        page.IsPregnant = true;
+        page.SelectedEnergyOrder = EnergyOrderType.CorrectedBmrBased;
+
+        var ex = Record.Exception(() => InvokePrivate(page, "RecalcAll"));
+
+        Assert.Null(ex);
+        Assert.False(page.IsPregnant);
+    }
+
     private static IndexModel CreatePage()
     {
         var options = Options.Create(new InternalManualOptions { Enabled = false, Url = "" });

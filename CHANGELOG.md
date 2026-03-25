@@ -3,6 +3,7 @@
 ## Ver 3.1.1-dev
 【バグ修正】
 - enum BindProperty の入力正規化を RecalcAll 冒頭に追加し、不正な POST 値（例: ProteinCorrectionType=999）でも計算を継続して既定値へフォールバックするよう修正
+- Gender / Age / IsPregnant の整合チェックを RecalcAll 冒頭の入力正規化フェーズへ集約し、不整合な妊娠フラグは ModelState も含めて false に正規化するよう修正
 - 結果欄のレイアウト切替時、参考・補足欄や折りたたみ状態が正しく再同期されない問題を修正
 - モダンブラウザで 721〜980px の画面幅が2列レイアウトのまま残っていたバグを修正（@supports 内に1列化ブレークポイントが欠落していた）
 - 1列化時の summary の margin-top / gap を 0 に統一
