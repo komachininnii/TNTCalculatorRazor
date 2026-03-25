@@ -49,8 +49,18 @@ public static class SomeFactorTable
 ---
 
 ## 入力境界の防御方針
-- `[BindProperty]` で受け取る enum 値は `RecalcAll()` 冒頭の`NormalizeBoundEnums()` で正規化する。
+
+- `[BindProperty]` で受け取る enum 値は `RecalcAll()` 冒頭の `NormalizeBoundEnums()` で正規化する。
+- `Gender` / `Age` / `IsPregnant` のような相互依存する状態も、`RecalcAll()` 冒頭の入力正規化フェーズに集約する。
+- 妊娠フラグは `NormalizePregnancyState()` で整合を取る。
+  - `Gender != GenderType.Female`
+  - `Age` 未入力
+  - `Age < 18`
+  - `Age > 55`
+  のいずれかなら `IsPregnant = false` に補正する。
+- 値を書き換えた場合は `ClearModelState(nameof(...))` を呼ぶ。
 - Domain 層の `throw` は維持する。
+- 未定義値や不整合入力の吸収責務は PageModel 側に置き、Domain / Table / Calculator 層へ fallback を持ち込まない。
 
 ---
 

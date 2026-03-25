@@ -30,6 +30,25 @@
 - `ClearModelState(nameof(...))` を必ず呼ぶことで、Razor の ModelState 優先問題を回避
 - ドメイン層の `throw` は「正しい入力に対して計算精度を保証する」責務であり変更しない
 
+### 1-5. 妊娠フラグの入力正規化方針
+
+`IsPregnant` は単独の真偽値として扱わず、`Gender` / `Age` と整合していることを前提にする。  
+通常 UI では妊娠チェックは「女性かつ 18〜55歳」のときのみ表示されるため、  
+サーバー側でもこの条件に合わせて `RecalcAll()` 冒頭で入力正規化する。
+
+- `Gender != GenderType.Female`
+- `Age` 未入力
+- `Age < 18`
+- `Age > 55`
+
+のいずれかに当てはまる場合は、`NormalizePregnancyState()` で `IsPregnant = false` に補正する。
+
+補正時は `ClearModelState(nameof(IsPregnant))` も行い、  
+Razor の `ModelState` 優先による表示不整合を防ぐ。
+
+この補正は計算途中の個別処理ではなく、  
+**入力境界で先に整合を取ってから計算へ渡す** ためのものである。
+
 ---
 
 ## 2. Key shifts / 重要な転換点
