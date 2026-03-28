@@ -143,6 +143,5 @@ Packages = [200, 267];
 
 反映先：
 
-- 製剤テーブル（成分 + 規格）：`Domain/Tables/EnteralFormulaTable.cs`
-- 製剤Enum：`Domain/Enums/EnteralFormulaType.cs`
-- テスト（運用対象セット）：`TestData/EnteralFormulaTestCases.cs`
+- 製剤Enum（UI表示・選択肢）：`Domain/Enums/EnteralFormulaType.cs`
+- 製剤テーブル（成分 + 規格の実データ）：`Domain/Tables/EnteralFormulaTable.cs`
