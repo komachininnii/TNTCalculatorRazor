@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Reflection;
 using TNTCalculatorRazor.Domain.Calculators;
 using TNTCalculatorRazor.Domain.Enums;
 using TNTCalculatorRazor.Domain.Results;
@@ -170,6 +169,7 @@ public class IndexModel : PageModel
         = Array.Empty<EnteralPackagePlan>();
 
     public List<SelectListItem> PackageVolumeOptions { get; private set; } = new();
+    public List<SelectListItem> EnteralFormulaOptions { get; private set; } = new();
 
     public static string FormatPlan( EnteralPackagePlan plan )
     {
@@ -211,6 +211,15 @@ public class IndexModel : PageModel
     {
         foreach (var key in keys)
             ModelState.Remove(key);
+    }
+
+    private void BuildEnteralFormulaOptions()
+    {
+        EnteralFormulaOptions = Enum.GetValues<EnteralFormulaType>()
+            .Select(type => new SelectListItem(
+                EnteralFormulaTable.GetDisplayName(type),
+                ((int)type).ToString()))
+            .ToList();
     }
 
 
@@ -278,6 +287,11 @@ public class IndexModel : PageModel
     // ==============================
     // POST
     // ==============================
+    public void OnGet()
+    {
+        BuildEnteralFormulaOptions();
+    }
+
     public void OnPost()
     {
         RecalcAll();
@@ -291,6 +305,8 @@ public class IndexModel : PageModel
 
     private void RecalcAll()
     {
+        BuildEnteralFormulaOptions();
+
         //  [BindProperty] の enum を定義済み値へ正規化（不正 POST 対策）
         NormalizeBoundEnums();
         NormalizePregnancyState();

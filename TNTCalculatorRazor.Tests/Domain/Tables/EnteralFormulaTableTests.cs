@@ -98,12 +98,22 @@ public sealed class EnteralFormulaTableTests
     {
         var packages = new[] { 300, 400 };
         var info = new EnteralFormulaInfo(
+            "テスト製剤",
             new EnteralFormulaComposition(1, 1, 1, 1, 1, 1, 1),
             packages);
 
         packages[0] = 999;
 
         Assert.Equal(new[] { 300, 400 }, info.Packages);
+    }
+
+    [Theory]
+    [MemberData(nameof(AllFormulaTypes))]
+    public void 全製剤で_DisplayNameが空でない( EnteralFormulaType type )
+    {
+        var info = EnteralFormulaTable.Get(type);
+
+        Assert.False(string.IsNullOrWhiteSpace(info.DisplayName));
     }
 
     [Fact]

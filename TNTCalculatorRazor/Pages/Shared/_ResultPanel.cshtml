@@ -413,7 +413,7 @@
                         <div class="label">経腸栄養剤</div>
                         <div class="control">
                             <select asp-for="SelectedEnteralFormula"
-                                    asp-items="Html.GetEnumSelectList<EnteralFormulaType>()"
+                                    asp-items="Model.EnteralFormulaOptions"
                                     data-change-action="formula">
                                 <option value="">-- 選択してください -- [ mL/袋 (kcal/袋) ] </option>
                             </select>
