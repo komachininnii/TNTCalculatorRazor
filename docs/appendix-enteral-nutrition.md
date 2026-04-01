@@ -80,7 +80,12 @@
 
 ### データ構造
 
-各製剤は、**組成（Composition）** と **規格候補（Packages）** をまとめた製剤テーブルで管理している。
+各製剤は、`EnteralFormulaTable` 上で **表示文言（DisplayName）**、
+**組成（Composition）**、**規格候補（Packages）** をまとめて管理している。
+
+- `DisplayName`：UI に表示する製剤名・規格・補足文言
+- `Composition`：内部計算用の per kcal 係数
+- `Packages`：mL 単位のパッケージサイズ一覧
 
 組成は、内部では「1 kcal あたり（per kcal）」の係数で保持する。
 
@@ -89,22 +94,27 @@
 - `FatPerKcal`：g / kcal  
 - …（以下同様）
 
-ただし、実コードでは添付文書やメーカー公開情報の「○○ kcal あたり」の値をそのまま入力できるように、
-`PerPack(packKcal, volumeMl, ...)` ヘルパーで **per kcal に正規化**してテーブル化している。
+ただし、実コードでは添付文書やメーカー公開情報の「○○ kcal あたり」の値をそのまま入力しやすいように、
+`PerPack(packKcal, volumeMl, ...)` ヘルパーで **per kcal に正規化**して登録する。
 
-一方、規格候補（Packages）は、**mL単位のパッケージサイズ一覧**を整数値で保持する。
+規格候補（Packages）は、**mL単位のパッケージサイズ一覧**を整数値で保持する。
 
 記述例：
 ```csharp
+// DisplayName: UI表示文言
 // PerPack(packKcal, Volume(mL), 蛋白質(g), 脂質(g), 糖質(g), 食塩(g), VitK(µg), 水分(mL))
 // Packages: パッケージサイズ(mL)を整数で記述
 [EnteralFormulaType.SampleA] =
     new(
+        "サンプルA [ 267(400) ] 1.5kcal/mL",
         PerPack(400, 267, 16.0, 12.0, 56.0, 1.22, 28.0, 205),
         new[] { 200, 267 }),
 ```
-内部的には次のように解釈される
+
+内部的には次のように解釈される。
 ```csharp
+DisplayName = "サンプルA [ 267(400) ] 1.5kcal/mL";
+
 // packKcal=400 の値を per kcal に正規化
 VolumePerKcal  = 267.0 / 400.0; // mL/kcal
 ProteinPerKcal = 16.0  / 400.0; // g/kcal
@@ -115,7 +125,7 @@ FatPerKcal     = 12.0  / 400.0; // g/kcal
 Packages = [200, 267];
 ```
 ※イノラスは実規格が 187.5mL だが、Packages は整数管理のため 187 として扱っている（旧WebForms互換）。
-
+ 
 ### 設計意図
 
 **kcal 基準を採用した理由**：
@@ -129,19 +139,40 @@ Packages = [200, 267];
 5. **可読性**：テーブル定義が直感的
 
 ※数値は添付文書/メーカー公開情報に基づきますが、実務上の割付（規格・本数）を優先するため、近似や丸めを含みます。
- 
+
+### 実装上の役割分担
+
+- `EnteralFormulaType`
+  - 製剤の**識別子**を表す
+  - UI の**表示順**は enum の宣言順を基準にする
+
+- `EnteralFormulaTable`
+  - 製剤の**表示文言**
+  - 成分の実データ
+  - 規格候補（Packages）
+  をまとめて持つ
+
+つまり、**順序は enum、表示と実データは table** という分担にしている。
+
 ---
 
 ## 新製剤の追加
 
 新しい経腸栄養剤を追加する場合：
+1. 製剤名と濃度を確認する
+2. 規格（mL / kcal）を確認する
+3. 複数規格がある場合は、**計算基準にする規格**を決める  
+   - 推奨：本数を抑えやすい大きい方の規格
+4. 添付文書またはメーカー公開情報から成分値を確認する
+5. パッケージ規格は整数（mL）で入力する
 
-1. 製剤の規格を確認（パッケージサイズとカロリー）
-2. 複数規格がある場合、アプリ内で割付候補を優先したい規格を決める（推奨：本数を抑えやすい大きい方の規格）
-3. 添付文書から成分を転記して反映する
-4. パッケージ規格は整数（mL）で入力する
-
-反映先：
+ 反映先：
 
 - 製剤Enum（識別子・UI表示順）：`Domain/Enums/EnteralFormulaType.cs`
-- 製剤テーブル（UI表示文言・成分 + 規格の実データ）：`Domain/Tables/EnteralFormulaTable.cs`
+- 製剤テーブル（UI表示文言・成分・規格の実データ）：`Domain/Tables/EnteralFormulaTable.cs`
+
+補足：
+
+- **既存製剤の表示文言修正や成分更新**は、通常 `EnteralFormulaTable.cs` の更新で足りる
+- **新製剤の追加**では、`EnteralFormulaType.cs` と `EnteralFormulaTable.cs` の両方を更新する
+- UI の選択肢表示は `EnteralFormulaTable` の表示文言を使うが、表示順は `EnteralFormulaType` の宣言順を使う

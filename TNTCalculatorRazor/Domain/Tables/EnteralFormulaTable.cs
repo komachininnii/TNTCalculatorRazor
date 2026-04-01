@@ -38,6 +38,7 @@ public static class EnteralFormulaTable
     private static readonly Dictionary<EnteralFormulaType, EnteralFormulaInfo> _table
         = new()
         {
+            // DisplayName: UI表示文言
             // PerPack(packKcal, Volume(mL), 蛋白質(g), 脂質(g), 糖質(g), 食塩(g), VitK(µg), 水分(mL))
             // Packages: パッケージ規格サイズ(mL)を整数で保持（例：200, 267）
 
@@ -140,13 +141,13 @@ public static class EnteralFormulaTable
 
         return info;
     }
-
+    
     public static EnteralFormulaComposition GetComposition( EnteralFormulaType type )
         => Get(type).Composition;
-
+    
     public static string GetDisplayName( EnteralFormulaType type )
         => Get(type).DisplayName;
-
+    
     public static IReadOnlyList<int> GetPackages( EnteralFormulaType type )
         => Get(type).Packages.OrderBy(x => x).ToArray();
 }
