@@ -110,7 +110,7 @@ public static class EnteralFormulaTable
 
             [EnteralFormulaType.RacolNFSemiSolid10] =
                 new(
-                    "ラコール半固形 [ 300(300) ] 胃瘻,処方",
+                    "ラコールNF半固形 [ 300(300) ] 胃瘻,処方",
                     PerPack(300, 300, 13.14, 6.69, 46.86, 0.57, 18.75, 228),
                     new[] { 300 }),
 
