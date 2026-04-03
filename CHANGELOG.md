@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Ve4 3.2.2-dev
+## Ver 3.1.2-dev
 【内部改善】
 - 経腸栄養剤の表示文言を enum [Display(Name="...")] から EnteralFormulaTable 側へ集約（並び順は enum 宣言順ベースを維持）
 
