@@ -35,6 +35,7 @@ public static class EnteralFormulaTable
         );
 
     // 2026/03/05 テーブル更新（メーカーサイト参照）
+    // 2026/04/09 イノソリッド半固形を追加
     private static readonly Dictionary<EnteralFormulaType, EnteralFormulaInfo> _table
         = new()
         {
@@ -98,37 +99,43 @@ public static class EnteralFormulaTable
 
             [EnteralFormulaType.PGSoftEJ15] =
                 new(
-                    "PGソフトEJ [ 200(300) / 267(400) ] 粘度2万,胃瘻",
+                    "PGソフトEJ [ 200(300) / 267(400) ] 粘度2万, 胃瘻",
                     PerPack(400, 267, 16.0, 8.8, 62.7, 1.38, 60.0, 175),
                     new[] { 200, 267 }),
 
             [EnteralFormulaType.RacolNF10] =
                 new(
-                    "ラコールNF [ 200(200) ] 脂質20%,処方",
+                    "ラコールNF [ 200(200) ] 脂質20%, 処方",
                     PerPack(200, 200, 8.76, 4.46, 31.24, 0.38, 12.5, 170),
                     new[] { 200 }),
 
             [EnteralFormulaType.RacolNFSemiSolid10] =
                 new(
-                    "ラコールNF半固形 [ 300(300) ] 胃瘻,処方",
+                    "ラコールNF半固形 [ 300(300) ] 胃瘻, 処方",
                     PerPack(300, 300, 13.14, 6.69, 46.86, 0.57, 18.75, 228),
+                    new[] { 300 }),
+
+            [EnteralFormulaType.Enosolid10] =
+                new(
+                    "イノソリッド半固形 [ 300(300) ] 胃瘻, 処方",
+                    PerPack(300, 300, 13.50, 8.34, 41.25, 1.00, 24.99, 228),
                     new[] { 300 }),
 
             [EnteralFormulaType.EnsureH15] =
                 new(
-                    "エンシュアH [ 250(375) ] 脂質32%,処方",
+                    "エンシュアH [ 250(375) ] 脂質32%, 処方",
                     PerPack(375, 250, 13.2, 13.2, 51.5, 0.76, 26.3, 194),
                     new[] { 250 }),
 
             [EnteralFormulaType.Inoras16] =
                 new(
-                    "イノラス [ 187.5(300) ] 長期摂取困難,処方",
+                    "イノラス [ 187.5(300) ] 長期摂取困難, 処方",
                     PerPack(300, 187.5, 12.0, 9.66, 39.79, 0.69, 24.99, 140),
                     new[] { 187 }), // 実規格は187.5mLだが整数指定のため187とする（旧WebForms互換を維持）
 
             [EnteralFormulaType.Elental10] =
                 new(
-                    "エレンタール [ 300(300) ] 成分栄養,処方",
+                    "エレンタール [ 300(300) ] 成分栄養, 処方",
                     PerPack(300, 300, 14.1, 0.51, 63.41, 0.66, 9.0, 250),
                     new[] { 300 })
         };

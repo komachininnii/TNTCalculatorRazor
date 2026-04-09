@@ -26,6 +26,8 @@ public enum EnteralFormulaType
 
     RacolNFSemiSolid10, // ラコールNF半固形
 
+    Enosolid10,         // イノソリッド半固形
+
     EnsureH15,          // エンシュアH
 
     Inoras16,           // イノラス
